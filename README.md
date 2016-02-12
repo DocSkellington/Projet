@@ -1,7 +1,1 @@
-# Fichier en attente de construction
-
-Partie 1
-
-Partie 2
-
-Partie 3
+For now, this branch only contains basic files for the Eclipse Project.
