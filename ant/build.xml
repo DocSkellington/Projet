@@ -1,0 +1,18 @@
+<project name="Quoridor" default="dist" basedir=".">
+	<target name="clean">
+		<delete dir="build"/>
+	</target>
+	
+	<target name="build">
+		<mkdir dir="build/classes"/>
+		<javac srcdir="src" destdir="build/classes"/>
+	</target>
+	
+	<target name="run">
+		<java classname="AntMain">
+			<classpath>
+				<pathelement location="build/classes/"/>
+			</classpath>
+		</java>
+	</target>
+</project>
