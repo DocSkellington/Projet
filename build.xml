@@ -1,17 +1,28 @@
-<project name="Quoridor" default="dist" basedir=".">
+<project name="Quoridor" default="buildAndRun" basedir=".">
 	<target name="clean">
 		<delete dir="build"/>
 	</target>
 	
 	<target name="build">
 		<mkdir dir="build/classes"/>
-		<javac srcdir="src" destdir="build/classes"/>
+		<javac srcdir="code" destdir="build"/>
 	</target>
 	
 	<target name="run">
 		<java classname="Game">
 			<classpath>
-				<pathelement location="build/classes/"/>
+				<pathelement location="build"/>
+			</classpath>
+		</java>
+	</target>
+	
+	<target name="buildAndRun">
+		<delete dir="build"/>
+		<mkdir dir="build"/>
+		<javac srcdir="code" destdir="build"/>
+		<java classname="Game">
+			<classpath>
+				<pathelement location="build"/>
 			</classpath>
 		</java>
 	</target>
