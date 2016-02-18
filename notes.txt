@@ -1,0 +1,4 @@
+Player must contain a function to return the cost of a movement
+
+Wall :  1 means : there is a wall
+        0 means : there isn't any wall
