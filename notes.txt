@@ -1,4 +1,5 @@
 Player must contain a function to return the cost of a movement
+Player must know which number he has
 
 Wall :  1 means : there is a wall
         0 means : there isn't any wall
