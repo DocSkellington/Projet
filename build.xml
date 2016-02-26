@@ -1,11 +1,12 @@
 <project name="Quoridor" default="buildAndRun" basedir=".">
 	<target name="clean">
 		<delete dir="build"/>
+		<delete dir="clean"/>
 	</target>
 	
 	<target name="build">
 		<mkdir dir="build/classes"/>
-		<javac srcdir="code" destdir="build"/>
+		<javac srcdir="code" destdir="build" classpath="junit-4.12.jar"/>
 	</target>
 	
 	<target name="run">
@@ -13,6 +14,17 @@
 			<classpath>
 				<pathelement location="build"/>
 			</classpath>
+		</java>
+	</target>
+	
+	<target name="javadoc">
+		<mkdir dir="doc"/>
+		<javadoc destdir="doc" sourcepath="." packagenames="be.ac.umons.projet"/>
+	</target>
+	
+	<target name="test">
+		<java classsname="org.junit.runner.JUnitCore" classpath="build:junit-4.12.jar:hamcrest-core-1.3.jar">
+			<arg value="MainTests"/>
 		</java>
 	</target>
 	
