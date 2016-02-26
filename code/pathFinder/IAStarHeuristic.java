@@ -1,3 +1,8 @@
+package pathFinder;
+
+import board.*;
+import players.*;
+
 /** The description of a class providing a cost for a given map.
  * This heuristic controls what priority is placed on different tiles during the search for a path */
 public interface IAStarHeuristic {
@@ -11,5 +16,5 @@ public interface IAStarHeuristic {
 	 * @param ty The y coordinate of the target location
 	 * @return The cost associated with the given tile
 	 */
-	public float getCost(Cell[][] map, Player player, int x, int y, int tx, int ty);
+	public float getCost(Cell[][] map, APlayer player, int x, int y, int tx, int ty);
 }

@@ -1,3 +1,7 @@
+package board;
+
+import players.*;
+
 public class Cell
 {
     protected int filled;

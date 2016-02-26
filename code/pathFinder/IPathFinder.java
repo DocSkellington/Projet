@@ -1,3 +1,8 @@
+package pathFinder;
+
+import board.*;
+import players.*;
+
 /** A description of an implementation that can find a path from one location on a map to another*/
 public interface IPathFinder
 {
@@ -9,5 +14,5 @@ public interface IPathFinder
 	 * @param ty Teh y coordinate of the target location
 	 * @return The path found from the starting position to the target (or null if no path can be found).
      */
-    public Path findPath(Player player, int sx, int sy, int tx, int ty);
+    public Path findPath(APlayer player, int sx, int sy, int tx, int ty);
 }

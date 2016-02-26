@@ -1,3 +1,7 @@
+package board;
+
+import players.*;
+
 public class Case extends Cell
 {
     public Case()

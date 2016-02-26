@@ -1,5 +1,10 @@
+package pathFinder;
+
 import java.util.ArrayList;
 import java.util.Collections;
+
+import board.*;
+import players.*;
 
 /** This class implements IPathFinder by using the A* algorithm
  * 
@@ -57,7 +62,7 @@ public class AStarPathFinder implements IPathFinder
     /** 
      * @see PathFinder#findPath(Player, int, int, int, int)
      */
-    public Path findPath(Player player, int sx, int sy, int tx, int ty)
+    public Path findPath(APlayer player, int sx, int sy, int tx, int ty)
     {
         // Init for A*
         nodes[sx][sy].cost = 0;
@@ -154,7 +159,7 @@ public class AStarPathFinder implements IPathFinder
      * @param y The y coordinate of the location to be checked
      * @retrun True if the location is valid for the given player
      */
-    protected boolean isValidLocation(Player player, Cell[][] map, int sx, int sy, int x, int y)
+    protected boolean isValidLocation(APlayer player, Cell[][] map, int sx, int sy, int x, int y)
     {
         boolean invalid = (x < 0) || (y < 0) || (x >= map.length) || (y >= map[0].length);
         
@@ -179,7 +184,7 @@ public class AStarPathFinder implements IPathFinder
 	 * @param ty The y coordinate of the target location
 	 * @return The cost of movement through the given location
 	 */
-    public float getMovementCost(Player player, int sx, int sy, int tx, int ty)
+    public float getMovementCost(APlayer player, int sx, int sy, int tx, int ty)
     {
         return board.getCost(player, sx, sy, tx, ty);
     }
@@ -193,7 +198,7 @@ public class AStarPathFinder implements IPathFinder
 	 * @param ty The y coordinate of the target location
 	 * @return The heuristic cost assigned to the tile
 	 */
-	public float getHeuristicCost(Player player, Cell[][] map, int x, int y, int tx, int ty)
+	public float getHeuristicCost(APlayer player, Cell[][] map, int x, int y, int tx, int ty)
 	{
 	    return heuristic.getCost(map, player, x, y, tx, ty);
 	}

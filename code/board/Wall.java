@@ -1,3 +1,7 @@
+package board;
+
+import players.*;
+
 public class Wall extends Cell
 {
     public Wall()

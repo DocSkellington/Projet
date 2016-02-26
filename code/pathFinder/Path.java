@@ -1,4 +1,9 @@
+package pathFinder;
+
 import java.util.ArrayList;
+
+import board.*;
+import players.*;
 
 public class Path
 {
@@ -41,6 +46,11 @@ public class Path
     public boolean contains(int x, int y)
     {
         return steps.contains(new Step(x, y));
+    }
+    
+    public void print()
+    {
+    	System.out.println("Fiefjeiji");
     }
     
     public class Step

@@ -1,4 +1,8 @@
+package board;
+
 import java.util.ArrayList;
+import players.*;
+import pathFinder.*;
 
 /** Manages all information about the board.
  * This includes setting walls, finding path
@@ -31,17 +35,18 @@ public class Board
         cells[2][6].setFilled(2);
         for (int i = 1 ; i < 17 ; i+=2)
         {
-        	cells[2][i].setFilled(0);
+        	cells[2][i].setFilled(1);
         }
         for (int i = 1 ; i <= 3 ; i+=2)
         {
         	for(int j = 0 ; j < 17 ; j++)
         	{
-        		cells[i][j].setFilled(0);
+        		cells[i][j].setFilled(1);
         	}
         }
         
-        System.out.println(cells[6][1].filled());
+        cells[3][4].setFilled(0);
+        cells[1][4].setFilled(0);
     }
     
     /** Draws the board in the command prompt district */
@@ -99,12 +104,13 @@ public class Board
     */
     public Path setWall(int x, int y, boolean horizontal)
     {
-        if(cells[x][y] instanceof Wall)
+        if(x % 2 == 0 && y % 2 == 0)
             return null;
         
-        Player player = new Player();
+        APlayer player = new Human(this, 0);
         ClosestHeuristic heuris = new ClosestHeuristic();
         AStarPathFinder pathFinder = new AStarPathFinder(this, false, heuris);
+        // TODO : Automatisation...
         Path path = pathFinder.findPath(player, 0, 6, 8, 6);
         return path;
     }
@@ -114,11 +120,9 @@ public class Board
      * @param player A reference to the player who needs a path
      * @return The shortest path
      */
-    public Path findPath(Player player)
+    public Path findPath(APlayer player)
     {
-    	AStarPathFinder pathFinder = new AStarPathFinder(this, false);
-    	Coordinates start = playersPositions[player.getNum()], target = getTarget(player.getNum());
-    	return pathFinder.findPath(player, start.getX(), start.getY(), target.getX(), target.getY());
+    	return findPath(player, new ClosestHeuristic());
     }
     
     /** Return the best path by using the A* algorithm (which uses the given heuristic method)
@@ -126,11 +130,18 @@ public class Board
      * @param heuri A reference to an heuristic class to determinate the best path
      * @return The best path if it exists, null otherwise
      */
-    public Path findPath(Player player, IAStarHeuristic heuri)
+    public Path findPath(APlayer player, IAStarHeuristic heuri)
     {
     	AStarPathFinder pathFinder = new AStarPathFinder(this, false, heuri);
-    	Coordinates start = playersPositions[player.getNum()], target = getTarget(player.getNum());
-    	return pathFinder.findPath(player, start.getX(), start.getY(), target.getX(), target.getY());
+    	Coordinates start = playersPositions[player.getNum()];
+    	Coordinates[] target = goal(player.getNum());
+    	for (int i = 0 ; i < target.length ; i++)
+    	{
+    		Path path = pathFinder.findPath(player, start.getX(), start.getY(), target[i].getX(), target[i].getY());
+    		if (path != null)
+    			return path;
+    	}
+    	return null;
     }
     
     public Coordinates[] goal(int player)
@@ -168,7 +179,7 @@ public class Board
      * @param ty The y coordinate of the case we're coming to
      * @return The relative cost of the movement
      */
-    public float getCost(Player player, int sx, int sy, int tx, int ty)
+    public float getCost(APlayer player, int sx, int sy, int tx, int ty)
     {
         return 1.f;
     }
@@ -208,6 +219,35 @@ public class Board
     public int getYSize()
     {
         return cells[0].length;
+    }
+    
+    /** Checks if a player has won
+     * @param players The array of players
+     * @return The number of the winner
+     */
+    public int hasWon(APlayer[] players)
+    {
+    	for (int i = 0 ; i < players.length ; i++)
+    	{
+    		if (hasWon(players[i].getNum()))
+    			return players[i].getNum();
+    	}
+    	return -1;
+    }
+    
+    /** Checks if the player with the given number has won
+     * @param numPlayer The number of the player
+     * @return True if the player has won, false otherwise
+     */
+    public boolean hasWon(int numPlayer)
+    {
+    	Coordinates[] g = goal(numPlayer);
+    	for (int i = 0 ; i < g.length ; i++)
+    	{
+    		if (playersPositions[numPlayer] == g[i])
+    			return true;
+    	}
+    	return false;
     }
     
     /** Check if there is wall between (sx, sy) and (tx, ty). These two cases must be adjacent.
