@@ -6,7 +6,7 @@ import pathFinder.*;
 
 /** Manages all information about the board.
  * This includes setting walls, finding path
- * @author Gaëtan Staquet && Thibaut De Cooman
+ * @author Gaetan Staquet && Thibaut De Cooman
  *
  */
 public class Board
@@ -14,9 +14,10 @@ public class Board
     protected Cell[][] cells;
     protected Coordinates[] playersPositions;
     
-    /** The basic constructor
+    /** The constructor
+     * @param numPlayers The number of players 
     */
-    public Board()
+    public Board(int numPlayers)
     {
         cells = new Cell[17][17];
         
@@ -31,22 +32,12 @@ public class Board
             }
         }
         
-        cells[2][4].setFilled(1);
-        cells[2][6].setFilled(2);
-        for (int i = 1 ; i < 17 ; i+=2)
+        playersPositions = new Coordinates[numPlayers];
+        for (int i = 0 ; i < numPlayers ; i++)
         {
-        	cells[2][i].setFilled(1);
+        	playersPositions[i] = startingPos(i);
         }
-        for (int i = 1 ; i <= 3 ; i+=2)
-        {
-        	for(int j = 0 ; j < 17 ; j++)
-        	{
-        		cells[i][j].setFilled(1);
-        	}
-        }
-        
-        cells[3][4].setFilled(0);
-        cells[1][4].setFilled(0);
+        update();
     }
     
     /** Draws the board in the command prompt district */
@@ -144,11 +135,6 @@ public class Board
     	return null;
     }
     
-    public Coordinates[] goal(int player)
-    {
-        Coordinates[] goal = {new Coordinates(0,0), new Coordinates(0,2),new Coordinates(0,4),new Coordinates(0,6),new Coordinates(0,8),new Coordinates(0,10),new Coordinates(0,12),new Coordinates(0,14),new Coordinates(0,16)};
-        return goal;
-    }
     
     /** Return the content of a cell
      * @param x The x coordinate of a cell
@@ -274,8 +260,26 @@ public class Board
 			return false;
     }
     
+    /** Updates the cells */
+    public void update ()
+    {
+    	for (int i = 0 ; i < cells.length ; i++)
+    	{
+    		for (int j = 0 ; j < cells[0].length ; j++)
+    		{
+    			cells[i][j].setFilled(0);
+    		}
+    	}
+    	
+    	for (int i = 0 ; i < playersPositions.length ; i++)
+    	{
+    		Coordinates coord = playersPositions[i];
+    		cells[coord.y][coord.x].setFilled(i + 1);
+    	}
+    }
+    
     /** Manages coordinates for a point */
-    public class Coordinates
+    public static class Coordinates
     {
         private int x, y;
         
@@ -306,4 +310,58 @@ public class Board
         }
     }
 
+    /** The starting position for a player
+     * 
+     * @param playerNum The number of the player
+     * @return The starting position (Coordinates) for the given player
+     */
+    public static Coordinates startingPos(int playerNum)
+    {
+		if (playerNum == 0)
+			return new Coordinates(8, 16);
+		else if (playerNum == 1)
+			return new Coordinates(8,0);
+		else if (playerNum == 2)
+			return new Coordinates(0, 8);
+		else
+			return new Coordinates(16,8);
+    }
+    
+    /** Returns the maximum number of players for this board
+     * 
+     * @return The maximum number of players
+     */
+    public static int maxPlayers()
+    {
+    	return 4;
+    }
+    
+    /** Returns the goal coordinates for a given player
+     * 
+     * @param playerNum The number of the player
+     * @return The goal coordinates (array) for this player
+     */
+    public static Coordinates[] goal(int playerNum)
+    {
+    	if (playerNum == 0)
+        {
+    		Coordinates[] goal = {new Coordinates(0,0), new Coordinates(2,0),new Coordinates(4,0),new Coordinates(6,0),new Coordinates(8,0),new Coordinates(10,0),new Coordinates(12,0),new Coordinates(14,0),new Coordinates(16,0)};
+    		return goal;
+        }
+    	else if (playerNum == 1)
+    	{
+    		Coordinates[] goal = {new Coordinates(0,16), new Coordinates(2,16),new Coordinates(4,16),new Coordinates(6,16),new Coordinates(8,16),new Coordinates(10,16),new Coordinates(12,16),new Coordinates(14,16),new Coordinates(16,16)};
+    		return goal;
+    	}
+    	else if (playerNum ==2)
+    	{
+    		Coordinates[] goal = {new Coordinates(16,0), new Coordinates(16,2),new Coordinates(16,4),new Coordinates(16,6),new Coordinates(16,8),new Coordinates(16,10),new Coordinates(16,12),new Coordinates(16,14),new Coordinates(16,16)};
+    		return goal;
+    	}
+    	else
+    	{
+    		Coordinates[] goal = {new Coordinates(0,0), new Coordinates(0,2),new Coordinates(0,4),new Coordinates(0,6),new Coordinates(0,8),new Coordinates(0,10),new Coordinates(0,12),new Coordinates(0,14),new Coordinates(0,16)};
+    		return goal;
+    	}
+    }
 }

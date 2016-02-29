@@ -2,6 +2,7 @@ package players;
 
 import board.*;
 import pathFinder.*;
+import board.Board.Coordinates;
 
 /** Abstract class to handle a player.
  * This can't be used because play() must have a specific behavior depending on the type of the player (Human/AI).
@@ -13,6 +14,7 @@ public abstract class APlayer
 {
 	Board board;
 	int num;
+	Coordinates coord;
 	
 	/** The default constructor */
 	public APlayer()
@@ -42,4 +44,6 @@ public abstract class APlayer
 	{
 		return num;
 	}
+	
+	
 }

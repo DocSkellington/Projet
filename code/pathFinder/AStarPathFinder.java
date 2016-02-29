@@ -9,7 +9,7 @@ import players.*;
 /** This class implements IPathFinder by using the A* algorithm
  * 
  * Mainly inspired by : http://www.cokeandcode.com/main/tutorials/path-finding/
- * @author Gaëtan Staquet
+ * @author Gaetan Staquet & Thibaut De Cooman
  *
  */
 public class AStarPathFinder implements IPathFinder

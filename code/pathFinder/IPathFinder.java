@@ -3,7 +3,9 @@ package pathFinder;
 import board.*;
 import players.*;
 
-/** A description of an implementation that can find a path from one location on a map to another*/
+/** A description of an implementation that can find a path from one location on a map to another
+ * @author Gaetan Staquet & Thibaut De Cooman
+ */
 public interface IPathFinder
 {
     /** Find a path from (sx, sy), the starting location, to (tx, ty), the target location.

@@ -2,33 +2,45 @@ import java.util.Scanner;
 import board.*;
 import players.*;
 
+/** Main class that keeps the game running
+ * 
+ * @author Gaetan Staquet & Thibaut De Cooman
+ *
+ */
 public class Game
 {
 	private APlayer[] players;
 	private Board board;
 	
+	/** Default constructor
+	 * 
+	 */
 	public Game()
 	{
 		
 	}
 	
+	/** What keeps the game running
+	 * 
+	 */
 	public void run()
 	{
         boolean running = true;
         
         while (running)
         {
-            int hum = howManyPlayers();
-            init(hum);
+            int numPlayers = howManyPlayers(), hum = howManyHumans(numPlayers);
+            init(numPlayers, hum);
         
             int current = 0, winner = -1; // -1 means no winner
-            Board board = new Board();
+            board = new Board(numPlayers);
             
             while (winner == -1)
             {
             	board.print();
                 players[current].play();
-                current = (current + 1) % 2;
+                board.update();
+                current = (current + 1) % numPlayers;
                 winner = board.hasWon(players);
             }
             
@@ -38,15 +50,63 @@ public class Game
         }
 	}
 	
+	/** Asks the number of players
+	 * 
+	 * @return The number of players
+	 */
     private int howManyPlayers()
     {
-        // TODO : Asking user(s) how many Human players (+ exceptions)
-        return 1;
+    	System.out.println("How many players ?");
+    	int res = 0;
+    	Scanner scan = new Scanner(System.in);
+    	
+    	do
+    	{
+    		res = scan.nextInt();
+    		
+    		if (res <= 1 || res > Board.maxPlayers())
+    		{
+    			System.out.println(Board.maxPlayers() + " players max and at least 2 players");
+    		}
+    		else
+				return res;
+    		
+    	} while(true);
     }
     
+    /** Asks how many humans players
+     * 
+     * @param maxPlayers The maximum number of players
+     * @return The number of human players
+     */
+    private int howManyHumans(int maxPlayers)
+    {
+    	Scanner scan = new Scanner(System.in);
+    	
+    	System.out.println("How many humans ?");
+    	
+    	int res = 0;
+    	
+    	do
+    	{
+    		res = scan.nextInt();
+    		
+    		if (res < 0 || res > maxPlayers)
+    		{
+    			System.out.println(maxPlayers + " humans max and at least 0 humans");
+    		}
+    		else
+				return res;
+    		
+    	} while(true);
+    }
+    
+    /** Asks if the player(s) want(s) to keep playing
+     * 
+     * @return Whether the game keeps running or not
+     */
     private boolean keepPlaying()
     {
-        // TODO : Asking if Player(s) want(s) to keep playing
     	Scanner scan = new Scanner(System.in);
     	System.out.println("Do you want to keep playing ? (Y/N)");
     	String res = "";
@@ -63,20 +123,39 @@ public class Game
     	} while (true);
     }
     
+    /** See: FF7 victory fanfare
+     * 
+     * @param winner Number of the winning player
+     */
     private void printVictory(int winner)
     {
-        System.out.println("Congratulations, Player " + winner + " !");
+        System.out.println("Congratulations, Player " + winner + " ! You can leave the Arena now and rest... You've earned it!");
     }
     
-    private void init(int humNumber)
+    /** Initializes the players list
+     * 
+     * @param playersNumber The number of players
+     * @param humNumber The number of human players
+     */
+    private void init(int playersNumber, int humNumber)
     {
-    	players = new APlayer[humNumber];
+    	players = new APlayer[playersNumber];
     	
-    	players[0] = new Human(board, 0);
+    	int i = 0;
+    	while(i < humNumber)
+    	{
+    		players[i] = new Human(board, 0);
+    		i++;
+    	}
+    	//while(i < playersNumber)
+    		//players[i] = new Bot(board, 0);
     }
     
     
-    
+    /** Main method
+     *  
+     * @param args Arguments
+     */
     public static void main(String[] args)
     {
     	Game game = new Game();

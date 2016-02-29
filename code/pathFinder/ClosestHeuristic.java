@@ -5,7 +5,7 @@ import players.*;
 
 /** This class implements IAStarHeuristic by using the Manhattan distance approximation
  * 
- * @author Gaetan Staquet
+ * @author Gaetan Staquet & Thibaut De Cooman
  *
  */
 public class ClosestHeuristic implements IAStarHeuristic {
