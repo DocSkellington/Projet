@@ -71,7 +71,7 @@ public class AStarPathFinder implements IPathFinder
         open.add(nodes[sx][sy]);
         
         nodes[tx][ty].parent = null;
-        Cell[][] map = board.getCells();
+        ACell[][] map = board.getCells();
         
         while(open.size() != 0)
         {
@@ -159,7 +159,7 @@ public class AStarPathFinder implements IPathFinder
      * @param y The y coordinate of the location to be checked
      * @retrun True if the location is valid for the given player
      */
-    protected boolean isValidLocation(APlayer player, Cell[][] map, int sx, int sy, int x, int y)
+    protected boolean isValidLocation(APlayer player, ACell[][] map, int sx, int sy, int x, int y)
     {
         boolean invalid = (x < 0) || (y < 0) || (x >= map.length) || (y >= map[0].length);
         
@@ -198,7 +198,7 @@ public class AStarPathFinder implements IPathFinder
 	 * @param ty The y coordinate of the target location
 	 * @return The heuristic cost assigned to the tile
 	 */
-	public float getHeuristicCost(APlayer player, Cell[][] map, int x, int y, int tx, int ty)
+	public float getHeuristicCost(APlayer player, ACell[][] map, int x, int y, int tx, int ty)
 	{
 	    return heuristic.getCost(map, player, x, y, tx, ty);
 	}

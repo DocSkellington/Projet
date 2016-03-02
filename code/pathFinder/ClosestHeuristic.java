@@ -10,7 +10,7 @@ import players.*;
  */
 public class ClosestHeuristic implements IAStarHeuristic {
 	/** @see AStarHeuristic@getCost(Board, Player, int, int, int, int) */
-	public float getCost(Cell[][] map, APlayer player, int x, int y, int tx, int ty)
+	public float getCost(ACell[][] map, APlayer player, int x, int y, int tx, int ty)
 	{
 		// Uses the Manhat
 		float dx = Math.abs(tx - x);

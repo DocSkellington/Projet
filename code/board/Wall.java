@@ -7,7 +7,7 @@ import players.*;
  * @author Thibaut De Cooman & Gaetan Staquet
  *
  */
-public class Wall extends Cell
+public final class Wall extends ACell
 {
 	
 	/** Default constructor*/
@@ -23,5 +23,14 @@ public class Wall extends Cell
     public Wall(int filled)
     {
     	super(filled);
+    }
+    
+    @Override
+    public void display()
+    {
+    	if (filled == 0)
+    		System.out.print(" ");
+    	else
+    		System.out.print("#");
     }
 }

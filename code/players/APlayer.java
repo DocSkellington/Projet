@@ -12,9 +12,9 @@ import board.Board.Coordinates;
  */
 public abstract class APlayer
 {
-	Board board;
-	int num;
-	Coordinates coord;
+	protected Board board;
+	protected int num;
+	protected Coordinates coord;
 	
 	/** The default constructor */
 	public APlayer()
@@ -31,6 +31,7 @@ public abstract class APlayer
 	{
 		this.board = board;
 		this.num = num;
+		this.coord = board.getCoordinates(num);
 	}
 	
 	/** This function handles the turn of a player.*/

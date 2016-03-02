@@ -11,7 +11,7 @@ import pathFinder.*;
  */
 public class Board
 {
-    protected Cell[][] cells;
+    protected ACell[][] cells;
     protected Coordinates[] playersPositions;
     
     /** The constructor
@@ -19,7 +19,7 @@ public class Board
     */
     public Board(int numPlayers)
     {
-        cells = new Cell[17][17];
+        cells = new ACell[17][17];
         
         for (int x = 0 ; x < 17 ; x++)
         {
@@ -55,23 +55,7 @@ public class Board
             System.out.print("|");
             for (int y = 0 ; y < cells.length ; y++)
             {
-                if (cells[x][y] instanceof Wall)
-                {
-                    if(cells[x][y].filled() == 0)
-                        System.out.print(" ");
-                    else
-                        System.out.print("#");
-                }
-                else
-                {
-                    // 1 = J1
-                    if (cells[x][y].filled() == 1)
-                        System.out.print("1");
-                    else if (cells[x][y].filled() == 2)
-                        System.out.print("2");
-                    else
-                        System.out.print("0");
-                }
+            	cells[x][y].display();
             }
             System.out.println("|");
         }
@@ -173,10 +157,10 @@ public class Board
     /** Gets a copy of the array of cells
      * @return An array of array of Cells
      */
-    public Cell[][] getCells()
+    public ACell[][] getCells()
     {
         // We don't want to give a reference to the data, so we copy the array
-        Cell[][] map = new Cell[cells.length][cells[0].length];
+        ACell[][] map = new ACell[cells.length][cells[0].length];
         for (int i = 0 ; i < map.length ; i++)
         {
             for (int j = 0 ; j < map.length ; j++)
@@ -230,7 +214,7 @@ public class Board
     	Coordinates[] g = goal(numPlayer);
     	for (int i = 0 ; i < g.length ; i++)
     	{
-    		if (playersPositions[numPlayer] == g[i])
+    		if (playersPositions[numPlayer].equals(g[i]))
     			return true;
     	}
     	return false;
@@ -274,8 +258,98 @@ public class Board
     	for (int i = 0 ; i < playersPositions.length ; i++)
     	{
     		Coordinates coord = playersPositions[i];
-    		cells[coord.y][coord.x].setFilled(i + 1);
+    		cells[coord.getY()][coord.getX()].setFilled(i + 1);
     	}
+    }
+    
+    /** Checks if the player can be moved in the direction, moves it if possible
+     * 
+     * @param num The number of the player
+     * @param coord The coordinate the players wants to move to
+     * @return True if the player can make the move, false otherwise
+     */
+    public boolean move (int num, Coordinates coord)
+    {
+    	Coordinates playerPos = playersPositions[num];
+    	// If the target case is out of the board
+    	if (coord.getY() >= cells.length || coord.getX() >= cells.length || coord.getX() < 0 || coord.getY() < 0)
+    	{
+    		System.out.println("Out of the board");
+    		return false;
+    	}
+    	// If the target case is filled
+    	if (cells[coord.getY()][coord.getX()].filled() > 0)
+    		return false;
+    	// If the player wants to move more than 4 cases away
+    	if (Math.abs(coord.getX()-playerPos.getX()) > 4 || Math.abs(coord.getY()-playerPos.getY()) > 4)
+    	{
+    		System.out.println("Target case is too far from original position");
+    		return false;
+    	}
+    	// If the player wants to move 2 cases horizontally
+    	if (Math.abs(coord.getX()-playerPos.getX()) == 4)
+    	{
+    		// To the right
+    		if (coord.getX() > playerPos.getX())
+    		{
+    			// If the in-between case is filled by a player
+    			if (cells[playerPos.getY()][playerPos.getX()+2].filled() > 0)
+    			{
+    				playerPos.move(2, 0);
+    				return true;
+    			}
+    			return false;
+    		}
+    		// To the left
+    		else if (coord.getX() < playerPos.getX())
+			{
+				// If the in-between case is filled by a player
+				if (cells[playerPos.getY()][playerPos.getX()-2].filled() > 0)
+				{
+					playerPos.move(-2, 0);
+					return true;
+				}
+				return false;
+    		}
+    	}
+    	// If the player wants to move 2 cases vertically
+    	if (Math.abs(coord.getY()-playerPos.getY()) == 4)
+    	{
+    		// To the bottom
+    		if (coord.getY() > playerPos.getY())
+    		{
+    			// If the in-between case is filled by a player
+    			if (cells[playerPos.getY()+2][playerPos.getX()].filled() > 0)
+    			{
+    				playerPos.move(0, 2);
+    				return true;
+    			}
+    			return false;
+    		}
+    		// To the top
+    		else if (coord.getY() < playerPos.getY())
+			{
+				// If the in-between case is filled by a player
+				if (cells[playerPos.getY()-2][playerPos.getX()].filled() > 0)
+				{
+					playerPos.move(0, -2);
+					return true;
+				}
+				return false;
+    		}
+    	}
+    	playerPos.move(coord.getX()-playerPos.getX(), coord.getY()-playerPos.getY());
+    	return true;
+    }
+    
+    /** Returns a copy of the coordinates of a player.
+     * 
+     * @param num The number of a player
+     * @return The coordinates of this player
+     */
+    public Coordinates getCoordinates(int num)
+    {
+    	return new Coordinates(playersPositions[num].getX(), playersPositions[num].getY());
     }
     
     /** Manages coordinates for a point */
@@ -307,6 +381,39 @@ public class Board
         public int getY()
         {
         	return y;
+        }
+        
+        /** Moves by dx and dy
+         * 
+         * @param dx The difference between the x coordinate of the starting position and the target position
+         * @param dy The difference between the y coordinate of the starting position and the target position
+         */
+        public void move (int dx, int dy)
+        {
+        	this.x += dx;
+        	this.y += dy;
+        }
+        
+        @Override
+        public String toString()
+        {
+        	String res = "(" + x + ", " + y + ")";
+        	return res;
+        }
+        
+        @Override
+        public boolean equals(Object o)
+        {
+        	if (o == this)
+        		return true;
+        	if (o == null)
+        		return false;
+        	if(getClass() != o.getClass())
+        		return false;
+        	Coordinates other = (Coordinates) o;
+        	if (other.x == this.x && this.y == other.y)
+        		return true;
+        	return false;
         }
     }
 

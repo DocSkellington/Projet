@@ -18,5 +18,5 @@ public interface IAStarHeuristic {
 	 * @param ty The y coordinate of the target location
 	 * @return The cost associated with the given tile
 	 */
-	public float getCost(Cell[][] map, APlayer player, int x, int y, int tx, int ty);
+	public float getCost(ACell[][] map, APlayer player, int x, int y, int tx, int ty);
 }

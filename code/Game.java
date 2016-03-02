@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import board.*;
+import board.Board.*;
 import players.*;
 
 /** Main class that keeps the game running
@@ -30,10 +31,10 @@ public class Game
         while (running)
         {
             int numPlayers = howManyPlayers(), hum = howManyHumans(numPlayers);
+            board = new Board(numPlayers);
             init(numPlayers, hum);
         
             int current = 0, winner = -1; // -1 means no winner
-            board = new Board(numPlayers);
             
             while (winner == -1)
             {
@@ -62,6 +63,17 @@ public class Game
     	
     	do
     	{
+    		while (true)
+    		{
+    			if(!scan.hasNextInt())
+    			{
+    				System.out.println("An Integer, por favor, Señior");
+    				scan.next();
+    				continue;
+    			}
+    			break;
+    		}
+    		
     		res = scan.nextInt();
     		
     		if (res <= 1 || res > Board.maxPlayers())
@@ -89,7 +101,19 @@ public class Game
     	
     	do
     	{
+    		while (true)
+    		{
+    			if(!scan.hasNextInt())
+    			{
+    				System.out.println("An Integer, por favor, Señior");
+    				scan.next();
+    				continue;
+    			}
+    			break;
+    		}
+    		
     		res = scan.nextInt();
+    		
     		
     		if (res < 0 || res > maxPlayers)
     		{
@@ -129,7 +153,7 @@ public class Game
      */
     private void printVictory(int winner)
     {
-        System.out.println("Congratulations, Player " + winner + " ! You can leave the Arena now and rest... You've earned it!");
+        System.out.println("Congratulations, Player " + (winner + 1) + " ! You can leave the Arena now and rest... You've earned it!");
     }
     
     /** Initializes the players list
@@ -144,7 +168,7 @@ public class Game
     	int i = 0;
     	while(i < humNumber)
     	{
-    		players[i] = new Human(board, 0);
+    		players[i] = new Human(board, i);
     		i++;
     	}
     	//while(i < playersNumber)

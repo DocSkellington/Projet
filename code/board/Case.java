@@ -7,7 +7,7 @@ import players.*;
  * @author Thibaut De Cooman & Gaetan Staquet
  *
  */
-public class Case extends Cell
+public final class Case extends ACell
 {
 	/** Default constructor*/
     public Case()
@@ -22,5 +22,11 @@ public class Case extends Cell
     public Case(int filled)
     {
     	super(filled);
+    }
+    
+    @Override
+    public void display()
+    {
+    	System.out.print(filled);
     }
 }

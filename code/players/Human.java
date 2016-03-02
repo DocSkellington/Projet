@@ -2,6 +2,7 @@ package players;
 
 import java.util.Scanner;
 import board.*;
+import board.Board.*;
 import pathFinder.*;
 
 /** The human player
@@ -9,7 +10,7 @@ import pathFinder.*;
  * @author Thibaut De Cooman & Gaetan Staquet
  *
  */
-public class Human extends APlayer
+public final class Human extends APlayer
 {
 	/** Constructor
 	 * 
@@ -23,7 +24,7 @@ public class Human extends APlayer
 	
 	@Override
 	public void play() {
-		// TODO Auto-generated method stub
+		System.out.println("Player " + (num+1) + ", you can play.");
 		boolean wantsToMove = wannaMove();
 		if (wantsToMove)
 			move();
@@ -54,8 +55,49 @@ public class Human extends APlayer
 		} while(true);
 	}
 	
+	private void setAWall()
+	{
+		
+	}
+	
 	private void move()
 	{
 		Scanner scan = new Scanner(System.in);
+		boolean possible = false;
+		
+		System.out.println("Up, Down, Right, Left ? (U/D/R/L)");
+		
+		while(!possible)
+		{
+			String res = scan.nextLine();
+			
+			// TODO : Le cas où il faut sauter par-dessus un joueur
+			
+			if (res.equals("U"))
+			{
+				possible = board.move(num, new Coordinates(coord.getX(), coord.getY()-2));
+			}
+			else if (res.equals("D"))
+			{
+				possible = board.move(num, new Coordinates(coord.getX(), coord.getY()+2));
+			}
+			else if (res.equals("L"))
+			{
+				possible = board.move(num, new Coordinates(coord.getX()-2, coord.getY()));
+			}
+			else if (res.equals("R"))
+			{
+				possible = board.move(num, new Coordinates(coord.getX()+2, coord.getY()));
+			}
+			else
+			{
+				System.out.println("U/D/L/R");
+				continue;
+			}
+			
+			if (!possible)
+				System.out.println("You can't move there!");
+		}
+		this.coord = board.getCoordinates(num);
 	}
 }
