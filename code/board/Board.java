@@ -37,6 +37,7 @@ public class Board
         {
         	playersPositions[i] = startingPos(i);
         }
+        
         update();
     }
     
@@ -128,7 +129,7 @@ public class Board
     public int filled(int x, int y)
     {
         if(x >= 0 && x < cells.length && y >= 0 && y < cells[0].length)
-            return cells[x][y].filled();
+            return cells[y][x].filled();
         return -1;
     }
     
@@ -247,9 +248,10 @@ public class Board
     /** Updates the cells */
     public void update ()
     {
-    	for (int i = 0 ; i < cells.length ; i++)
+    	// We reset cases
+    	for (int i = 0 ; i < cells.length ; i+=2)
     	{
-    		for (int j = 0 ; j < cells[0].length ; j++)
+    		for (int j = 0 ; j < cells[0].length ; j+=2)
     		{
     			cells[i][j].setFilled(0);
     		}
@@ -295,6 +297,10 @@ public class Board
     			// If the in-between case is filled by a player
     			if (cells[playerPos.getY()][playerPos.getX()+2].filled() > 0)
     			{
+    				// If there is a wall
+    				if (blocked(playerPos.getX(), playerPos.getY(), playerPos.getX()+2, playerPos.getY()) ||
+    						blocked(playerPos.getX()+2, playerPos.getY(), coord.getX(), coord.getY()))
+    					return false;
     				playerPos.move(2, 0);
     				return true;
     			}
@@ -306,6 +312,10 @@ public class Board
 				// If the in-between case is filled by a player
 				if (cells[playerPos.getY()][playerPos.getX()-2].filled() > 0)
 				{
+    				// If there is a wall
+    				if (blocked(playerPos.getX(), playerPos.getY(), playerPos.getX()-2, playerPos.getY()) ||
+    						blocked(playerPos.getX()-2, playerPos.getY(), coord.getX(), coord.getY()))
+    					return false;
 					playerPos.move(-2, 0);
 					return true;
 				}
@@ -321,6 +331,10 @@ public class Board
     			// If the in-between case is filled by a player
     			if (cells[playerPos.getY()+2][playerPos.getX()].filled() > 0)
     			{
+    				// If there is a wall
+    				if (blocked(playerPos.getX(), playerPos.getY(), playerPos.getX(), playerPos.getY()+2) ||
+    						blocked(playerPos.getX(), playerPos.getY()+2, coord.getX(), coord.getY()))
+    					return false;
     				playerPos.move(0, 2);
     				return true;
     			}
@@ -332,12 +346,20 @@ public class Board
 				// If the in-between case is filled by a player
 				if (cells[playerPos.getY()-2][playerPos.getX()].filled() > 0)
 				{
+    				// If there is a wall
+    				if (blocked(playerPos.getX(), playerPos.getY(), playerPos.getX()-2, playerPos.getY()) ||
+    						blocked(playerPos.getX()-2, playerPos.getY(), coord.getX(), coord.getY()))
+    					return false;
 					playerPos.move(0, -2);
 					return true;
 				}
 				return false;
     		}
     	}
+
+		// If there is a wall
+		if (blocked(playerPos.getX(), playerPos.getY(), coord.getX(), coord.getY()))
+			return false;
     	playerPos.move(coord.getX()-playerPos.getX(), coord.getY()-playerPos.getY());
     	return true;
     }
