@@ -64,6 +64,7 @@ public class AStarPathFinder implements IPathFinder
      */
     public Path findPath(APlayer player, int sx, int sy, int tx, int ty)
     {
+    	// TODO : Finish it
         // Init for A*
         nodes[sx][sy].cost = 0;
         closed.clear();
@@ -163,7 +164,7 @@ public class AStarPathFinder implements IPathFinder
     {
         boolean invalid = (x < 0) || (y < 0) || (x >= map.length) || (y >= map[0].length);
         
-        if((!invalid) && ((sx != x) || (sy != y)))
+        /*if((!invalid) && ((sx != x) || (sy != y)))
         {
         	if(board.blocked(sx, sy, x, y))
         	{
@@ -171,7 +172,9 @@ public class AStarPathFinder implements IPathFinder
         	}
         	else
     			invalid = false;
-        }
+        }*/
+        HashSet possibleMoves() = possibleMoves(player.num);
+        if ()
 
         return !invalid;
     }

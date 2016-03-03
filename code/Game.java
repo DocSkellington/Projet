@@ -2,6 +2,8 @@ import java.util.Scanner;
 import board.*;
 import board.Board.*;
 import players.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /** Main class that keeps the game running
  * 
@@ -33,6 +35,7 @@ public class Game
             int numPlayers = howManyPlayers(), hum = howManyHumans(numPlayers);
             board = new Board(numPlayers);
             init(numPlayers, hum);
+            board.setPlayers(players);
         
             int current = 0, winner = -1; // -1 means no winner
             
@@ -67,7 +70,7 @@ public class Game
     		{
     			if(!scan.hasNextInt())
     			{
-    				System.out.println("An Integer, por favor, Señior");
+    				System.out.println("An Integer, por favor, Senior");
     				scan.next();
     				continue;
     			}
@@ -105,7 +108,7 @@ public class Game
     		{
     			if(!scan.hasNextInt())
     			{
-    				System.out.println("An Integer, por favor, Señior");
+    				System.out.println("An Integer, por favor, Seï¿½ior");
     				scan.next();
     				continue;
     			}

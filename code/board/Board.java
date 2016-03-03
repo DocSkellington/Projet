@@ -13,6 +13,7 @@ public class Board
 {
     protected ACell[][] cells;
     protected Coordinates[] playersPositions;
+    protected APlayer[] players;
     
     /** The constructor
      * @param numPlayers The number of players 
@@ -37,6 +38,12 @@ public class Board
         {
         	playersPositions[i] = startingPos(i);
         }
+        
+        cells[playersPositions[0].getY()][playersPositions[0].getX()-1].setFilled(1);
+        cells[playersPositions[0].getY()][playersPositions[0].getX()+1].setFilled(1);
+        //cells[9][8].setFilled(1);
+        playersPositions[1] = new Coordinates(8, 10);
+        playersPositions[0] = new Coordinates (8, 12);
         
         update();
     }
@@ -70,25 +77,63 @@ public class Board
         System.out.println();
     }
     
+    /** Set the reference to the players
+     * 
+     * @param players An array of players
+     */
+    public void setPlayers(APlayer[] players)
+    {
+    	this.players = players;
+    }
+    
     /** Tries to set a wall at coordinate (x;y) (The upper/right vertex).
      * If possible, effectively sets the wall and returns true. Otherwise, returns false without modifying the board.
      * Uses the A* algorithm.
-     * @param x The x coordinate
-     * @param y The y coordinate
+     * @param num The number of the player who wants to set a wall
+     * @param coord The coordinates of the wall
      * @param horizontal If the wall is horizontal
      * @return The shortest path if possible, null otherwise
     */
-    public Path setWall(int x, int y, boolean horizontal)
+    public boolean setWall(int num, Coordinates coord, boolean horizontal)
     {
+    	int x = coord.getX(), y = coord.getY();
         if(x % 2 == 0 && y % 2 == 0)
-            return null;
+            return false;
+        if (x % 2 != 0 && y % 2 != 0)
+        	return false;
         
-        APlayer player = new Human(this, 0);
-        ClosestHeuristic heuris = new ClosestHeuristic();
-        AStarPathFinder pathFinder = new AStarPathFinder(this, false, heuris);
-        // TODO : Automatisation...
-        Path path = pathFinder.findPath(player, 0, 6, 8, 6);
-        return path;
+        if (!tryWall(coord, horizontal))
+        	return false;
+        
+        int x2 = x, y2 = y;
+        if (horizontal)
+        	x2 += 2;
+        else
+        	y2 += 2;
+        
+        // We set the wall
+        cells[y][x].setFilled(1);
+        cells[y2][x2].setFilled(1);
+        
+        // Is there still a path ?
+        boolean none = false;
+        for (APlayer player : players)
+        {
+        	Path path = findPath(player);
+        	if (path == null)
+        	{
+        		none = true;
+        		break;
+        	}
+        }
+        if (none)
+        {
+        	// We destroy the walls
+	        cells[y][x].setFilled(0);
+	        cells[y2][x2].setFilled(0);
+	        return false;
+        }
+        return true;
     }
     
     /** Finds the shortest path (uses the A* algorithm)
@@ -128,8 +173,10 @@ public class Board
      */
     public int filled(int x, int y)
     {
-        if(x >= 0 && x < cells.length && y >= 0 && y < cells[0].length)
-            return cells[y][x].filled();
+    	if(x >= 0 && x < cells[0].length && y >= 0 && y < cells.length)
+        {
+        	return cells[y][x].filled();
+        }
         return -1;
     }
     
@@ -237,12 +284,14 @@ public class Board
     		return true;
     	}
     	
-    	if (filled((sx+tx)/2, (sy+ty)/2) == 1)
+    	if (filled((sx+tx)/2, (sy+ty)/2) != 0 || filled(tx, ty) != 0)
 		{
-			return true;
+    		return true;
 		}
     	else
-			return false;
+		{
+    		return false;
+		}
     }
     
     /** Updates the cells */
@@ -264,7 +313,7 @@ public class Board
     	}
     }
     
-    /** Checks if the player can be moved in the direction, moves it if possible
+    /** Checks if the player can be moved at the given coordinates, moves it if possible
      * 
      * @param num The number of the player
      * @param coord The coordinate the players wants to move to
@@ -288,78 +337,6 @@ public class Board
     		System.out.println("Target case is too far from original position");
     		return false;
     	}
-    	// If the player wants to move 2 cases horizontally
-    	if (Math.abs(coord.getX()-playerPos.getX()) == 4)
-    	{
-    		// To the right
-    		if (coord.getX() > playerPos.getX())
-    		{
-    			// If the in-between case is filled by a player
-    			if (cells[playerPos.getY()][playerPos.getX()+2].filled() > 0)
-    			{
-    				// If there is a wall
-    				if (blocked(playerPos.getX(), playerPos.getY(), playerPos.getX()+2, playerPos.getY()) ||
-    						blocked(playerPos.getX()+2, playerPos.getY(), coord.getX(), coord.getY()))
-    					return false;
-    				playerPos.move(2, 0);
-    				return true;
-    			}
-    			return false;
-    		}
-    		// To the left
-    		else if (coord.getX() < playerPos.getX())
-			{
-				// If the in-between case is filled by a player
-				if (cells[playerPos.getY()][playerPos.getX()-2].filled() > 0)
-				{
-    				// If there is a wall
-    				if (blocked(playerPos.getX(), playerPos.getY(), playerPos.getX()-2, playerPos.getY()) ||
-    						blocked(playerPos.getX()-2, playerPos.getY(), coord.getX(), coord.getY()))
-    					return false;
-					playerPos.move(-2, 0);
-					return true;
-				}
-				return false;
-    		}
-    	}
-    	// If the player wants to move 2 cases vertically
-    	if (Math.abs(coord.getY()-playerPos.getY()) == 4)
-    	{
-    		// To the bottom
-    		if (coord.getY() > playerPos.getY())
-    		{
-    			// If the in-between case is filled by a player
-    			if (cells[playerPos.getY()+2][playerPos.getX()].filled() > 0)
-    			{
-    				// If there is a wall
-    				if (blocked(playerPos.getX(), playerPos.getY(), playerPos.getX(), playerPos.getY()+2) ||
-    						blocked(playerPos.getX(), playerPos.getY()+2, coord.getX(), coord.getY()))
-    					return false;
-    				playerPos.move(0, 2);
-    				return true;
-    			}
-    			return false;
-    		}
-    		// To the top
-    		else if (coord.getY() < playerPos.getY())
-			{
-				// If the in-between case is filled by a player
-				if (cells[playerPos.getY()-2][playerPos.getX()].filled() > 0)
-				{
-    				// If there is a wall
-    				if (blocked(playerPos.getX(), playerPos.getY(), playerPos.getX()-2, playerPos.getY()) ||
-    						blocked(playerPos.getX()-2, playerPos.getY(), coord.getX(), coord.getY()))
-    					return false;
-					playerPos.move(0, -2);
-					return true;
-				}
-				return false;
-    		}
-    	}
-
-		// If there is a wall
-		if (blocked(playerPos.getX(), playerPos.getY(), coord.getX(), coord.getY()))
-			return false;
     	playerPos.move(coord.getX()-playerPos.getX(), coord.getY()-playerPos.getY());
     	return true;
     }
@@ -372,6 +349,30 @@ public class Board
     public Coordinates getCoordinates(int num)
     {
     	return new Coordinates(playersPositions[num].getX(), playersPositions[num].getY());
+    }
+    
+    private boolean tryWall(Coordinates coord, boolean horizontal)
+    {
+    	int x = coord.getX(), y = coord.getY(), x2 = x, y2 = y;
+    	
+    	if (horizontal)
+    	{
+    		x2 += 2;
+    	}
+    	else
+    	{
+    		y2 += 2;
+    	}
+    	
+    	// In the board ?
+    	if (x < 0 || x2 >= cells[0].length || y < 0 || y2 >= cells.length)
+    	{
+    		return false;
+    	}
+    	if (filled(x, y) != 0 || filled(x2, y2) != 0)
+    		return false;
+    	
+    	return true;
     }
     
     /** Manages coordinates for a point */
@@ -436,6 +437,14 @@ public class Board
         	if (other.x == this.x && this.y == other.y)
         		return true;
         	return false;
+        }
+        
+        @Override
+        public int hashCode()
+        {
+        	// TODO : Make sure there isn't twice the same hash
+        	int hash = x + y;
+        	return hash;
         }
     }
 

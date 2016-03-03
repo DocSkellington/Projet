@@ -1,9 +1,12 @@
 package players;
 
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.*;
 import board.*;
 import board.Board.*;
 import pathFinder.*;
+
 
 /** The human player
  * 
@@ -60,43 +63,35 @@ public final class Human extends APlayer
 		
 	}
 	
+	/** Asks the player to move. */
 	private void move()
 	{
 		Scanner scan = new Scanner(System.in);
-		boolean possible = false;
 		
-		System.out.println("Up, Down, Right, Left ? (U/D/R/L)");
-		
-		while(!possible)
+		Coordinates[] possibleMoves = possibleMoves().toArray(new Coordinates[0]);
+		for(int i = 0 ; i < possibleMoves.length ; i++)
 		{
-			String res = scan.nextLine();
+			System.out.println("(" + (i+1) + ") " + possibleMoves[i]);
+		}
+		
+		int choice = 0;
+		
+		while(true)
+		{
+			while (!scan.hasNextInt())
+			{
+				System.out.println("Please enter an integer.");
+				scan.next();
+			}
+		
+			choice = scan.nextInt() - 1;
 			
-			// TODO : Le cas où il faut sauter par-dessus un joueur
-			
-			if (res.equals("U"))
+			if(choice >= 0 && choice < possibleMoves.length)
 			{
-				possible = board.move(num, new Coordinates(coord.getX(), coord.getY()-2));
+				board.move(num, possibleMoves[choice]);
+				break;
 			}
-			else if (res.equals("D"))
-			{
-				possible = board.move(num, new Coordinates(coord.getX(), coord.getY()+2));
-			}
-			else if (res.equals("L"))
-			{
-				possible = board.move(num, new Coordinates(coord.getX()-2, coord.getY()));
-			}
-			else if (res.equals("R"))
-			{
-				possible = board.move(num, new Coordinates(coord.getX()+2, coord.getY()));
-			}
-			else
-			{
-				System.out.println("U/D/L/R");
-				continue;
-			}
-			
-			if (!possible)
-				System.out.println("You can't move there!");
+			System.out.println("The integer must be between 1 and " + possibleMoves.length + ".");
 		}
 		this.coord = board.getCoordinates(num);
 	}

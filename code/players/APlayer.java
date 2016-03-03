@@ -3,6 +3,7 @@ package players;
 import board.*;
 import pathFinder.*;
 import board.Board.Coordinates;
+import java.util.HashSet;
 
 /** Abstract class to handle a player.
  * This can't be used because play() must have a specific behavior depending on the type of the player (Human/AI).
@@ -46,5 +47,92 @@ public abstract class APlayer
 		return num;
 	}
 	
+	/** Gives the possible moves of this player for their current position */
+	public HashSet<Coordinates> possibleMoves()
+	{
+		return possibleMoves(coord);
+	}
 	
+	/** Gives the possible moves of this player for a precise position
+	 * 
+	 * @param pos The position we look at
+	 * @return The (relative) coordinates of the accessible cases
+	 */
+	public HashSet<Coordinates> possibleMoves(Coordinates pos)
+	{
+		// TODO : (8, 8)
+		HashSet<Coordinates> coord = new HashSet<Coordinates>();
+		
+		for (int i = -2 ; i <= 2 ; i += 2)
+		{
+			for (int j = -2 ; j <= 2 ; j += 2)
+			{
+				if (i == 0 && j == 0)
+					continue;
+				if (Math.abs(i) == 2 && Math.abs(j) == 2)
+					continue;
+				// Checking diagonals or jumping
+				// First : x coordinate
+				if(board.filled(pos.getX()+i, pos.getY()) != 0 && i != 0)
+				{
+					// Can we jump over it ?
+					int x = pos.getX() + i, y = pos.getY();
+					if(!board.blocked(x, y, x + i, y))
+					{
+						// Yes
+						coord.add(new Coordinates(x+i, y));
+					}
+					else
+					{
+						// No
+						// Up
+						if(!board.blocked(x, y, x, y-2))
+						{
+							coord.add(new Coordinates(x, y-2));
+						}
+						// Down
+						if(!board.blocked(x, y, x, y+2))
+						{
+							coord.add(new Coordinates(x, y+2));
+						}
+					}
+				}
+				else if (pos.getX() + i != pos.getX())
+				{
+					coord.add(new Coordinates(pos.getX() + i, pos.getY()));
+				}
+				// y coordinate
+				if(board.filled(pos.getX(), pos.getY()+j) != 0 && j != 0)
+				{
+					// Can we jump over it ?
+					int x = pos.getX(), y = pos.getY() + j;
+					if(!board.blocked(x, y, x, y + j))
+					{
+						// Yes
+						coord.add(new Coordinates(x, y + j));
+					}
+					else
+					{
+						// No
+						// Left
+						if(!board.blocked(x, y, x - 2, y))
+						{
+							coord.add(new Coordinates(x - 2, y));
+						}
+						// Right
+						if(!board.blocked(x, y, x + 2, y))
+						{
+							coord.add(new Coordinates(x + 2, y));
+						}
+					}
+				}
+				else if (pos.getY() + j != pos.getY())
+				{
+					coord.add(new Coordinates(pos.getX(), pos.getY() + j));
+				}
+			}
+		}
+		
+		return coord;
+	}
 }
