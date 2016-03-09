@@ -1,9 +1,9 @@
 package pathFinder;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 import board.*;
+import board.Board.Coordinates;
 import players.*;
 
 /** This class implements IPathFinder by using the A* algorithm
@@ -15,7 +15,7 @@ import players.*;
 public class AStarPathFinder implements IPathFinder
 {
     /** Will contain the nodes that have already been processed*/
-    protected ArrayList closed = new ArrayList();
+    protected ArrayList<Node> closed = new ArrayList<Node>();
     /** Will contain the nodes that are accessible*/
     protected SortedList open = new SortedList();
     
@@ -80,54 +80,39 @@ public class AStarPathFinder implements IPathFinder
             Node current = (Node) open.first();
             if(current == nodes[tx][ty])
                 break;
+            
+            Coordinates coord = new Coordinates(current.getX(), current.getY());
                 
             open.remove(current);
             closed.add(current);
             
-            // We go from x = -2 -> x = -4 because of our implementation of the map (one case on two is a wall)
-            for (int x = -2 ; x < 4 ; x+=2)
+            Coordinates[] neighbours = player.possibleMoves(coord).toArray(new Coordinates[0]);
+            
+            for (Coordinates neighbour : neighbours)
             {
-                for (int y = -2 ; y < 4 ; y+=2)
+                // Coordinates of the neighbour
+                int xp = neighbour.getX(), yp = neighbour.getY();
+                
+            	// Cost to get to this node = cost so far + movement cost to reach this node.
+                float nextStepCost = current.cost + getMovementCost(player, current.x, current.y, xp, yp);
+                Node neigh = nodes[xp][yp];
+                
+                // If the new cost for this node is lower than it's already been calculated : we must check if the node can't be reached by an another path (which may be a better path)
+                if (nextStepCost <= neigh.cost)
                 {
-                    // Not a neighbour => current tile => No need to calculate
-                    if((x == 0) && (y == 0))
-                        continue;
-                        
-                    // If we don't allow to move diagonally, skip this step
-                    // TODO : Check if diagMovement is possible
-                    if(!diagMovement)
-                    {
-                        if((x != 0) && (y != 0))
-                            continue;
-                    }
-                    
-                    // Coordinates of the neighbour
-                    int xp = x + current.x, yp = y + current.y;
-                    
-                    if (isValidLocation(player, map, current.x, current.y, xp, yp))
-                    {
-                        // Cost to get to this node = cost so far + movement cost to reach this node.
-                        float nextStepCost = current.cost + getMovementCost(player, current.x, current.y, xp, yp);
-                        Node neighbour = nodes[xp][yp];
-                        
-                        // If the new cost for this node is lower than it's already been calculated : we must check if the node can't be reached by an another path (which may be a better path)
-                        if (nextStepCost <= neighbour.cost)
-                        {
-                            if(open.contains(neighbour))
-                                open.remove(neighbour);
-                            if(closed.contains(neighbour))
-                                closed.remove(neighbour);
-                        }
-                        
-                        // If the node hasn't already been processed and discarded (so it isn't in "closed") then reset its cost to the current cost && add it as a next possible step (i.e. we add it in open)
-                        if((!open.contains(neighbour)) && (!closed.contains(neighbour)))
-                        {
-                            neighbour.cost = nextStepCost;
-                            neighbour.heuristic = getHeuristicCost(player, map, xp, yp, tx, ty);
-                            neighbour.setParent(current);
-                            open.add(neighbour);
-                        }
-                    }
+                    if(open.contains(neigh))
+                        open.remove(neigh);
+                    if(closed.contains(neigh))
+                        closed.remove(neigh);
+                }
+                
+                // If the node hasn't already been processed and discarded (so it isn't in "closed") then reset its cost to the current cost && add it as a next possible step (i.e. we add it in open)
+                if((!open.contains(neigh)) && (!closed.contains(neigh)))
+                {
+                	neigh.cost = nextStepCost;
+                	neigh.heuristic = getHeuristicCost(player, map, xp, yp, tx, ty);
+                	neigh.setParent(current);
+                    open.add(neigh);
                 }
             }
         }
@@ -149,34 +134,6 @@ public class AStarPathFinder implements IPathFinder
         path.prependStep(sx, sy);
         
         return path;
-    }
-    
-    /** Check if the given location is valid for the given player
-     * @param player The player who needs a path
-     * @param map The map data
-     * @param sx The starting x coordinate
-     * @param sy The starting y coordinate
-     * @param x The x coordinate of the location to be checked
-     * @param y The y coordinate of the location to be checked
-     * @retrun True if the location is valid for the given player
-     */
-    protected boolean isValidLocation(APlayer player, ACell[][] map, int sx, int sy, int x, int y)
-    {
-        boolean invalid = (x < 0) || (y < 0) || (x >= map.length) || (y >= map[0].length);
-        
-        /*if((!invalid) && ((sx != x) || (sy != y)))
-        {
-        	if(board.blocked(sx, sy, x, y))
-        	{
-        		invalid = true;
-        	}
-        	else
-    			invalid = false;
-        }*/
-        HashSet possibleMoves() = possibleMoves(player.num);
-        if ()
-
-        return !invalid;
     }
     
     /** Get the cost to move through a given location
@@ -284,6 +241,18 @@ public class AStarPathFinder implements IPathFinder
 	    public void setParent(Node parent)
 	    {
 	        this.parent = parent;
+	    }
+	    
+	    /** Gets the x coordinate */
+	    public int getX()
+	    {
+	    	return x;
+	    }
+	    
+	    /** Gets the y coordinate */
+	    public int getY()
+	    {
+	    	return y;
 	    }
 	    
 	    /** @see Comparable#compareTo(Object) */

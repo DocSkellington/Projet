@@ -39,11 +39,6 @@ public class Board
         	playersPositions[i] = startingPos(i);
         }
         
-        cells[playersPositions[0].getY()][playersPositions[0].getX()-1].setFilled(1);
-        cells[playersPositions[0].getY()][playersPositions[0].getX()+1].setFilled(1);
-        //cells[9][8].setFilled(1);
-        playersPositions[1] = new Coordinates(8, 10);
-        playersPositions[0] = new Coordinates (8, 12);
         
         update();
     }
@@ -113,6 +108,7 @@ public class Board
         
         // We set the wall
         cells[y][x].setFilled(1);
+        cells[(y2+y)/2][(x2+x)/2].setFilled(1);
         cells[y2][x2].setFilled(1);
         
         // Is there still a path ?
@@ -120,6 +116,7 @@ public class Board
         for (APlayer player : players)
         {
         	Path path = findPath(player);
+        	System.out.println(path);
         	if (path == null)
         	{
         		none = true;
@@ -128,8 +125,9 @@ public class Board
         }
         if (none)
         {
-        	// We destroy the walls
+        	// We destroy the walls.
 	        cells[y][x].setFilled(0);
+	        cells[(y2+y)/2][(x2+x)/2].setFilled(0);
 	        cells[y2][x2].setFilled(0);
 	        return false;
         }
@@ -351,6 +349,12 @@ public class Board
     	return new Coordinates(playersPositions[num].getX(), playersPositions[num].getY());
     }
     
+    /** Checks if a wall can be set at a given position
+     * 
+     * @param coord The coordinates where we try to set the wall
+     * @param horizontal Whether the wall is horizontal or not
+     * @return True if the wall can be set
+     */
     private boolean tryWall(Coordinates coord, boolean horizontal)
     {
     	int x = coord.getX(), y = coord.getY(), x2 = x, y2 = y;
@@ -369,16 +373,17 @@ public class Board
     	{
     		return false;
     	}
-    	if (filled(x, y) != 0 || filled(x2, y2) != 0)
+    	if (filled(x, y) != 0 || filled(x2, y2) != 0 || filled((x+x2)/2, (y+y2) / 2) != 0)
     		return false;
     	
     	return true;
     }
     
     /** Manages coordinates for a point */
-    public static class Coordinates
+    public static final class Coordinates implements Cloneable
     {
         private int x, y;
+        public static int size;
         
         /** Constructor
          * @param x The x position
@@ -443,8 +448,14 @@ public class Board
         public int hashCode()
         {
         	// TODO : Make sure there isn't twice the same hash
-        	int hash = x + y;
+        	int hash = size * x + y;
         	return hash;
+        }
+        
+        @Override
+        public Coordinates clone()
+        {
+        	return new Coordinates(x, y);
         }
     }
 

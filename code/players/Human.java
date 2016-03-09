@@ -60,6 +60,43 @@ public final class Human extends APlayer
 	
 	private void setAWall()
 	{
+		Scanner scan = new Scanner(System.in);
+		while (true)
+		{
+			System.out.println("Enter the x position of the (upper-left corner of the) wall");
+			int xw, yw;
+			boolean horizontal = false;
+			
+			while (!scan.hasNextInt())
+			{
+				System.out.println("Please enter an integer.");
+				scan.next();
+			}
+			
+			xw = scan.nextInt();
+			System.out.println("Enter the y position of the (upper-left corner of the) wall");
+			
+			while (!scan.hasNextInt())
+			{
+				System.out.println("Please enter an integer.");
+				scan.next();
+			}
+			
+			yw = scan.nextInt();
+			System.out.println("Do you want the wall to be horizontal? (true/false)");
+			
+			while (!scan.hasNextBoolean())
+			{
+				System.out.println("Please enter 'true' or 'false'.");
+				scan.next();
+			}
+			
+			horizontal = scan.nextBoolean();
+			if (board.setWall(num, new Coordinates(xw, yw), horizontal))
+				break;
+			
+			System.out.println("Impossible to place the wall at the given position. Pl0x enter another position.");
+		}
 		
 	}
 	
@@ -67,6 +104,7 @@ public final class Human extends APlayer
 	private void move()
 	{
 		Scanner scan = new Scanner(System.in);
+		System.out.println("You're at " + coord);
 		
 		Coordinates[] possibleMoves = possibleMoves().toArray(new Coordinates[0]);
 		for(int i = 0 ; i < possibleMoves.length ; i++)

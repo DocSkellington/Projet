@@ -166,6 +166,7 @@ public class Game
      */
     private void init(int playersNumber, int humNumber)
     {
+    	Board.Coordinates.size = board.getYSize();
     	players = new APlayer[playersNumber];
     	
     	int i = 0;

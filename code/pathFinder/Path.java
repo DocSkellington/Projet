@@ -12,11 +12,21 @@ import players.*;
  */
 public class Path
 {
-    private ArrayList steps = new ArrayList();
+    private ArrayList<Step> steps = new ArrayList<Step>();
     
     /** Default constructor */
     public Path()
     {
+    }
+    
+    public String toString()
+    {
+    	String res = "";
+    	for (Step step : steps)
+    	{
+    		res += (step + "\n");
+    	}
+    	return res;
     }
     
     /** Gets the length of the path
@@ -125,6 +135,12 @@ public class Path
         public int getY()
         {
             return y;
+        }
+        
+        public String toString()
+        {
+        	String res = x + " " + y;
+        	return res;
         }
         
         public int hashCode()

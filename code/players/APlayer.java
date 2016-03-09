@@ -6,7 +6,7 @@ import board.Board.Coordinates;
 import java.util.HashSet;
 
 /** Abstract class to handle a player.
- * This can't be used because play() must have a specific behavior depending on the type of the player (Human/AI).
+ * This can't be used because play() must have a specific behaviour depending on the type of the player (Human/AI).
  * 
  * @author Gaetan Staquet & Thibaut De Cooman
  *
@@ -47,6 +47,12 @@ public abstract class APlayer
 		return num;
 	}
 	
+	/** Gets the coordinates of this player */
+	public Coordinates getCoordinates()
+	{
+		return coord.clone();
+	}
+	
 	/** Gives the possible moves of this player for their current position */
 	public HashSet<Coordinates> possibleMoves()
 	{
@@ -60,7 +66,6 @@ public abstract class APlayer
 	 */
 	public HashSet<Coordinates> possibleMoves(Coordinates pos)
 	{
-		// TODO : (8, 8)
 		HashSet<Coordinates> coord = new HashSet<Coordinates>();
 		
 		for (int i = -2 ; i <= 2 ; i += 2)
@@ -99,7 +104,8 @@ public abstract class APlayer
 				}
 				else if (pos.getX() + i != pos.getX())
 				{
-					coord.add(new Coordinates(pos.getX() + i, pos.getY()));
+					if(!board.blocked(pos.getX(), pos.getY(), pos.getX()+i, pos.getY()))
+						coord.add(new Coordinates(pos.getX() + i, pos.getY()));
 				}
 				// y coordinate
 				if(board.filled(pos.getX(), pos.getY()+j) != 0 && j != 0)
@@ -128,7 +134,8 @@ public abstract class APlayer
 				}
 				else if (pos.getY() + j != pos.getY())
 				{
-					coord.add(new Coordinates(pos.getX(), pos.getY() + j));
+					if (!board.blocked(pos.getX(), pos.getY(), pos.getX(), pos.getY() + j))
+						coord.add(new Coordinates(pos.getX(), pos.getY() + j));
 				}
 			}
 		}
