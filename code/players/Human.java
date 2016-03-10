@@ -23,7 +23,7 @@ public final class Human extends APlayer
 	
 	@Override
 	public void play() {
-		System.out.println("Player " + (num+1) + ", you can play.");
+		System.out.println("Player " + (num+1) + ", you can play. You have " + wallsCounter + " left.");
 		boolean wantsToMove = wannaMove();
 		if (wantsToMove)
 			move();
@@ -89,7 +89,10 @@ public final class Human extends APlayer
 			
 			horizontal = scan.nextBoolean();
 			if (board.setWall(num, new Coordinates(xw, yw), horizontal))
+			{
+				wallsCounter--;
 				break;
+			}
 			
 			System.out.println("Impossible to place the wall at the given position. Pl0x enter another position.");
 		}
