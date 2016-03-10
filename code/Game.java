@@ -174,14 +174,20 @@ public class Game
     	Coordinates.size = board.getYSize();
     	players = new APlayer[playersNumber];
     	
+    	int walls = 10;
+    	if (playersNumber == 4)
+    		walls = 5;
+    	else if (playersNumber == 3)
+    		walls = 7;
+    	
     	int i = 0;
     	while(i < humNumber)
     	{
-    		players[i] = new Human(board, i++, 10);
+    		players[i] = new Human(board, i++, walls);
     	}
     	while(i < playersNumber)
     	{
-    		players[i] = new RandomAI(board, i++, 10);
+    		players[i] = new RandomAI(board, i++, walls);
     	}
     }
     
