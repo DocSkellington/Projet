@@ -23,7 +23,7 @@ public final class Human extends APlayer
 	
 	@Override
 	public void play() {
-		System.out.println("Player " + (num+1) + ", you can play. You have " + wallsCounter + " walls left.");
+		System.out.println("Player " + (num+1) + ", you can play. You have " + wallsCounter + " wall(s) left.");
 		boolean wantsToMove = wannaMove();
 		if (wantsToMove)
 			move();
