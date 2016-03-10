@@ -79,27 +79,31 @@ public abstract class APlayer
 				// First : x coordinate
 				if(board.filled(pos.getX()+i, pos.getY()) != 0 && i != 0)
 				{
-					// Can we jump over it ?
-					int x = pos.getX() + i, y = pos.getY();
-					if(!board.blocked(x, y, x + i, y))
+				    // If there isn't a wall on the way
+				    if (board.filled(pos.getX()+i/2, pos.getY()) == 0)
 					{
-						// Yes
-						coord.add(new Coordinates(x+i, y));
-					}
-					else
-					{
-						// No
-						// Up
-						if(!board.blocked(x, y, x, y-2))
-						{
-							coord.add(new Coordinates(x, y-2));
-						}
-						// Down
-						if(!board.blocked(x, y, x, y+2))
-						{
-							coord.add(new Coordinates(x, y+2));
-						}
-					}
+				        int x = pos.getX() + i, y = pos.getY();
+					    // Can we jump over the other player ?
+					    if(!board.blocked(x, y, x + i, y))
+					    {
+						    // Yes
+						    coord.add(new Coordinates(x+i, y));
+					    }
+					    else
+					    {
+						    // No
+						    // Up
+						    if(!board.blocked(x, y, x, y-2))
+						    {
+							    coord.add(new Coordinates(x, y-2));
+						    }
+						    // Down
+						    if(!board.blocked(x, y, x, y+2))
+						    {
+							    coord.add(new Coordinates(x, y+2));
+						    }
+					    }
+				    }
 				}
 				else if (pos.getX() + i != pos.getX())
 				{
@@ -109,34 +113,38 @@ public abstract class APlayer
 				// y coordinate
 				if(board.filled(pos.getX(), pos.getY()+j) != 0 && j != 0)
 				{
-					// Can we jump over it ?
-					int x = pos.getX(), y = pos.getY() + j;
-					if(!board.blocked(x, y, x, y + j))
+				    // If there isn't any wall on the way
+				    if (board.filled(pos.getX(), pos.getY()+j/2) == 0)
 					{
-						// Yes
-						coord.add(new Coordinates(x, y + j));
-					}
-					else
-					{
-						// No
-						// Left
-						if(!board.blocked(x, y, x - 2, y))
-						{
-							coord.add(new Coordinates(x - 2, y));
-						}
-						// Right
-						if(!board.blocked(x, y, x + 2, y))
-						{
-							coord.add(new Coordinates(x + 2, y));
-						}
-					}
-				}
-				else if (pos.getY() + j != pos.getY())
-				{
-					if (!board.blocked(pos.getX(), pos.getY(), pos.getX(), pos.getY() + j))
-						coord.add(new Coordinates(pos.getX(), pos.getY() + j));
-				}
-			}
+					    int x = pos.getX(), y = pos.getY() + j;
+					    // Can we jump over it ?
+					    if(!board.blocked(x, y, x, y + j))
+					    {
+						    // Yes
+						    coord.add(new Coordinates(x, y + j));
+					    }
+					    else
+					    {
+						    // No
+						    // Left
+						    if(!board.blocked(x, y, x - 2, y))
+						    {
+							    coord.add(new Coordinates(x - 2, y));
+						    }
+						    // Right
+						    if(!board.blocked(x, y, x + 2, y))
+						    {
+							    coord.add(new Coordinates(x + 2, y));
+						    }
+					    }
+				    }
+			    }
+			    else if (pos.getY() + j != pos.getY())
+			    {
+				    if (!board.blocked(pos.getX(), pos.getY(), pos.getX(), pos.getY() + j))
+					    coord.add(new Coordinates(pos.getX(), pos.getY() + j));
+			    }
+		    }
 		}
 		
 		return coord;
