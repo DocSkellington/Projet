@@ -1,6 +1,5 @@
 package board;
 
-import players.*;
 
 /** A Case is a Cell on which a player can walk
  * 

@@ -2,9 +2,6 @@ package pathFinder;
 
 import java.util.ArrayList;
 
-import board.*;
-import players.*;
-
 /** Manages the paths
  * 
  * @author Gaetan Staquet & Thibaut De Cooman

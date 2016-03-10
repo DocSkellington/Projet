@@ -1,6 +1,5 @@
 package board;
 
-import java.util.ArrayList;
 import players.*;
 import pathFinder.*;
 
@@ -81,13 +80,22 @@ public class Board
     	this.players = players;
     }
     
+    /** Get the array of players
+     * 
+     * @return All players
+     */
+    public APlayer[] getPlayers()
+    {
+    	return players;
+    }
+    
     /** Tries to set a wall at coordinate (x;y) (The upper/right vertex).
      * If possible, effectively sets the wall and returns true. Otherwise, returns false without modifying the board.
      * Uses the A* algorithm.
      * @param num The number of the player who wants to set a wall
      * @param coord The coordinates of the wall
      * @param horizontal If the wall is horizontal
-     * @return The shortest path if possible, null otherwise
+     * @return True if the wall can be set, false otherwise
     */
     public boolean setWall(int num, Coordinates coord, boolean horizontal)
     {
@@ -116,7 +124,6 @@ public class Board
         for (APlayer player : players)
         {
         	Path path = findPath(player);
-        	System.out.println(path);
         	if (path == null)
         	{
         		none = true;
@@ -361,10 +368,14 @@ public class Board
     	
     	if (horizontal)
     	{
+    		if (y % 2 == 0)
+    			return false;
     		x2 += 2;
     	}
     	else
     	{
+    		if (x % 2 == 0)
+    			return false;
     		y2 += 2;
     	}
     	
@@ -379,86 +390,7 @@ public class Board
     	return true;
     }
     
-    /** Manages coordinates for a point */
-    public static final class Coordinates implements Cloneable
-    {
-        private int x, y;
-        public static int size;
-        
-        /** Constructor
-         * @param x The x position
-         * @param y The y position
-         */
-        public Coordinates(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
-        
-        /** Gets the x coordinate 
-         * @return The x coordinate
-         */
-        public int getX()
-        {
-        	return x;
-        }
-        
-        /** Gets the y coordinate
-         * @return The y coordinate
-         */
-        public int getY()
-        {
-        	return y;
-        }
-        
-        /** Moves by dx and dy
-         * 
-         * @param dx The difference between the x coordinate of the starting position and the target position
-         * @param dy The difference between the y coordinate of the starting position and the target position
-         */
-        public void move (int dx, int dy)
-        {
-        	this.x += dx;
-        	this.y += dy;
-        }
-        
-        @Override
-        public String toString()
-        {
-        	String res = "(" + x + ", " + y + ")";
-        	return res;
-        }
-        
-        @Override
-        public boolean equals(Object o)
-        {
-        	if (o == this)
-        		return true;
-        	if (o == null)
-        		return false;
-        	if(getClass() != o.getClass())
-        		return false;
-        	Coordinates other = (Coordinates) o;
-        	if (other.x == this.x && this.y == other.y)
-        		return true;
-        	return false;
-        }
-        
-        @Override
-        public int hashCode()
-        {
-        	// TODO : Make sure there isn't twice the same hash
-        	int hash = size * x + y;
-        	return hash;
-        }
-        
-        @Override
-        public Coordinates clone()
-        {
-        	return new Coordinates(x, y);
-        }
-    }
-
+    
     /** The starting position for a player
      * 
      * @param playerNum The number of the player

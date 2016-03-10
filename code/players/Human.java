@@ -1,11 +1,7 @@
 package players;
 
 import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.*;
 import board.*;
-import board.Board.*;
-import pathFinder.*;
 
 
 /** The human player
@@ -20,9 +16,9 @@ public final class Human extends APlayer
 	 * @param board A reference to the board
 	 * @param num The player's number
 	 */
-	public Human(Board board, int num)
+	public Human(Board board, int num, int wallsCounter)
 	{
-		super(board, num);
+		super(board, num, wallsCounter);
 	}
 	
 	@Override

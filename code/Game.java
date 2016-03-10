@@ -1,9 +1,6 @@
 import java.util.Scanner;
 import board.*;
-import board.Board.*;
 import players.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 
 /** Main class that keeps the game running
  * 
@@ -84,7 +81,9 @@ public class Game
     			System.out.println(Board.maxPlayers() + " players max and at least 2 players");
     		}
     		else
-				return res;
+    		{
+    			return res;
+    		}
     		
     	} while(true);
     }
@@ -108,7 +107,7 @@ public class Game
     		{
     			if(!scan.hasNextInt())
     			{
-    				System.out.println("An Integer, por favor, Se�ior");
+    				System.out.println("An Integer, por favor, Senior");
     				scan.next();
     				continue;
     			}
@@ -123,7 +122,9 @@ public class Game
     			System.out.println(maxPlayers + " humans max and at least 0 humans");
     		}
     		else
+    		{
 				return res;
+    		}
     		
     	} while(true);
     }
@@ -142,9 +143,13 @@ public class Game
     	{
     		res = scan.nextLine();
     		if(res.equals("Y"))
+    		{
     			return true;
+    		}
     		else if (res.equals("N"))
+    		{
     			return false;
+    		}
     		
     		System.out.println("Y or N!");
     	} while (true);
@@ -166,17 +171,18 @@ public class Game
      */
     private void init(int playersNumber, int humNumber)
     {
-    	Board.Coordinates.size = board.getYSize();
+    	Coordinates.size = board.getYSize();
     	players = new APlayer[playersNumber];
     	
     	int i = 0;
     	while(i < humNumber)
     	{
-    		players[i] = new Human(board, i);
-    		i++;
+    		players[i] = new Human(board, i++, 10);
     	}
-    	//while(i < playersNumber)
-    		//players[i] = new Bot(board, 0);
+    	while(i < playersNumber)
+    	{
+    		players[i] = new RandomAI(board, i++, 10);
+    	}
     }
     
     

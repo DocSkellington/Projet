@@ -1,8 +1,6 @@
 package players;
 
 import board.*;
-import pathFinder.*;
-import board.Board.Coordinates;
 import java.util.HashSet;
 
 /** Abstract class to handle a player.
@@ -14,13 +12,13 @@ import java.util.HashSet;
 public abstract class APlayer
 {
 	protected Board board;
-	protected int num;
+	protected int num, wallsCounter;
 	protected Coordinates coord;
 	
 	/** The default constructor */
 	public APlayer()
 	{
-		
+		wallsCounter = 10;
 	}
 	
 	/** The constructor that must be used
@@ -28,10 +26,11 @@ public abstract class APlayer
 	 * @param board A reference to the board
 	 * @param num The number of the Player
 	 */
-	public APlayer(Board board, int num)
+	public APlayer(Board board, int num, int wallsCounter)
 	{
 		this.board = board;
 		this.num = num;
+		this.wallsCounter = wallsCounter;
 		this.coord = board.getCoordinates(num);
 	}
 	

@@ -3,7 +3,6 @@ package pathFinder;
 import java.util.*;
 
 import board.*;
-import board.Board.Coordinates;
 import players.*;
 
 /** This class implements IPathFinder by using the A* algorithm
@@ -167,7 +166,7 @@ public class AStarPathFinder implements IPathFinder
 	private class SortedList
 	{
 	    /** The list of elements */
-	    private ArrayList list = new ArrayList();
+	    private ArrayList<Node> list = new ArrayList<Node>();
 	    
 	    /** Returns the first element in the list
 	     * @return The first element from the list
@@ -186,7 +185,7 @@ public class AStarPathFinder implements IPathFinder
 	    /** Add an element to the list (this implies using sorting)
 	     * @param o The element to add
 	     */
-	    public void add(Object o)
+	    public void add(Node o)
 	    {
 	        list.add(o);
 	        Collections.sort(list);
@@ -219,7 +218,7 @@ public class AStarPathFinder implements IPathFinder
 	}
 	
 	/** A single node in the search graph */
-	private class Node implements Comparable
+	private class Node implements Comparable<Node>
 	{
 	    private int x, y;
 	    private float cost, heuristic;
@@ -256,7 +255,7 @@ public class AStarPathFinder implements IPathFinder
 	    }
 	    
 	    /** @see Comparable#compareTo(Object) */
-	    public int compareTo(Object other)
+	    public int compareTo(Node other)
 	    {
 	        Node o = (Node) other;
 	        

@@ -1,6 +1,5 @@
 package board;
 
-import players.*;
 
 /** Walls are obstacles set on the board by the players
  * 

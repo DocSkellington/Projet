@@ -1,6 +1,5 @@
 package pathFinder;
 
-import board.*;
 import players.*;
 
 /** A description of an implementation that can find a path from one location on a map to another

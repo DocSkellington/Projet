@@ -1,7 +1,5 @@
 package board;
 
-import players.*;
-
 /** Cells compose the board
  * 
  * 
