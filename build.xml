@@ -19,7 +19,7 @@
 	
 	<target name="javadoc">
 		<mkdir dir="doc"/>
-		<javadoc destdir="doc" sourcepath="." packagenames="be.ac.umons.projet"/>
+		<javadoc destdir="doc" sourcepath="code/" author="true" version="true"/>
 	</target>
 	
 	<target name="test">
