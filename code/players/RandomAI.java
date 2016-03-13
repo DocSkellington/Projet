@@ -21,7 +21,7 @@ public class RandomAI extends APlayer
 	/** Plays randomly */
 	public void play()
 	{
-		System.out.println("Player " + num + " (RandomAI) processing...");
+		System.out.println("Player " + (num+1) + " (RandomAI) processing...");
 		boolean choice = randgen.nextBoolean();
 		if (choice)
 			move();
