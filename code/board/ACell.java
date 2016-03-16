@@ -3,7 +3,8 @@ package board;
 /** Cells compose the board
  * 
  * 
- * @author Thibaut De Cooman & Gaetan Staquet
+ * @author Thibaut De Cooman 
+ * @author Gaetan Staquet
  *
  */
 public abstract class ACell

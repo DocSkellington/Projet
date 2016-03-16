@@ -3,48 +3,48 @@ package players;
 import java.util.*;
 import board.*;
 
-/**
+/** This AI decides randomly if it moves or sets a wall.
  * 
- * @author Thibaut De Cooman & Gaetan Staquet
+ * @author Thibaut De Cooman
+ * @author Gaetan Staquet
  *
  */
-public class RandomAI extends APlayer
+public final class RandomAI extends APlayer
 {
 	private Random randgen = new Random();
 	
 	/** Constructor	 */
-	public RandomAI(Board board, int num, int wallsCounter)
+	public RandomAI(int num, int wallsCounter)
 	{
-		super(board, num, wallsCounter);
+		super(num, wallsCounter);
 	}
 	
-	/** Plays randomly */
-	public void play()
+	@Override
+	public void play(Board board)
 	{
 		System.out.println("Player " + (num+1) + " (RandomAI) processing...");
 		boolean choice = randgen.nextBoolean();
 		if (choice)
-			move();
+			move(board);
 		else
 			// If it can't manage to set a wall, the bot will move instead
-			if (!setAWall())
-				move();
+			if (!setAWall(board))
+				move(board);
 	}
 	
 	/** The bot moves to a random possible destination*/
-	public void move()
+	private void move(Board board)
 	{
-		Coordinates[] possibleMoves = possibleMoves().toArray(new Coordinates[0]);
+		Coordinates[] possibleMoves = possibleMoves(board).toArray(new Coordinates[0]);
 		int choice = randgen.nextInt(possibleMoves.length);
 		board.move(num, possibleMoves[choice]);
-		coord = possibleMoves[choice];
 	}
 	
 	/** The bot sets a wall if possible, trying fifty times at a random location
 	 * 
 	 * @return true if the bot can set a wall
 	 */
-	public boolean setAWall()
+	private boolean setAWall(Board board)
 	{
 		if (wallsCounter <= 0)
 			return false;

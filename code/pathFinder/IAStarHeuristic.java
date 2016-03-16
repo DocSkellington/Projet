@@ -5,7 +5,8 @@ import players.*;
 
 /** The description of a class providing a cost for a given map.
  * This heuristic controls what priority is placed on different tiles during the search for a path 
- * @author Gaetan Staquet & Thibaut De Cooman
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  */
 public interface IAStarHeuristic {
 	

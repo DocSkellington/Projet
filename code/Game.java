@@ -4,7 +4,8 @@ import players.*;
 
 /** Main class that keeps the game running
  * 
- * @author Gaetan Staquet & Thibaut De Cooman
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  *
  */
 public class Game
@@ -30,16 +31,17 @@ public class Game
         while (running)
         {
             int numPlayers = howManyPlayers(), hum = howManyHumans(numPlayers);
-            board = new Board(numPlayers);
             init(numPlayers, hum);
-            board.setPlayers(players);
+            board = new Board(players);
+            // This is used to hash the coordinates:
+            Coordinates.size = board.getYSize();
         
             int current = 0, winner = -1; // -1 means no winner
             
             while (winner == -1)
             {
             	board.print();
-                players[current].play();
+                players[current].play(board);
                 board.update();
                 current = (current + 1) % numPlayers;
                 winner = board.hasWon(players);
@@ -171,7 +173,6 @@ public class Game
      */
     private void init(int playersNumber, int humNumber)
     {
-    	Coordinates.size = board.getYSize();
     	players = new APlayer[playersNumber];
     	
     	int walls = 10;
@@ -183,11 +184,11 @@ public class Game
     	int i = 0;
     	while(i < humNumber)
     	{
-    		players[i] = new Human(board, i++, walls);
+    		players[i] = new Human(i++, walls);
     	}
     	while(i < playersNumber)
     	{
-    		players[i] = new RandomAI(board, i++, walls);
+    		players[i] = new RandomAI(i++, walls);
     	}
     }
     

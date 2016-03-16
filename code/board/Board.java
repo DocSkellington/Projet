@@ -5,7 +5,8 @@ import pathFinder.*;
 
 /** Manages all information about the board.
  * This includes setting walls, finding path
- * @author Gaetan Staquet && Thibaut De Cooman
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  *
  */
 public class Board
@@ -15,11 +16,13 @@ public class Board
     protected APlayer[] players;
     
     /** The constructor
-     * @param numPlayers The number of players 
+     * @param players The array of players  
     */
-    public Board(int numPlayers)
+    public Board(APlayer[] players)
     {
         cells = new ACell[17][17];
+        this.players = players; 
+        int numPlayers = players.length;
         
         for (int x = 0 ; x < 17 ; x++)
         {
@@ -37,7 +40,6 @@ public class Board
         {
         	playersPositions[i] = startingPos(i);
         }
-        
         
         update();
     }
@@ -69,24 +71,6 @@ public class Board
         	System.out.print("-");
         }
         System.out.println();
-    }
-    
-    /** Set the reference to the players
-     * 
-     * @param players An array of players
-     */
-    public void setPlayers(APlayer[] players)
-    {
-    	this.players = players;
-    }
-    
-    /** Get the array of players
-     * 
-     * @return All players
-     */
-    public APlayer[] getPlayers()
-    {
-    	return players;
     }
     
     /** Tries to set a wall at coordinate (x;y) (The upper/right vertex).
@@ -273,7 +257,19 @@ public class Board
     	return false;
     }
     
-    /** Check if there is wall between (sx, sy) and (tx, ty). These two cases must be adjacent.
+    /** Check if a player can move from start position to target position. These two cases must be adjacent.
+     * 
+     * @param start The coordinates of the starting position
+     * @param target The coordinates of the target position
+     * @return True if a player can move to target position, false otherwise
+     */
+
+    public boolean blocked(Coordinates start, Coordinates target)
+    {
+    	return blocked(start.getX(), start.getY(), target.getX(), target.getY());
+    }
+
+    /** Check if a player can move from start position to target position. These two cases must be adjacent.
      * 
      * @param sx The x coordinate of the starting position
      * @param sy The y coordinate of the starting position

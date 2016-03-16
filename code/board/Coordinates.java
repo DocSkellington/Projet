@@ -2,7 +2,8 @@ package board;
 
 /** Manages coordinates for a point 
  * 
- * @author Thibaut De Cooman & Gaetan Staquet
+ * @author Thibaut De Cooman
+ * @author Gaetan Staquet
  * 
  */
 public final class Coordinates implements Cloneable, Comparable<Coordinates>

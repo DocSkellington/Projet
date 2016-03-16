@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 /** Manages the paths
  * 
- * @author Gaetan Staquet & Thibaut De Cooman
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  *
  */
 public class Path

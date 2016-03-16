@@ -3,7 +3,8 @@ package board;
 
 /** Walls are obstacles set on the board by the players
  * 
- * @author Thibaut De Cooman & Gaetan Staquet
+ * @author Thibaut De Cooman
+ * @author Gaetan Staquet
  *
  */
 public final class Wall extends ACell

@@ -3,7 +3,8 @@ package pathFinder;
 import players.*;
 
 /** A description of an implementation that can find a path from one location on a map to another
- * @author Gaetan Staquet & Thibaut De Cooman
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  */
 public interface IPathFinder
 {

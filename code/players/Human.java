@@ -6,7 +6,8 @@ import board.*;
 
 /** The human player
  * 
- * @author Thibaut De Cooman & Gaetan Staquet
+ * @author Thibaut De Cooman
+ * @author Gaetan Staquet
  *
  */
 public final class Human extends APlayer
@@ -16,19 +17,19 @@ public final class Human extends APlayer
 	 * @param board A reference to the board
 	 * @param num The player's number
 	 */
-	public Human(Board board, int num, int wallsCounter)
+	public Human(int num, int wallsCounter)
 	{
-		super(board, num, wallsCounter);
+		super(num, wallsCounter);
 	}
 	
 	@Override
-	public void play() {
+	public void play(Board board) {
 		System.out.println("Player " + (num+1) + ", you can play. You have " + wallsCounter + " wall(s) left.");
 		boolean wantsToMove = wannaMove();
 		if (wantsToMove)
-			move();
+			move(board);
 		else
-			setAWall();
+			setAWall(board);
 	}
 
 	/** Asks the player whether they want to move or not
@@ -54,7 +55,11 @@ public final class Human extends APlayer
 		} while(true);
 	}
 	
-	private void setAWall()
+	/** Asks the player the coordinates to set the wall
+	 * 
+	 * @param board A reference to the board
+	 */
+	private void setAWall(Board board)
 	{
 		Scanner scan = new Scanner(System.in);
 		while (true)
@@ -99,13 +104,17 @@ public final class Human extends APlayer
 		
 	}
 	
-	/** Asks the player to move. */
-	private void move()
+	/** Asks the player to move.
+	 * 
+	 * @param board A reference to the board
+	 */
+	private void move(Board board)
 	{
+		Coordinates coord = board.getCoordinates(num);
 		Scanner scan = new Scanner(System.in);
 		System.out.println("You're at " + coord);
 		
-		Coordinates[] possibleMoves = possibleMoves().toArray(new Coordinates[0]);
+		Coordinates[] possibleMoves = possibleMoves(board).toArray(new Coordinates[0]);
 		for(int i = 0 ; i < possibleMoves.length ; i++)
 		{
 			System.out.println("(" + (i+1) + ") " + possibleMoves[i]);
@@ -130,6 +139,5 @@ public final class Human extends APlayer
 			}
 			System.out.println("The integer must be between 1 and " + possibleMoves.length + ".");
 		}
-		this.coord = board.getCoordinates(num);
 	}
 }

@@ -5,10 +5,11 @@ import java.util.*;
 import board.*;
 import players.*;
 
-/** This class implements IPathFinder by using the A* algorithm
+/** This class implements IPathFinder by using the A* algorithm.
  * 
  * Mainly inspired by : http://www.cokeandcode.com/main/tutorials/path-finding/
- * @author Gaetan Staquet & Thibaut De Cooman
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  *
  */
 public class AStarPathFinder implements IPathFinder
@@ -85,7 +86,7 @@ public class AStarPathFinder implements IPathFinder
             open.remove(current);
             closed.add(current);
             
-            Coordinates[] neighbours = player.possibleMoves(coord).toArray(new Coordinates[0]);
+            Coordinates[] neighbours = player.possibleMoves(board, coord).toArray(new Coordinates[0]);
             
             for (Coordinates neighbour : neighbours)
             {

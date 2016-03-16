@@ -3,7 +3,8 @@ package board;
 
 /** A Case is a Cell on which a player can walk
  * 
- * @author Thibaut De Cooman & Gaetan Staquet
+ * @author Thibaut De Cooman
+ * @author Gaetan Staquet
  *
  */
 public final class Case extends ACell

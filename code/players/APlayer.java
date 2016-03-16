@@ -6,14 +6,13 @@ import java.util.HashSet;
 /** Abstract class to handle a player.
  * This can't be used because play() must have a specific behaviour depending on the type of the player (Human/AI).
  * 
- * @author Gaetan Staquet & Thibaut De Cooman
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  *
  */
 public abstract class APlayer
 {
-	protected Board board;
 	protected int num, wallsCounter;
-	protected Coordinates coord;
 	
 	/** The default constructor */
 	public APlayer()
@@ -23,19 +22,17 @@ public abstract class APlayer
 	
 	/** The constructor that must be used
 	 * 
-	 * @param board A reference to the board
 	 * @param num The number of the Player
+	 * @param wallsCounter The number of walls this player can set
 	 */
-	public APlayer(Board board, int num, int wallsCounter)
+	public APlayer(int num, int wallsCounter)
 	{
-		this.board = board;
 		this.num = num;
 		this.wallsCounter = wallsCounter;
-		this.coord = board.getCoordinates(num);
 	}
 	
 	/** This function handles the turn of a player.*/
-	public abstract void play();
+	public abstract void play(Board board);
 	
 	/** Gets the number of the Player
 	 * 
@@ -46,16 +43,10 @@ public abstract class APlayer
 		return num;
 	}
 	
-	/** Gets the coordinates of this player */
-	public Coordinates getCoordinates()
-	{
-		return coord.clone();
-	}
-	
 	/** Gives the possible moves of this player for their current position */
-	public HashSet<Coordinates> possibleMoves()
+	public HashSet<Coordinates> possibleMoves(Board board)
 	{
-		return possibleMoves(coord);
+		return possibleMoves(board, board.getCoordinates(num));
 	}
 	
 	/** Gives the possible moves of this player for a precise position
@@ -63,7 +54,7 @@ public abstract class APlayer
 	 * @param pos The position we look at
 	 * @return The (relative) coordinates of the accessible cases
 	 */
-	public HashSet<Coordinates> possibleMoves(Coordinates pos)
+	public HashSet<Coordinates> possibleMoves(Board board, Coordinates pos)
 	{
 		HashSet<Coordinates> coord = new HashSet<Coordinates>();
 		
