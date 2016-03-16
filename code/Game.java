@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import board.*;
+import pathFinder.Path;
 import players.*;
 
 /** Main class that keeps the game running
@@ -32,11 +33,12 @@ public class Game
         {
             int numPlayers = howManyPlayers(), hum = howManyHumans(numPlayers);
             init(numPlayers, hum);
-            board = new Board(players);
-            // This is used to hash the coordinates:
-            Coordinates.size = board.getYSize();
         
             int current = 0, winner = -1; // -1 means no winner
+            
+            Path path = board.findPath(1);
+            for (int i = 0 ; i < path.getLength() ; i++)
+            	System.out.println(path.getX(i) + " " + path.getY(i));
             
             while (winner == -1)
             {
@@ -188,8 +190,12 @@ public class Game
     	}
     	while(i < playersNumber)
     	{
-    		players[i] = new RandomAI(i++, walls);
+    		players[i] = new HardAI(i++, walls);
     	}
+    	
+        board = new Board(players);
+        // This is used to hash the coordinates:
+        Coordinates.size = board.getYSize();
     }
     
     

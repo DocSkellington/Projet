@@ -53,7 +53,7 @@ public final class RandomAI extends APlayer
 		int y = randgen.nextInt(board.getYSize());
 		int tries = 50;
 		
-		while (!board.setWall(num, new Coordinates(x,y), randgen.nextBoolean()) && tries > 0)
+		while (!board.setWall(new Coordinates(x,y)) && tries > 0)
 		{
 			x = randgen.nextInt(board.getXSize());
 			y = randgen.nextInt(board.getYSize());

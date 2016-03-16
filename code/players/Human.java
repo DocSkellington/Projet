@@ -66,7 +66,6 @@ public final class Human extends APlayer
 		{
 			System.out.println("Enter the x position of the (upper-left corner of the) wall");
 			int xw, yw;
-			boolean horizontal = false;
 			
 			while (!scan.hasNextInt())
 			{
@@ -84,16 +83,8 @@ public final class Human extends APlayer
 			}
 			
 			yw = scan.nextInt();
-			System.out.println("Do you want the wall to be horizontal? (true/false)");
 			
-			while (!scan.hasNextBoolean())
-			{
-				System.out.println("Please enter 'true' or 'false'.");
-				scan.next();
-			}
-			
-			horizontal = scan.nextBoolean();
-			if (board.setWall(num, new Coordinates(xw, yw), horizontal))
+			if (board.setWall(new Coordinates(xw, yw)))
 			{
 				wallsCounter--;
 				break;

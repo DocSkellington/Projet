@@ -76,27 +76,28 @@ public class Board
     /** Tries to set a wall at coordinate (x;y) (The upper/right vertex).
      * If possible, effectively sets the wall and returns true. Otherwise, returns false without modifying the board.
      * Uses the A* algorithm.
-     * @param num The number of the player who wants to set a wall
      * @param coord The coordinates of the wall
      * @param horizontal If the wall is horizontal
      * @return True if the wall can be set, false otherwise
     */
-    public boolean setWall(int num, Coordinates coord, boolean horizontal)
+    public boolean setWall(Coordinates coord)
     {
     	int x = coord.getX(), y = coord.getY();
-        if(x % 2 == 0 && y % 2 == 0)
+        /*if(x % 2 == 0 && y % 2 == 0)
             return false;
         if (x % 2 != 0 && y % 2 != 0)
-        	return false;
+        	return false;*/
         
-        if (!tryWall(coord, horizontal))
+        if (!tryWall(coord))
         	return false;
         
         int x2 = x, y2 = y;
-        if (horizontal)
-        	x2 += 2;
-        else
+        // Vertical
+        if (x % 2 == 1)
         	y2 += 2;
+        // Horizontal
+        else
+        	x2 += 2;
         
         // We set the wall
         cells[y][x].setFilled(1);
@@ -125,6 +126,31 @@ public class Board
         return true;
     }
     
+    /** Checks if there is a wall at the given coordinates
+     * 
+     * @param coord The coordinates
+     * @return True if there is a wall (or if the coordinates are wrong), false otherwise
+     */
+    public boolean hasWall(Coordinates coord)
+    {
+    	if (!tryWall(coord))
+    		return true;
+    	
+    	if (filled(coord) == 1)
+    		return true;
+    	return false;
+    }
+    
+    /** Finds the shortest path (uses the A* algorithm)
+     * 
+     * @param numPlayer The number of the player
+     * @return The shortest path
+     */
+    public Path findPath(int numPlayer)
+    {
+    	return findPath(players[numPlayer], new ClosestHeuristic());
+    }
+    
     /** Finds the shortest path (uses the A* algorithm)
      * 
      * @param player A reference to the player who needs a path
@@ -145,9 +171,12 @@ public class Board
     	AStarPathFinder pathFinder = new AStarPathFinder(this, false, heuri);
     	Coordinates start = playersPositions[player.getNum()];
     	Coordinates[] target = goal(player.getNum());
-    	for (int i = 0 ; i < target.length ; i++)
+    	for (int i = 0 ; i < target.length / 2 ; i++)
     	{
-    		Path path = pathFinder.findPath(player, start.getX(), start.getY(), target[i].getX(), target[i].getY());
+    		Path path = pathFinder.findPath(player, start.getX(), start.getY(), target[target.length/2 + i].getX(), target[target.length/2 + i].getY());
+    		if (path != null)
+    			return path;
+    		path = pathFinder.findPath(player, start.getX(), start.getY(), target[target.length/2 - i].getX(), target[target.length/2 - i].getY());
     		if (path != null)
     			return path;
     	}
@@ -355,14 +384,13 @@ public class Board
     /** Checks if a wall can be set at a given position
      * 
      * @param coord The coordinates where we try to set the wall
-     * @param horizontal Whether the wall is horizontal or not
      * @return True if the wall can be set
      */
-    private boolean tryWall(Coordinates coord, boolean horizontal)
+    private boolean tryWall(Coordinates coord)
     {
     	int x = coord.getX(), y = coord.getY(), x2 = x, y2 = y;
     	
-    	if (horizontal)
+    	/*if (horizontal)
     	{
     		if (y % 2 == 0)
     			return false;
@@ -371,6 +399,20 @@ public class Board
     	else
     	{
     		if (x % 2 == 0)
+    			return false;
+    		y2 += 2;
+    	}*/
+    	// Horizontal
+    	if(x % 2 == 0)
+    	{
+    		if(y % 2 == 0)
+    			return false;
+    		x2 += 2;
+    	}
+    	// Vertical
+    	else
+    	{
+    		if(y % 2 == 1)
     			return false;
     		y2 += 2;
     	}
