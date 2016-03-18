@@ -108,7 +108,7 @@ public class Board
         boolean none = false;
         for (APlayer player : players)
         {
-        	Path path = findPath(player);
+        	Path path = findPath(player, false);
         	if (path == null)
         	{
         		none = true;
@@ -144,43 +144,55 @@ public class Board
     /** Finds the shortest path (uses the A* algorithm)
      * 
      * @param numPlayer The number of the player
+	 * @param withPlayer If we consider the other player(s)
      * @return The shortest path
      */
-    public Path findPath(int numPlayer)
+    public Path findPath(int numPlayer, boolean withPlayer)
     {
-    	return findPath(players[numPlayer], new ClosestHeuristic());
+    	return findPath(players[numPlayer], withPlayer, new ClosestHeuristic());
     }
     
     /** Finds the shortest path (uses the A* algorithm)
      * 
      * @param player A reference to the player who needs a path
+	 * @param withPlayer If we consider the other player(s)
      * @return The shortest path
      */
-    public Path findPath(APlayer player)
+    public Path findPath(APlayer player, boolean withPlayer)
     {
-    	return findPath(player, new ClosestHeuristic());
+    	return findPath(player, withPlayer, new ClosestHeuristic());
     }
     
     /** Return the best path by using the A* algorithm (which uses the given heuristic method)
      * @param player A reference to the player who needs a path
+	 * @param withPlayer If we consider the other player(s)
      * @param heuri A reference to an heuristic class to determinate the best path
      * @return The best path if it exists, null otherwise
      */
-    public Path findPath(APlayer player, IAStarHeuristic heuri)
+    public Path findPath(APlayer player, boolean withPlayer, IAStarHeuristic heuri)
     {
     	AStarPathFinder pathFinder = new AStarPathFinder(this, false, heuri);
     	Coordinates start = playersPositions[player.getNum()];
     	Coordinates[] target = goal(player.getNum());
-    	for (int i = 0 ; i < target.length / 2 ; i++)
+    	Path path = null;
+    	for (int i = 0 ; i < target.length ; i++)
     	{
-    		Path path = pathFinder.findPath(player, start.getX(), start.getY(), target[target.length/2 + i].getX(), target[target.length/2 + i].getY());
-    		if (path != null)
-    			return path;
-    		path = pathFinder.findPath(player, start.getX(), start.getY(), target[target.length/2 - i].getX(), target[target.length/2 - i].getY());
-    		if (path != null)
-    			return path;
+    		Path temp = pathFinder.findPath(player, withPlayer, start.getX(), start.getY(), target[i].getX(), target[i].getY());
+    		if (path == null)
+    			path = temp;
+    		else
+			{
+    			if (temp != null)
+	    		{
+	    			if(path.getLength() > temp.getLength())
+	    				path = temp;
+	    			else if (path.getLength() == temp.getLength() &&
+	    					target[i].getX() == target[target.length/2].getX() && target[i].getY() == target[target.length/2].getY())
+	    				path = temp;
+	    		}
+			}
     	}
-    	return null;
+    	return path;
     }
     
     
@@ -257,11 +269,16 @@ public class Board
         return cells[0].length;
     }
     
+    public int getPlayerNumber()
+    {
+    	return players.length;
+    }
+    
     /** Checks if a player has won
      * @param players The array of players
      * @return The number of the winner
      */
-    public int hasWon(APlayer[] players)
+    public int hasWon()
     {
     	for (int i = 0 ; i < players.length ; i++)
     	{
@@ -290,12 +307,13 @@ public class Board
      * 
      * @param start The coordinates of the starting position
      * @param target The coordinates of the target position
+     * @param withPlayer If we consider other player(s)
      * @return True if a player can move to target position, false otherwise
      */
 
-    public boolean blocked(Coordinates start, Coordinates target)
+    public boolean blocked(Coordinates start, Coordinates target, boolean withPlayer)
     {
-    	return blocked(start.getX(), start.getY(), target.getX(), target.getY());
+    	return blocked(start.getX(), start.getY(), target.getX(), target.getY(), withPlayer);
     }
 
     /** Check if a player can move from start position to target position. These two cases must be adjacent.
@@ -304,9 +322,10 @@ public class Board
      * @param sy The y coordinate of the starting position
      * @param tx The x coordinate of the target position
      * @param ty The y coordinate of the target position
+     * @param withPlayer If we consider other player(s)
      * @return
      */
-    public boolean blocked(int sx, int sy, int tx, int ty)
+    public boolean blocked(int sx, int sy, int tx, int ty, boolean withPlayer)
     {
     	if (Math.abs(sx - tx) > 2 || Math.abs(sy - ty) > 2)
     	{
@@ -314,7 +333,7 @@ public class Board
     		return true;
     	}
     	
-    	if (filled((sx+tx)/2, (sy+ty)/2) != 0 || filled(tx, ty) != 0)
+    	if (filled((sx+tx)/2, (sy+ty)/2) != 0 || (filled(tx, ty) != 0 && withPlayer))
 		{
     		return true;
 		}
@@ -322,6 +341,52 @@ public class Board
 		{
     		return false;
 		}
+    }
+    
+    /** The starting position for a player
+     * 
+     * @param playerNum The number of the player
+     * @return The starting position (Coordinates) for the given player
+     */
+    public Coordinates startingPos(int playerNum)
+    {
+		if (playerNum == 0)
+			return new Coordinates(8, 16);
+		else if (playerNum == 1)
+			return new Coordinates(8,0);
+		else if (playerNum == 2)
+			return new Coordinates(0, 8);
+		else
+			return new Coordinates(16,8);
+    }
+
+    /** Returns the goal coordinates for a given player
+     * 
+     * @param playerNum The number of the player
+     * @return The goal coordinates (array) for this player
+     */
+    public Coordinates[] goal(int playerNum)
+    {
+    	if (playerNum == 0)
+        {
+    		Coordinates[] goal = {new Coordinates(0,0), new Coordinates(2,0),new Coordinates(4,0),new Coordinates(6,0),new Coordinates(8,0),new Coordinates(10,0),new Coordinates(12,0),new Coordinates(14,0),new Coordinates(16,0)};
+    		return goal;
+        }
+    	else if (playerNum == 1)
+    	{
+    		Coordinates[] goal = {new Coordinates(0,16), new Coordinates(2,16),new Coordinates(4,16),new Coordinates(6,16),new Coordinates(8,16),new Coordinates(10,16),new Coordinates(12,16),new Coordinates(14,16),new Coordinates(16,16)};
+    		return goal;
+    	}
+    	else if (playerNum ==2)
+    	{
+    		Coordinates[] goal = {new Coordinates(16,0), new Coordinates(16,2),new Coordinates(16,4),new Coordinates(16,6),new Coordinates(16,8),new Coordinates(16,10),new Coordinates(16,12),new Coordinates(16,14),new Coordinates(16,16)};
+    		return goal;
+    	}
+    	else
+    	{
+    		Coordinates[] goal = {new Coordinates(0,0), new Coordinates(0,2),new Coordinates(0,4),new Coordinates(0,6),new Coordinates(0,8),new Coordinates(0,10),new Coordinates(0,12),new Coordinates(0,14),new Coordinates(0,16)};
+    		return goal;
+    	}
     }
     
     /** Updates the cells */
@@ -429,23 +494,6 @@ public class Board
     }
     
     
-    /** The starting position for a player
-     * 
-     * @param playerNum The number of the player
-     * @return The starting position (Coordinates) for the given player
-     */
-    public static Coordinates startingPos(int playerNum)
-    {
-		if (playerNum == 0)
-			return new Coordinates(8, 16);
-		else if (playerNum == 1)
-			return new Coordinates(8,0);
-		else if (playerNum == 2)
-			return new Coordinates(0, 8);
-		else
-			return new Coordinates(16,8);
-    }
-    
     /** Returns the maximum number of players for this board
      * 
      * @return The maximum number of players
@@ -453,34 +501,5 @@ public class Board
     public static int maxPlayers()
     {
     	return 4;
-    }
-    
-    /** Returns the goal coordinates for a given player
-     * 
-     * @param playerNum The number of the player
-     * @return The goal coordinates (array) for this player
-     */
-    public static Coordinates[] goal(int playerNum)
-    {
-    	if (playerNum == 0)
-        {
-    		Coordinates[] goal = {new Coordinates(0,0), new Coordinates(2,0),new Coordinates(4,0),new Coordinates(6,0),new Coordinates(8,0),new Coordinates(10,0),new Coordinates(12,0),new Coordinates(14,0),new Coordinates(16,0)};
-    		return goal;
-        }
-    	else if (playerNum == 1)
-    	{
-    		Coordinates[] goal = {new Coordinates(0,16), new Coordinates(2,16),new Coordinates(4,16),new Coordinates(6,16),new Coordinates(8,16),new Coordinates(10,16),new Coordinates(12,16),new Coordinates(14,16),new Coordinates(16,16)};
-    		return goal;
-    	}
-    	else if (playerNum ==2)
-    	{
-    		Coordinates[] goal = {new Coordinates(16,0), new Coordinates(16,2),new Coordinates(16,4),new Coordinates(16,6),new Coordinates(16,8),new Coordinates(16,10),new Coordinates(16,12),new Coordinates(16,14),new Coordinates(16,16)};
-    		return goal;
-    	}
-    	else
-    	{
-    		Coordinates[] goal = {new Coordinates(0,0), new Coordinates(0,2),new Coordinates(0,4),new Coordinates(0,6),new Coordinates(0,8),new Coordinates(0,10),new Coordinates(0,12),new Coordinates(0,14),new Coordinates(0,16)};
-    		return goal;
-    	}
     }
 }

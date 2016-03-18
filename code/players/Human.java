@@ -105,7 +105,7 @@ public final class Human extends APlayer
 		Scanner scan = new Scanner(System.in);
 		System.out.println("You're at " + coord);
 		
-		Coordinates[] possibleMoves = possibleMoves(board).toArray(new Coordinates[0]);
+		Coordinates[] possibleMoves = possibleMoves(board, true).toArray(new Coordinates[0]);
 		for(int i = 0 ; i < possibleMoves.length ; i++)
 		{
 			System.out.println("(" + (i+1) + ") " + possibleMoves[i]);

@@ -43,18 +43,25 @@ public abstract class APlayer
 		return num;
 	}
 	
-	/** Gives the possible moves of this player for their current position */
-	public HashSet<Coordinates> possibleMoves(Board board)
+	/** Gives the possible moves of this player for their current position
+	 * 
+	 * @param board The board
+	 * @param withPlayer 
+	 * @return An HashSet of the possible coordinates
+	 */
+	public HashSet<Coordinates> possibleMoves(Board board, boolean withPlayer)
 	{
-		return possibleMoves(board, board.getCoordinates(num));
+		return possibleMoves(board, withPlayer, board.getCoordinates(num));
 	}
 	
 	/** Gives the possible moves of this player for a precise position
 	 * 
+	 * @param board The board
+	 * @param withPlayer If we check with other players or not
 	 * @param pos The position we look at
 	 * @return The (relative) coordinates of the accessible cases
 	 */
-	public HashSet<Coordinates> possibleMoves(Board board, Coordinates pos)
+	public HashSet<Coordinates> possibleMoves(Board board, boolean withPlayer, Coordinates pos)
 	{
 		HashSet<Coordinates> coord = new HashSet<Coordinates>();
 		
@@ -68,14 +75,14 @@ public abstract class APlayer
 					continue;
 				// Checking diagonals or jumping
 				// First : x coordinate
-				if(board.filled(pos.getX()+i, pos.getY()) != 0 && i != 0)
+				if(board.filled(pos.getX()+i, pos.getY()) != 0 && i != 0 && withPlayer)
 				{
 				    // If there isn't a wall on the way
 				    if (board.filled(pos.getX()+i/2, pos.getY()) == 0)
 					{
 				        int x = pos.getX() + i, y = pos.getY();
 					    // Can we jump over the other player ?
-					    if(!board.blocked(x, y, x + i, y))
+					    if(!board.blocked(x, y, x + i, y, withPlayer))
 					    {
 						    // Yes
 						    coord.add(new Coordinates(x+i, y));
@@ -84,12 +91,12 @@ public abstract class APlayer
 					    {
 						    // No
 						    // Up
-						    if(!board.blocked(x, y, x, y-2))
+						    if(!board.blocked(x, y, x, y-2, withPlayer))
 						    {
 							    coord.add(new Coordinates(x, y-2));
 						    }
 						    // Down
-						    if(!board.blocked(x, y, x, y+2))
+						    if(!board.blocked(x, y, x, y+2, withPlayer))
 						    {
 							    coord.add(new Coordinates(x, y+2));
 						    }
@@ -98,18 +105,18 @@ public abstract class APlayer
 				}
 				else if (pos.getX() + i != pos.getX())
 				{
-					if(!board.blocked(pos.getX(), pos.getY(), pos.getX()+i, pos.getY()))
+					if(!board.blocked(pos.getX(), pos.getY(), pos.getX()+i, pos.getY(), withPlayer))
 						coord.add(new Coordinates(pos.getX() + i, pos.getY()));
 				}
 				// y coordinate
-				if(board.filled(pos.getX(), pos.getY()+j) != 0 && j != 0)
+				if(board.filled(pos.getX(), pos.getY()+j) != 0 && j != 0 && withPlayer)
 				{
 				    // If there isn't any wall on the way
 				    if (board.filled(pos.getX(), pos.getY()+j/2) == 0)
 					{
 					    int x = pos.getX(), y = pos.getY() + j;
 					    // Can we jump over it ?
-					    if(!board.blocked(x, y, x, y + j))
+					    if(!board.blocked(x, y, x, y + j, withPlayer))
 					    {
 						    // Yes
 						    coord.add(new Coordinates(x, y + j));
@@ -118,12 +125,12 @@ public abstract class APlayer
 					    {
 						    // No
 						    // Left
-						    if(!board.blocked(x, y, x - 2, y))
+						    if(!board.blocked(x, y, x - 2, y, withPlayer))
 						    {
 							    coord.add(new Coordinates(x - 2, y));
 						    }
 						    // Right
-						    if(!board.blocked(x, y, x + 2, y))
+						    if(!board.blocked(x, y, x + 2, y, withPlayer))
 						    {
 							    coord.add(new Coordinates(x + 2, y));
 						    }
@@ -132,7 +139,7 @@ public abstract class APlayer
 			    }
 			    else if (pos.getY() + j != pos.getY())
 			    {
-				    if (!board.blocked(pos.getX(), pos.getY(), pos.getX(), pos.getY() + j))
+				    if (!board.blocked(pos.getX(), pos.getY(), pos.getX(), pos.getY() + j, withPlayer))
 					    coord.add(new Coordinates(pos.getX(), pos.getY() + j));
 			    }
 		    }

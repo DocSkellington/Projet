@@ -59,10 +59,8 @@ public class AStarPathFinder implements IPathFinder
         }
     }
     
-    /** 
-     * @see PathFinder#findPath(Player, int, int, int, int)
-     */
-    public Path findPath(APlayer player, int sx, int sy, int tx, int ty)
+    @Override
+    public Path findPath(APlayer player, boolean withPlayer, int sx, int sy, int tx, int ty)
     {
     	// TODO : Finish it
         // Init for A*
@@ -86,7 +84,7 @@ public class AStarPathFinder implements IPathFinder
             open.remove(current);
             closed.add(current);
             
-            Coordinates[] neighbours = player.possibleMoves(board, coord).toArray(new Coordinates[0]);
+            Coordinates[] neighbours = player.possibleMoves(board, withPlayer, coord).toArray(new Coordinates[0]);
             
             for (Coordinates neighbour : neighbours)
             {

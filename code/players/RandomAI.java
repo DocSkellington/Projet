@@ -35,7 +35,7 @@ public final class RandomAI extends APlayer
 	/** The bot moves to a random possible destination*/
 	private void move(Board board)
 	{
-		Coordinates[] possibleMoves = possibleMoves(board).toArray(new Coordinates[0]);
+		Coordinates[] possibleMoves = possibleMoves(board, true).toArray(new Coordinates[0]);
 		int choice = randgen.nextInt(possibleMoves.length);
 		board.move(num, possibleMoves[choice]);
 	}

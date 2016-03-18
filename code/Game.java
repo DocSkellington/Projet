@@ -31,14 +31,28 @@ public class Game
         
         while (running)
         {
-            int numPlayers = howManyPlayers(), hum = howManyHumans(numPlayers);
-            init(numPlayers, hum);
+            int numPlayers = howManyPlayers(), hum = howManyHumans(numPlayers), randAINum = howManyRandom(numPlayers, hum);
+            init(numPlayers, hum, randAINum);
         
             int current = 0, winner = -1; // -1 means no winner
             
-            Path path = board.findPath(1);
-            for (int i = 0 ; i < path.getLength() ; i++)
+            //board.setWall(new Coordinates(8, 3));
+            /*board.setWall(new Coordinates(10, 7));
+            board.setWall(new Coordinates(5, 8));
+            board.setWall(new Coordinates(6, 9));
+            board.setWall(new Coordinates(10, 9));
+            board.setWall(new Coordinates(14, 9));
+            board.setWall(new Coordinates(13, 8));*/
+            
+            /*Path path = board.findPath(1, true);
+            if(path != null)
+            {
+            	for (int i = 0 ; i < path.getLength() ; i++)
             	System.out.println(path.getX(i) + " " + path.getY(i));
+            }
+            path = board.findPath(1, false);
+            for (int i = 0 ; i < path.getLength() ; i++)
+            	System.out.println(path.getX(i) + " " + path.getY(i));*/
             
             while (winner == -1)
             {
@@ -46,7 +60,7 @@ public class Game
                 players[current].play(board);
                 board.update();
                 current = (current + 1) % numPlayers;
-                winner = board.hasWon(players);
+                winner = board.hasWon();
             }
             
             printVictory(winner);
@@ -133,6 +147,42 @@ public class Game
     	} while(true);
     }
     
+    private int howManyRandom(int maxPlayers, int human)
+    {
+    	Scanner scan = new Scanner(System.in);
+    	
+    	System.out.println("How many RandomAI(s) ?");
+    	
+    	int res = 0;
+    	
+    	do
+    	{
+    		while (true)
+    		{
+    			if(!scan.hasNextInt())
+    			{
+    				System.out.println("An Integer, por favor, Senior");
+    				scan.next();
+    				continue;
+    			}
+    			break;
+    		}
+    		
+    		res = scan.nextInt();
+    		
+    		
+    		if (res < 0 || res > (maxPlayers-human))
+    		{
+    			System.out.println((maxPlayers-human) + " RandomAI max and at least 0 RandomAI");
+    		}
+    		else
+    		{
+				return res;
+    		}
+    		
+    	} while(true);
+    }
+    
     /** Asks if the player(s) want(s) to keep playing
      * 
      * @return Whether the game keeps running or not
@@ -173,7 +223,7 @@ public class Game
      * @param playersNumber The number of players
      * @param humNumber The number of human players
      */
-    private void init(int playersNumber, int humNumber)
+    private void init(int playersNumber, int humNumber, int randAINum)
     {
     	players = new APlayer[playersNumber];
     	
@@ -188,9 +238,13 @@ public class Game
     	{
     		players[i] = new Human(i++, walls);
     	}
+    	while(i < playersNumber-randAINum)
+    	{
+    		players[i] = new StrategyAI(i++, walls);
+    	}
     	while(i < playersNumber)
     	{
-    		players[i] = new HardAI(i++, walls);
+    		players[i] = new RandomAI(i++, walls);
     	}
     	
         board = new Board(players);
