@@ -14,8 +14,8 @@ public final class Human extends APlayer
 {
 	/** Constructor
 	 * 
-	 * @param board A reference to the board
 	 * @param num The player's number
+	 * @param wallsCounter The counter of available walls
 	 */
 	public Human(int num, int wallsCounter)
 	{

@@ -14,9 +14,10 @@ public interface IStrategy
 	 * 
 	 * @param board The board
 	 * @param numPlayer The number of the player
+	 * @param wallsCounter The counter of available walls
 	 * @param possibleMoves The possible moves of the player
 	 * @param numRounds The number of already played rounds
 	 * @return A round
 	 */
-	Round strategy(Board board, int numPlayer, Coordinates[] possibleMoves, int numRounds);
+	Round strategy(Board board, int numPlayer, int wallsCounter, Coordinates[] possibleMoves, int numRounds);
 }

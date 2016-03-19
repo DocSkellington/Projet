@@ -17,6 +17,7 @@ public class Path
     {
     }
     
+    @Override
     public String toString()
     {
     	String res = "";
@@ -99,7 +100,8 @@ public class Path
     
     /** Manages a step of a path
      * 
-     * @author Gaetan Staquet & Thibaut De Cooman
+     * @author Gaetan Staquet
+     * @author Thibaut De Cooman
      *
      */
     public class Step
@@ -135,20 +137,20 @@ public class Path
             return y;
         }
         
+        @Override
         public String toString()
         {
         	String res = x + " " + y;
         	return res;
         }
         
+        @Override
         public int hashCode()
         {
             return x*y;
         }
         
-        /** 
-         * @see: Object@equals
-         */
+        @Override
         public boolean equals(Object other)
         {
             if (other instanceof Step)

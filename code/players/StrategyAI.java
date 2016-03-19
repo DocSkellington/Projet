@@ -46,17 +46,17 @@ public final class StrategyAI extends APlayer
 	@Override
 	public void play(Board board)
 	{
-		System.out.println("Player " + (num+1) + " (HardAI) processing...");
+		System.out.println("Player " + (num+1) + " processing...");
 		
-		Round round = strat.strategy(board, num, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds);
+		Round round = strat.strategy(board, num, wallsCounter, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds);
 		if (round.getType() == Type.MOVE)
 		{
 			board.move(num, round.getCoord());
 		}
 		else if (round.getType() == Type.WALL)
 		{
-			System.out.println("Trying to set a wall");
 			board.setWall(round.getCoord());
+			wallsCounter--;
 		}
 		numRounds++;
 	}

@@ -22,30 +22,25 @@ public class AStarPathFinder implements IPathFinder
     /** A reference to the board (to know where are walls and players)*/
     protected Board board;
     protected Node[][] nodes;
-    /** True if we can move diagonally*/
-    protected boolean diagMovement;
     /** The heuristic formula to be used to determine the best next step*/
     protected IAStarHeuristic heuristic;
     
     /** A basic constructor with the basic heuristic formula
      * @param board The board to be searched
-     * @param diagMovement True if we can move diagonally
      */
-    public AStarPathFinder (Board board, boolean diagMovement)
+    public AStarPathFinder (Board board)
     {
-        this(board, diagMovement, new ClosestHeuristic());
+        this(board, new ClosestHeuristic());
     }
     
     /** The constructor that allows to chose the heuristic formula
      * @param board The board to be searched
-     * @param diagMovement True if we can move diagonally
      * @param heuristic A reference to the class who contains the heuristic formula
      */
-    public AStarPathFinder(Board board, boolean diagMovement, IAStarHeuristic heuristic)
+    public AStarPathFinder(Board board, IAStarHeuristic heuristic)
     {
         this.heuristic = heuristic;
         this.board = board;
-        this.diagMovement = diagMovement;
         
         int xSize = board.getXSize(), ySize = board.getYSize();
         
@@ -62,7 +57,6 @@ public class AStarPathFinder implements IPathFinder
     @Override
     public Path findPath(APlayer player, boolean withPlayer, int sx, int sy, int tx, int ty)
     {
-    	// TODO : Finish it
         // Init for A*
         nodes[sx][sy].cost = 0;
         closed.clear();
@@ -181,8 +175,8 @@ public class AStarPathFinder implements IPathFinder
 	        list.clear();
 	    }
 	    
-	    /** Add an element to the list (this implies using sorting)
-	     * @param o The element to add
+	    /** Add a Node to the list (this implies using sorting)
+	     * @param o The Node to add
 	     */
 	    public void add(Node o)
 	    {
@@ -190,15 +184,15 @@ public class AStarPathFinder implements IPathFinder
 	        Collections.sort(list);
 	    }
 	    
-	    /** Remove an element from the list
-	     * @param o The element to remove
+	    /** Remove a Node from the list
+	     * @param o The Node to remove
 	    */
-	    public void remove(Object o)
+	    public void remove(Node o)
 	    {
 	        list.remove(o);
 	    }
 	    
-	    /** Get the number of elements in the list
+	    /** Get the number of nodes in the list
 	     * @return The size of the list
 	     */
 	    public int size()
@@ -206,11 +200,11 @@ public class AStarPathFinder implements IPathFinder
 	        return list.size();
 	    }
 	    
-	    /** Check if an element is in the list
-	     * @param o The element to search for
+	    /** Check if a Node is in the list
+	     * @param o The Node to search for
 	     * @return True if the element is in the list, false otherwise
 	     */
-	    public boolean contains(Object o)
+	    public boolean contains(Node o)
 	    {
 	        return list.contains(o);
 	    }
@@ -255,10 +249,8 @@ public class AStarPathFinder implements IPathFinder
 	    
 	    /** @see Comparable#compareTo(Object) */
 	    public int compareTo(Node other)
-	    {
-	        Node o = (Node) other;
-	        
-	        float f = heuristic + cost, of = o.heuristic + o.cost;
+	    {	        
+	        float f = heuristic + cost, of = other.heuristic + other.cost;
 	        
 	        if (f < of)
 	            return -1;

@@ -31,7 +31,10 @@ public abstract class APlayer
 		this.wallsCounter = wallsCounter;
 	}
 	
-	/** This function handles the turn of a player.*/
+	/** This function handles the turn of a player.
+	 * 
+	 * @param board The board
+	 */
 	public abstract void play(Board board);
 	
 	/** Gets the number of the Player
@@ -46,7 +49,7 @@ public abstract class APlayer
 	/** Gives the possible moves of this player for their current position
 	 * 
 	 * @param board The board
-	 * @param withPlayer 
+	 * @param withPlayer If we consider other player(s) or not
 	 * @return An HashSet of the possible coordinates
 	 */
 	public HashSet<Coordinates> possibleMoves(Board board, boolean withPlayer)

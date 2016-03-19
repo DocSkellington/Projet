@@ -12,48 +12,36 @@ import board.*;
  * @author Staquet Gaetan
  *
  */
-public class ShillerStrategy implements IStrategy
+public final class ShillerStrategy implements IStrategy
 {
 	@Override
-	public Round strategy(Board board, int numPlayer, Coordinates[] possibleMoves, int numRounds)
+	public Round strategy(Board board, int numPlayer, int wallsCounter, Coordinates[] possibleMoves, int numRounds)
 	{
-		System.out.println(numRounds);
+		System.out.println("Shiller strategy in process...");
 		if(numRounds < 3)
 		{
 			return move(board, numPlayer, possibleMoves);
 		}
 		else if(numRounds == 3)
 		{
-			System.out.println("Trying to shiller");
 			if(numPlayer == 0)
 				return shiller(board, numPlayer);
 			else
 			{
-				System.out.println("I'm not number 1 :'(");
 				if(checkShiller(board, numPlayer))
 				{
-					System.out.println("Ahaha, you've shillered");
 					Round round = shiller(board, numPlayer);
 					if (round.getType() == Type.NONE)
 					{
-						System.out.println("I can't answer!");
 						return move(board, numPlayer, possibleMoves);
 					}
-					System.out.println("Were you expecting this?!");
 					return round;
 				}
-				System.out.println("Well, I'm moving");
 				return move(board, numPlayer, possibleMoves);
 			}
 		}
 		else
 		{
-
-			// Seek shortest paths for all players
-			// Take the shortest
-			// If it's shortest than its own, block
-			// Else, move
-			
 			Path bestPath = new Path();
 			Path ownPath = board.findPath(numPlayer, true);
 			if(ownPath == null)
@@ -75,15 +63,13 @@ public class ShillerStrategy implements IStrategy
 			
 			if (ownPath.getLength() > bestPath.getLength())
 			{
-				System.out.println("I want to set a wall!");
-				Round round = wall(board, bestPath);
+				Round round = wall(board, wallsCounter, bestPath);
 				if (round.getType() == Type.NONE)
 					return move(board, numPlayer, possibleMoves);
 				return round;
 			}
 			else
 			{
-				System.out.println("I want to move!");
 				return move(board, numPlayer, possibleMoves);
 			}
 		}
@@ -107,49 +93,63 @@ public class ShillerStrategy implements IStrategy
 	{
 		Coordinates coord = board.startingPos(numPlayer);
 		Random rand = new Random();
-		// Player 1 || 2
-		if (coord.getY() == 16 || coord.getY() == 0)
+		// Player 1
+		if (coord.getY() == 16)
 		{
 			if(rand.nextBoolean())
 			{
-				coord = new Coordinates(coord.getX()+1, coord.getY());
+				coord = new Coordinates(coord.getX()+1, 14);
 			}
-			coord = new Coordinates(coord.getX()-1, coord.getY());
+			else
+				coord = new Coordinates(coord.getX()-1, 14);
 		}
-		// Player 3 || 4
-		else if (coord.getX() == 0 || coord.getX() == 16)
+		// Player 2
+		else if (coord.getY() == 0)
+		{
+			if(rand.nextBoolean())
+			{
+				coord = new Coordinates(coord.getX()+1, 0);
+			}
+			else
+				coord = new Coordinates(coord.getX()-1, 0);
+		}
+		// Player 3
+		else if (coord.getX() == 0)
 		{
 			if(rand.nextBoolean())
 			{
 				coord = new Coordinates(coord.getX(), coord.getY() - 1);
 			}
-			coord = new Coordinates(coord.getX(), coord.getY() - 1);
+			else
+				coord = new Coordinates(coord.getX(), coord.getY() - 1);
 		}
-		
-		System.out.println(coord);
+		// Player 4
+		else if (coord.getX() == 16)
+		{
+			if(rand.nextBoolean())
+			{
+				coord = new Coordinates(14, coord.getY() - 1);
+			}
+			else
+				coord = new Coordinates(14, coord.getY() - 1);
+		}
 		
 		if (board.filled(coord) == 1)
 		{
-			System.out.println("Impossible to shiller");
 			return new Round(Type.NONE, coord);
 		}
-		System.out.println("Possible to shiller");
 		return new Round(Type.WALL, coord);
 	}
 	
 	private boolean checkShiller(Board board, int numPlayer)
 	{
-		System.out.println("Hello. I'm your biggest fan.");
 		Coordinates coord = null;
 		if (numPlayer == 1)
 		{
-			System.out.println("I'm 2");
 			coord = board.startingPos(0);
 		}
-		System.out.println(coord);
 		if (coord.getY() == 0)
 		{
-			System.out.println("a");
 			if (board.filled(new Coordinates(coord.getX() - 1, coord.getY())) == 1)
 				return true;
 			else if (board.filled(new Coordinates(coord.getX() + 1, coord.getY())) == 1)
@@ -158,21 +158,18 @@ public class ShillerStrategy implements IStrategy
 		}
 		else if (coord.getY() == 16)
 		{
-			System.out.println("You're too slow");
 			if (board.filled(new Coordinates(coord.getX() - 1, coord.getY())) == 1)
 			{
 				return true;
 			}
 			else if (board.filled(new Coordinates(coord.getX() + 1, coord.getY())) == 1)
 			{
-				System.out.println("There is a wall");
 				return true;
 			}
 			return false;
 		}
 		else if (coord.getX() == 0)
 		{
-			System.out.println("c");
 			if (board.filled(new Coordinates(coord.getX(), coord.getY() - 1)) == 1)
 				return true;
 			else if (board.filled(new Coordinates(coord.getX(), coord.getY() + 1)) == 1)
@@ -181,7 +178,6 @@ public class ShillerStrategy implements IStrategy
 		}
 		else
 		{
-			System.out.println("d");
 			if (board.filled(new Coordinates(coord.getX(), coord.getY() - 1)) == 1)
 				return true;
 			else if (board.filled(new Coordinates(coord.getX(), coord.getY() + 1)) == 1)
@@ -190,21 +186,24 @@ public class ShillerStrategy implements IStrategy
 		}
 	}
 
-	private Round wall(Board board, Path path)
+	private Round wall(Board board, int wallsCounter, Path path)
 	{
-		// TODO : What if there's a wall ? (4 INSTEAD OF 2)
+		if (wallsCounter <= 0)
+			return new Round(Type.NONE, new Coordinates(-1, -1));
 		for (int i = 0 ; i < path.getLength()-1 ; i++)
 		{
 			int dx = (path.getX(i+1)-path.getX(i));
 			int dy = (path.getY(i+1)-path.getY(i));
 			
-			if (board.filled(new Coordinates(path.getX(i)+dx/2, path.getY(i)+dy/2)) == 0)
+			if(board.canSetWall(new Coordinates(path.getX(i)+dx/2, path.getY(i)+dy/2)))
+			{
 				return new Round(Type.WALL, new Coordinates(path.getX(i)+dx/2, path.getY(i)+dy/2));
+			}
 			
 			// Vertical
 			if (dx != 0)
 			{
-				if (board.filled(new Coordinates(path.getX(i), path.getY(i)+dy/2-2)) == 0)
+				if (board.canSetWall(new Coordinates(path.getX(i), path.getY(i)+dy/2-2)))
 				{
 					return new Round(Type.WALL, new Coordinates(path.getX(i), path.getY(i)+dy/2-2));
 				}
@@ -212,7 +211,7 @@ public class ShillerStrategy implements IStrategy
 			// Horizontal
 			if (dy != 0)
 			{
-				if (board.filled(new Coordinates(path.getX(i)+dx/2-2, path.getY(i))) == 0)
+				if (board.canSetWall(new Coordinates(path.getX(i)+dx/2-2, path.getY(i))))
 				{
 					return new Round(Type.WALL, new Coordinates(path.getX(i)+dx/2-2, path.getY(i)));
 				}

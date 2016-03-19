@@ -4,7 +4,7 @@ import players.*;
 import pathFinder.*;
 
 /** Manages all information about the board.
- * This includes setting walls, finding path
+ * This includes setting walls, finding path, and so on.
  * @author Gaetan Staquet
  * @author Thibaut De Cooman
  *
@@ -73,20 +73,41 @@ public class Board
         System.out.println();
     }
     
-    /** Tries to set a wall at coordinate (x;y) (The upper/right vertex).
-     * If possible, effectively sets the wall and returns true. Otherwise, returns false without modifying the board.
-     * Uses the A* algorithm.
+    /** Sets a wall if it can
+     * 
      * @param coord The coordinates of the wall
-     * @param horizontal If the wall is horizontal
-     * @return True if the wall can be set, false otherwise
-    */
+     * @return True if the wall is set, false otherwise.
+     *  */
     public boolean setWall(Coordinates coord)
     {
     	int x = coord.getX(), y = coord.getY();
-        /*if(x % 2 == 0 && y % 2 == 0)
-            return false;
-        if (x % 2 != 0 && y % 2 != 0)
-        	return false;*/
+    	
+        int x2 = x, y2 = y;
+        // Vertical
+        if (x % 2 == 1)
+        	y2 += 2;
+        // Horizontal
+        else
+        	x2 += 2;
+        
+    	if(canSetWall(coord))
+    	{
+            cells[y][x].setFilled(1);
+            cells[(y2+y)/2][(x2+x)/2].setFilled(1);
+            cells[y2][x2].setFilled(1);
+            return true;
+    	}
+    	return false;
+    }
+
+    /** Checks if a wall can be set at coordinates (x;y) (The upper/right vertex).
+     * Uses the A* algorithm.
+     * @param coord The coordinates of the wall
+     * @return True if the wall can be set, false otherwise
+    */
+    public boolean canSetWall(Coordinates coord)
+    {
+    	int x = coord.getX(), y = coord.getY();
         
         if (!tryWall(coord))
         	return false;
@@ -115,14 +136,12 @@ public class Board
         		break;
         	}
         }
-        if (none)
-        {
-        	// We destroy the walls.
-	        cells[y][x].setFilled(0);
-	        cells[(y2+y)/2][(x2+x)/2].setFilled(0);
-	        cells[y2][x2].setFilled(0);
-	        return false;
-        }
+        // We destroy the walls.
+	    cells[y][x].setFilled(0);
+        cells[(y2+y)/2][(x2+x)/2].setFilled(0);
+        cells[y2][x2].setFilled(0);
+        if(none)
+        	return false;
         return true;
     }
     
@@ -171,7 +190,7 @@ public class Board
      */
     public Path findPath(APlayer player, boolean withPlayer, IAStarHeuristic heuri)
     {
-    	AStarPathFinder pathFinder = new AStarPathFinder(this, false, heuri);
+    	AStarPathFinder pathFinder = new AStarPathFinder(this, heuri);
     	Coordinates start = playersPositions[player.getNum()];
     	Coordinates[] target = goal(player.getNum());
     	Path path = null;
@@ -269,13 +288,17 @@ public class Board
         return cells[0].length;
     }
     
+    /** Get the number of players
+     * 
+     * @return The number of players
+     */
     public int getPlayerNumber()
     {
     	return players.length;
     }
     
     /** Checks if a player has won
-     * @param players The array of players
+	 *
      * @return The number of the winner
      */
     public int hasWon()
@@ -323,14 +346,13 @@ public class Board
      * @param tx The x coordinate of the target position
      * @param ty The y coordinate of the target position
      * @param withPlayer If we consider other player(s)
-     * @return
+     * @return True if the way is blocked between the 2 adjacent cases, false otherwise.
      */
     public boolean blocked(int sx, int sy, int tx, int ty, boolean withPlayer)
     {
     	if (Math.abs(sx - tx) > 2 || Math.abs(sy - ty) > 2)
     	{
-    		// TODO : Throw an exception
-    		return true;
+    		throw new RuntimeException("Too far");
     	}
     	
     	if (filled((sx+tx)/2, (sy+ty)/2) != 0 || (filled(tx, ty) != 0 && withPlayer))
@@ -377,7 +399,7 @@ public class Board
     		Coordinates[] goal = {new Coordinates(0,16), new Coordinates(2,16),new Coordinates(4,16),new Coordinates(6,16),new Coordinates(8,16),new Coordinates(10,16),new Coordinates(12,16),new Coordinates(14,16),new Coordinates(16,16)};
     		return goal;
     	}
-    	else if (playerNum ==2)
+    	else if (playerNum == 2)
     	{
     		Coordinates[] goal = {new Coordinates(16,0), new Coordinates(16,2),new Coordinates(16,4),new Coordinates(16,6),new Coordinates(16,8),new Coordinates(16,10),new Coordinates(16,12),new Coordinates(16,14),new Coordinates(16,16)};
     		return goal;

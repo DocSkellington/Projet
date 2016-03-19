@@ -36,24 +36,6 @@ public class Game
         
             int current = 0, winner = -1; // -1 means no winner
             
-            //board.setWall(new Coordinates(8, 3));
-            /*board.setWall(new Coordinates(10, 7));
-            board.setWall(new Coordinates(5, 8));
-            board.setWall(new Coordinates(6, 9));
-            board.setWall(new Coordinates(10, 9));
-            board.setWall(new Coordinates(14, 9));
-            board.setWall(new Coordinates(13, 8));*/
-            
-            /*Path path = board.findPath(1, true);
-            if(path != null)
-            {
-            	for (int i = 0 ; i < path.getLength() ; i++)
-            	System.out.println(path.getX(i) + " " + path.getY(i));
-            }
-            path = board.findPath(1, false);
-            for (int i = 0 ; i < path.getLength() ; i++)
-            	System.out.println(path.getX(i) + " " + path.getY(i));*/
-            
             while (winner == -1)
             {
             	board.print();
@@ -146,7 +128,13 @@ public class Game
     		
     	} while(true);
     }
-    
+
+    /** Asks how many random AI players
+     * 
+     * @param maxPlayers The maximum number of players
+     * @param human The number of human players
+     * @return The number of random AI players
+     */
     private int howManyRandom(int maxPlayers, int human)
     {
     	Scanner scan = new Scanner(System.in);
@@ -238,13 +226,13 @@ public class Game
     	{
     		players[i] = new Human(i++, walls);
     	}
-    	while(i < playersNumber-randAINum)
+    	while(i < humNumber + randAINum)
     	{
-    		players[i] = new StrategyAI(i++, walls);
+    		players[i] = new StrategyAI(i++, walls, new RandomStrategy());
     	}
     	while(i < playersNumber)
     	{
-    		players[i] = new RandomAI(i++, walls);
+    		players[i] = new StrategyAI(i++, walls);
     	}
     	
         board = new Board(players);
