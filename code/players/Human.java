@@ -2,6 +2,7 @@ package players;
 
 import java.util.Scanner;
 import board.*;
+import players.Round.Type;
 
 
 /** The human player
@@ -23,13 +24,19 @@ public final class Human extends APlayer
 	}
 	
 	@Override
-	public void play(Board board) {
+	public Round play(Board board) {
 		System.out.println("Player " + (num+1) + ", you can play. You have " + wallsCounter + " wall(s) left.");
 		boolean wantsToMove = wannaMove();
 		if (wantsToMove)
-			move(board);
+		{
+			Coordinates coord = move(board);
+			return new Round (Type.MOVE, coord);
+		}
 		else
-			setAWall(board);
+		{
+			Coordinates coord = setAWall(board);
+			return new Round (Type.WALL, coord);
+		}
 	}
 
 	/** Asks the player whether they want to move or not
@@ -59,7 +66,7 @@ public final class Human extends APlayer
 	 * 
 	 * @param board A reference to the board
 	 */
-	private void setAWall(Board board)
+	private Coordinates setAWall(Board board)
 	{
 		Scanner scan = new Scanner(System.in);
 		while (true)
@@ -87,7 +94,7 @@ public final class Human extends APlayer
 			if (board.setWall(new Coordinates(xw, yw)))
 			{
 				wallsCounter--;
-				break;
+				return new Coordinates(xw, yw);
 			}
 			
 			System.out.println("Impossible to place the wall at the given position. Pl0x enter another position.");
@@ -99,7 +106,7 @@ public final class Human extends APlayer
 	 * 
 	 * @param board A reference to the board
 	 */
-	private void move(Board board)
+	private Coordinates move(Board board)
 	{
 		Coordinates coord = board.getCoordinates(num);
 		Scanner scan = new Scanner(System.in);
@@ -126,7 +133,7 @@ public final class Human extends APlayer
 			if(choice >= 0 && choice < possibleMoves.length)
 			{
 				board.move(num, possibleMoves[choice]);
-				break;
+				return possibleMoves[choice];
 			}
 			System.out.println("The integer must be between 1 and " + possibleMoves.length + ".");
 		}

@@ -1,25 +1,32 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.text.ParseException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.util.List;
 import board.*;
-import pathFinder.Path;
 import players.*;
+import players.Round.Type;
 
 /** Main class that keeps the game running
  * 
  * @author Gaetan Staquet
  * @author Thibaut De Cooman
- *
+ * @author Barrack Obama
  */
-public class Game
+public final class Game
 {
 	private APlayer[] players;
 	private Board board;
+	private ArrayList<Round> roundList; 
 	
 	/** Default constructor
 	 * 
 	 */
 	public Game()
 	{
-		
+		roundList = new ArrayList<Round>();
 	}
 	
 	/** What keeps the game running
@@ -39,13 +46,26 @@ public class Game
             while (winner == -1)
             {
             	board.print();
-                players[current].play(board);
+                roundList.add(players[current].play(board));
                 board.update();
                 current = (current + 1) % numPlayers;
                 winner = board.hasWon();
             }
             
             printVictory(winner);
+            
+            boolean save = wannaSave();
+            if (save)
+            {
+            	try
+            	{
+            		save("Save/Save.sav");
+            	}
+            	catch(IOException e)
+            	{
+            		System.out.println(e);
+            	}
+            }
             
             running = keepPlaying();
         }
@@ -171,6 +191,20 @@ public class Game
     	} while(true);
     }
     
+    // TODO : Remove
+    private boolean wannaSave()
+    {
+    	Scanner scan = new Scanner(System.in);
+    	System.out.println("Do you want to save ?");
+    	while(!scan.hasNextBoolean())
+    	{
+    		System.out.println("Please enter a boolean (true or false)");
+    		scan.next();
+    	}
+    	boolean choice = scan.nextBoolean();
+    	return choice;
+    }
+    
     /** Asks if the player(s) want(s) to keep playing
      * 
      * @return Whether the game keeps running or not
@@ -204,6 +238,7 @@ public class Game
     private void printVictory(int winner)
     {
         System.out.println("Congratulations, Player " + (winner + 1) + " ! You can leave the Arena now and rest... You've earned it!");
+        System.out.println("The list of rounds : " + roundList);
     }
     
     /** Initializes the players list
@@ -240,13 +275,35 @@ public class Game
         Coordinates.size = board.getYSize();
     }
     
+    private void save(String filepath) throws IOException
+    {
+    	Path file = Paths.get(filepath);
+    	List<String> lines = new ArrayList<String>();
+    	
+    	for (Round round : roundList)
+    		lines.add(round.toString());
+    	
+    	Files.write(file, lines, Charset.forName("UTF-8"));
+    }
+    
+    private void load(String filepath) throws IOException, ParseException
+    {
+    	Path file = Paths.get(filepath);
+    	List<String> list = Files.readAllLines(file);
+    	ArrayList<Round> rounds = new ArrayList<Round> ();
+    	for (String string : list)
+    	{
+    		rounds.add(Round.parse(string));
+    	}
+    	roundList = rounds;
+    }
     
     /** Main method
      *  
      * @param args Arguments
      */
     public static void main(String[] args)
-    {
+    {    	
     	Game game = new Game();
     	game.run();
     }

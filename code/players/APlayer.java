@@ -35,7 +35,7 @@ public abstract class APlayer
 	 * 
 	 * @param board The board
 	 */
-	public abstract void play(Board board);
+	public abstract Round play(Board board);
 	
 	/** Gets the number of the Player
 	 * 

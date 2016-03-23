@@ -1,5 +1,6 @@
 package players;
 
+import java.text.ParseException;
 import board.Coordinates;
 
 /** One action of a player
@@ -26,7 +27,7 @@ public final class Round
 	 * @param type The round type
 	 * @param coord The target coordinates
 	 */
-	Round(Type type, Coordinates coord)
+	public Round(Type type, Coordinates coord)
 	{
 		this.type = type;
 		this.coord = coord;
@@ -48,5 +49,34 @@ public final class Round
 	public Coordinates getCoord()
 	{
 		return coord.clone();
+	}
+	
+	@Override
+	public String toString()
+	{
+		String res = type + " " + coord;
+		return res;
+	}
+	
+	/** Parses a String and returns the corresponding Round.
+	 * Can throw a ParseException if the String is incorrect.
+	 * 
+	 * @param string The String to parse
+	 * @return The Round made from the string
+     * @throws ParseException
+	 */
+	public static Round parse(String string) throws ParseException
+	{
+		Type type = Type.NONE;
+		Coordinates coord = null;
+		if (string.charAt(0) == 'M')
+			type = Type.MOVE;
+		else if (string.charAt(0) == 'W')
+			type = Type.WALL;
+		else
+			throw new ParseException("Invalid type", 0);
+		
+		coord = Coordinates.parse(string.substring(5));
+		return new Round(type, coord);
 	}
 }

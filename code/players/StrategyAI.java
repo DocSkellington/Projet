@@ -44,20 +44,23 @@ public final class StrategyAI extends APlayer
 	}
 	
 	@Override
-	public void play(Board board)
+	public Round play(Board board)
 	{
 		System.out.println("Player " + (num+1) + " processing...");
-		
-		Round round = strat.strategy(board, num, wallsCounter, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds);
+
+		Round round = strat.strategy(board, num, wallsCounter, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds++);
 		if (round.getType() == Type.MOVE)
 		{
 			board.move(num, round.getCoord());
+			return round;
 		}
 		else if (round.getType() == Type.WALL)
 		{
 			board.setWall(round.getCoord());
 			wallsCounter--;
+			return round;
 		}
-		numRounds++;
+		else
+			throw new RuntimeException("IA musn't stay inactive!");
 	}
 }

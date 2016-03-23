@@ -1,5 +1,7 @@
 package board;
 
+import java.text.ParseException;
+
 /** Manages coordinates for a point 
  * 
  * @author Thibaut De Cooman
@@ -94,6 +96,49 @@ public final class Coordinates implements Cloneable, Comparable<Coordinates>
     @Override
     public Coordinates clone()
     {
+    	return new Coordinates(x, y);
+    }
+    
+    /** Parses a string and returns the corresponding coordinates
+     * Can throw a ParseException if the string is incorrect
+     * 
+     * @param string The string to parse
+     * @return The coordinates made by the string
+     * @throws ParseException
+     */
+    public static Coordinates parse(String string) throws ParseException
+    {
+    	if (string.charAt(0) != '(')
+    		throw new ParseException("Coordinates must start with a \'(\'", 0);
+    	// We look for the comma in the coordinates
+    	int i = 1;
+    	while (i < string.length())
+    	{
+    		if (string.charAt(i) == ',')
+    			break;
+    		i++;
+    	}
+    	if (i == string.length())
+    		throw new ParseException("Missing \',\'", i);
+    	String ss = string.substring(1, i);
+    	int x = Integer.parseInt(ss);
+    	
+    	if (string.charAt(i+1) != ' ')
+    		throw new ParseException("A Space is needed", i+1);
+    	
+    	// We look for the closing bracket
+    	int j = i;
+    	while (j < string.length())
+    	{
+    		if (string.charAt(j) == ')')
+    			break;
+    		j++;
+    	}
+    	if (j == string.length())
+    		throw new ParseException("Missing \')\'", j);
+    	ss = string.substring(i+2, j);
+    	int y = Integer.parseInt(ss);
+    	
     	return new Coordinates(x, y);
     }
 }

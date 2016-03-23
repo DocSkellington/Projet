@@ -148,6 +148,11 @@ public final class ShillerStrategy implements IStrategy
 		{
 			coord = board.startingPos(0);
 		}
+		else if (numPlayer == 2)
+			coord = board.startingPos(3);
+		else if (numPlayer == 3)
+			coord = board.startingPos(2);
+		// TODO : 6 players
 		if (coord.getY() == 0)
 		{
 			if (board.filled(new Coordinates(coord.getX() - 1, coord.getY())) == 1)
