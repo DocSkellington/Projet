@@ -7,7 +7,6 @@ import java.nio.file.*;
 import java.util.List;
 import board.*;
 import players.*;
-import players.Round.Type;
 
 /** Main class that keeps the game running
  * 
@@ -59,7 +58,7 @@ public final class Game
             {
             	try
             	{
-            		save("Save/Save.sav");
+            		save("Save/Save.txt");
             	}
             	catch(IOException e)
             	{
@@ -289,7 +288,7 @@ public final class Game
     private void load(String filepath) throws IOException, ParseException
     {
     	Path file = Paths.get(filepath);
-    	List<String> list = Files.readAllLines(file);
+    	List<String> list = Files.readAllLines(file, Charset.forName("UTF-8"));
     	ArrayList<Round> rounds = new ArrayList<Round> ();
     	for (String string : list)
     	{

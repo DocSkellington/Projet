@@ -12,23 +12,23 @@ import java.util.HashSet;
  */
 public abstract class APlayer
 {
-	protected int num, wallsCounter;
+	protected int num, wallCounter;
 	
 	/** The default constructor */
 	public APlayer()
 	{
-		wallsCounter = 10;
+		wallCounter = 10;
 	}
 	
 	/** The constructor that must be used
 	 * 
 	 * @param num The number of the Player
-	 * @param wallsCounter The number of walls this player can set
+	 * @param wallCounter The number of walls this player can set
 	 */
-	public APlayer(int num, int wallsCounter)
+	public APlayer(int num, int wallCounter)
 	{
 		this.num = num;
-		this.wallsCounter = wallsCounter;
+		this.wallCounter = wallCounter;
 	}
 	
 	/** This function handles the turn of a player.

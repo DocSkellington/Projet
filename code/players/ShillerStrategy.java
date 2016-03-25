@@ -15,9 +15,9 @@ import board.*;
 public final class ShillerStrategy implements IStrategy
 {
 	@Override
-	public Round strategy(Board board, int numPlayer, int wallsCounter, Coordinates[] possibleMoves, int numRounds)
+	public Round strategy(Board board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
 	{
-		System.out.println("Shiller strategy in process...");
+		//System.out.println("Shiller strategy in process...");
 		if(numRounds < 3)
 		{
 			return move(board, numPlayer, possibleMoves);
@@ -25,7 +25,14 @@ public final class ShillerStrategy implements IStrategy
 		else if(numRounds == 3)
 		{
 			if(numPlayer == 0)
-				return shiller(board, numPlayer);
+			{
+				Round round = shiller(board, numPlayer);
+				if (round.getType() == Type.NONE)
+				{
+					return move(board, numPlayer, possibleMoves);
+				}
+				return round;
+			}
 			else
 			{
 				if(checkShiller(board, numPlayer))
@@ -63,7 +70,7 @@ public final class ShillerStrategy implements IStrategy
 			
 			if (ownPath.getLength() > bestPath.getLength())
 			{
-				Round round = wall(board, wallsCounter, bestPath);
+				Round round = wall(board, wallCounter, bestPath);
 				if (round.getType() == Type.NONE)
 					return move(board, numPlayer, possibleMoves);
 				return round;
@@ -191,9 +198,9 @@ public final class ShillerStrategy implements IStrategy
 		}
 	}
 
-	private Round wall(Board board, int wallsCounter, Path path)
+	private Round wall(Board board, int wallCounter, Path path)
 	{
-		if (wallsCounter <= 0)
+		if (wallCounter <= 0)
 			return new Round(Type.NONE, new Coordinates(-1, -1));
 		for (int i = 0 ; i < path.getLength()-1 ; i++)
 		{

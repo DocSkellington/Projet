@@ -16,16 +16,16 @@ public final class Human extends APlayer
 	/** Constructor
 	 * 
 	 * @param num The player's number
-	 * @param wallsCounter The counter of available walls
+	 * @param wallCounter The counter of available walls
 	 */
-	public Human(int num, int wallsCounter)
+	public Human(int num, int wallCounter)
 	{
-		super(num, wallsCounter);
+		super(num, wallCounter);
 	}
 	
 	@Override
 	public Round play(Board board) {
-		System.out.println("Player " + (num+1) + ", you can play. You have " + wallsCounter + " wall(s) left.");
+		System.out.println("Player " + (num+1) + ", you can play. You have " + wallCounter + " wall(s) left.");
 		boolean wantsToMove = wannaMove();
 		if (wantsToMove)
 		{
@@ -93,7 +93,7 @@ public final class Human extends APlayer
 			
 			if (board.setWall(new Coordinates(xw, yw)))
 			{
-				wallsCounter--;
+				wallCounter--;
 				return new Coordinates(xw, yw);
 			}
 			

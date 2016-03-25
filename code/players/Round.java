@@ -73,6 +73,8 @@ public final class Round
 			type = Type.MOVE;
 		else if (string.charAt(0) == 'W')
 			type = Type.WALL;
+		else if (string.charAt(0) == 'N')
+			type = Type.NONE;
 		else
 			throw new ParseException("Invalid type", 0);
 		
