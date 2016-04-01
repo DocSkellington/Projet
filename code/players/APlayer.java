@@ -34,6 +34,7 @@ public abstract class APlayer
 	/** This function handles the turn of a player.
 	 * 
 	 * @param board The board
+	 * @return The played round
 	 */
 	public abstract Round play(Board board);
 	

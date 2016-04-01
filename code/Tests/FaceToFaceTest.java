@@ -12,11 +12,11 @@ public class FaceToFaceTest
 	
 	@Before
 	public void init()
-	{
+	{		
 		players = new APlayer[2];
 		players[0] = new StrategyAI(0, 10, new ShillerStrategy());
 		players[1] = new StrategyAI(1, 10, new ShillerStrategy());
-		board = new Board(players);
+		board = new Board(players, null);
 	}
 	
 	@After
@@ -53,7 +53,6 @@ public class FaceToFaceTest
 				}
 			}
 		}
-		
 		
 		// Player 2
 		coord = players[1].possibleMoves(board, true);

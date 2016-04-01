@@ -104,7 +104,7 @@ public final class Coordinates implements Cloneable, Comparable<Coordinates>
      * 
      * @param string The string to parse
      * @return The coordinates made by the string
-     * @throws ParseException
+     * @throws ParseException If the string cannot be parsed
      */
     public static Coordinates parse(String string) throws ParseException
     {

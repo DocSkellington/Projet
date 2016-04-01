@@ -1,6 +1,12 @@
 package board;
 
 import players.*;
+
+import java.awt.GridBagConstraints;
+
+import javax.swing.JPanel;
+
+import gui.TextureHolder;
 import pathFinder.*;
 
 /** Manages all information about the board.
@@ -16,9 +22,11 @@ public class Board
     protected APlayer[] players;
     
     /** The constructor
-     * @param players The array of players  
-    */
-    public Board(APlayer[] players)
+     * @param players The array of players 
+     * @param holder The holder of all needed textures (can be null if in console mode)
+     *
+     */
+    public Board(APlayer[] players, TextureHolder holder)
     {
         cells = new ACell[17][17];
         this.players = players; 
@@ -29,9 +37,9 @@ public class Board
             for (int y = 0 ; y < 17 ; y++)
             {
                 if((x % 2 == 0) && (y % 2 == 0))
-                    cells[x][y] = new Case();
+                    cells[x][y] = new Case(holder);
                 else
-                    cells[x][y] = new Wall();
+                    cells[x][y] = new Wall(holder);
             }
         }
         
@@ -72,6 +80,68 @@ public class Board
         }
         System.out.println();
     }
+    
+    public void fill(JPanel panel)
+    {
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		c.fill = GridBagConstraints.BOTH;
+		for (int i = 0 ; i < cells.length ; i++)
+		{
+			for (int j = 0 ; j < cells[0].length ; j++)
+			{
+				c.gridx = i;
+				c.gridy = j;
+				if (i % 2 == 0 && j % 2 == 0)
+				{
+					//c.weightx = 60;
+					//c.weighty = 60;
+					/*c.gridwidth = 2;
+					c.gridheight = 2;
+					c.gridx += 2;*/
+					c.ipadx = 70;
+					c.ipady = 66;
+				}
+				else if (i % 2 == 0 && j % 2 == 1)
+				{
+					//c.weightx = 60;
+					//c.weighty = 17;
+					/*c.gridwidth = 2;
+					c.gridheight = 1;
+					c.gridx += 2;*/
+					c.ipadx = 70;
+					c.ipady = 17;
+				}
+				else if (i % 2 == 1 && j % 2 == 0)
+				{
+					//c.weightx = 17;
+					//c.weighty = 60;
+//					c.gridwidth = 1;
+//					c.gridheight = 2;
+//					c.gridx++;
+					c.ipadx = 17;
+					c.ipady = 66;
+				}
+				else
+				{
+					//c.weightx = 17;
+					//c.weighty = 17;
+					/*c.gridwidth = 1;
+					c.gridheight = 1;
+					c.gridx++;*/
+					c.ipadx = 17;
+					c.ipady = 17;
+				}
+				
+				panel.add(cells[i][j], c);
+			}
+			/*if (i % 2 == 0)
+				c.gridy += 2;
+			else
+				c.gridy++;*/
+		}
+	}
     
     /** Sets a wall if it can
      * 
@@ -264,9 +334,9 @@ public class Board
             {
                 // Since copying an object would simply copy the reference, we create new cells
                 if (cells[i][j] instanceof Wall)
-                    map[i][j] = new Wall(cells[i][j].filled());
+                    map[i][j] = cells[i][j].clone();
                 else
-                    map[i][j] = new Case(cells[i][j].filled());
+                    map[i][j] = cells[i][j].clone();
             }
         }
         return map;

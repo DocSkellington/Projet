@@ -1,5 +1,12 @@
 package board;
 
+import java.awt.Dimension;
+import java.awt.Graphics;
+
+import javax.swing.JButton;
+
+import gui.TextureHolder;
+
 /** Cells compose the board
  * 
  * 
@@ -7,21 +14,27 @@ package board;
  * @author Gaetan Staquet
  *
  */
-public abstract class ACell
+public abstract class ACell extends JButton implements Cloneable
 {
     protected int filled;
+    protected TextureHolder holder;
     
-    /** Default constructor*/
-    public ACell()
+    /** Default constructor
+     * 
+     * @param holder The holder of all needed textures
+     * */
+    public ACell(TextureHolder holder)
     {
         filled = 0;
+        this.holder = holder;
     }
     
     /** Constructor
      *  
      * @param filled Whether the cell is filled or not
+     * @param holder The holder of all needed textures
      */
-    public ACell(int filled)
+    public ACell(TextureHolder holder, int filled)
     {
     	this.filled = filled;
     }
@@ -43,6 +56,15 @@ public abstract class ACell
     {
         return filled;
     }
+    
+    @Override
+    public void paintComponent(Graphics g)
+    {
+    	super.paintComponent(g);
+    }
+    
+    @Override
+    public abstract ACell clone();
     
     /** Displays a cell */
     public abstract void display();

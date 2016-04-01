@@ -63,7 +63,7 @@ public final class Round
 	 * 
 	 * @param string The String to parse
 	 * @return The Round made from the string
-     * @throws ParseException
+     * @throws ParseException If the string cannot be parsed
 	 */
 	public static Round parse(String string) throws ParseException
 	{
