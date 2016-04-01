@@ -10,7 +10,7 @@
 	</target>
 	
 	<target name="run" depends="build">
-		<java classname="Game">
+		<java classname="Game" fork="yes" dir="./build/">
 			<classpath>
 				<pathelement location="build"/>
 			</classpath>
