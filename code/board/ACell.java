@@ -3,7 +3,9 @@ package board;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.border.Border;
 
 import gui.TextureHolder;
 
@@ -27,6 +29,9 @@ public abstract class ACell extends JButton implements Cloneable
     {
         filled = 0;
         this.holder = holder;
+		Border emptyBorder = BorderFactory.createEmptyBorder();
+		this.setBorder(null);
+		this.setEnabled(false);
     }
     
     /** Constructor

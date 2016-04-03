@@ -81,7 +81,7 @@ public final class Game
         
         //while (running)
         //{
-            int numPlayers = 2, hum = 2, randAINum = 0;
+            int numPlayers = 4, hum = 0, randAINum = 0;
             init(numPlayers, hum, randAINum);
     		board.fill(main);
     		main.repaint();
@@ -96,7 +96,6 @@ public final class Game
                 current = (current + 1) % numPlayers;
                 winner = board.hasWon();
             }
-            
             printVictory(winner);
             
             /*boolean save = wannaSave();
@@ -321,6 +320,7 @@ public final class Game
         {
         	textureHolder.load("case", "../data/case.jpg");
         	textureHolder.load("wallEmpty", "../data/wallEmpty.jpg");
+        	textureHolder.load("wallFilled", "../data/wallFill.jpg");
         }
         catch(IOException e)
         {

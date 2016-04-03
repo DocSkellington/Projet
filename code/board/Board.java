@@ -2,9 +2,12 @@ package board;
 
 import players.*;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import gui.TextureHolder;
 import pathFinder.*;
@@ -87,59 +90,34 @@ public class Board
 		c.gridx = 0;
 		c.gridy = 0;
 		c.fill = GridBagConstraints.BOTH;
-		for (int i = 0 ; i < cells.length ; i++)
+		for (int i = 0 ; i < cells[0].length ; i++)
 		{
-			for (int j = 0 ; j < cells[0].length ; j++)
+			for (int j = 0 ; j < cells.length ; j++)
 			{
-				c.gridx = i;
-				c.gridy = j;
+				c.gridx = j;
+				c.gridy = i;
 				if (i % 2 == 0 && j % 2 == 0)
 				{
-					//c.weightx = 60;
-					//c.weighty = 60;
-					/*c.gridwidth = 2;
-					c.gridheight = 2;
-					c.gridx += 2;*/
 					c.ipadx = 70;
 					c.ipady = 66;
 				}
-				else if (i % 2 == 0 && j % 2 == 1)
+				else if (i % 2 == 1 && j % 2 == 0)
 				{
-					//c.weightx = 60;
-					//c.weighty = 17;
-					/*c.gridwidth = 2;
-					c.gridheight = 1;
-					c.gridx += 2;*/
 					c.ipadx = 70;
 					c.ipady = 17;
 				}
-				else if (i % 2 == 1 && j % 2 == 0)
+				else if (i % 2 == 0 && j % 2 == 1)
 				{
-					//c.weightx = 17;
-					//c.weighty = 60;
-//					c.gridwidth = 1;
-//					c.gridheight = 2;
-//					c.gridx++;
 					c.ipadx = 17;
 					c.ipady = 66;
 				}
 				else
 				{
-					//c.weightx = 17;
-					//c.weighty = 17;
-					/*c.gridwidth = 1;
-					c.gridheight = 1;
-					c.gridx++;*/
 					c.ipadx = 17;
 					c.ipady = 17;
 				}
-				
 				panel.add(cells[i][j], c);
 			}
-			/*if (i % 2 == 0)
-				c.gridy += 2;
-			else
-				c.gridy++;*/
 		}
 	}
     
@@ -498,6 +476,7 @@ public class Board
     		Coordinates coord = playersPositions[i];
     		cells[coord.getY()][coord.getX()].setFilled(i + 1);
     	}
+    	repaint();
     }
     
     /** Checks if the player can be moved at the given coordinates, moves it if possible
@@ -585,6 +564,15 @@ public class Board
     	return true;
     }
     
+    // Repaint the board
+    private void repaint()
+    {
+    	for (int i = 0 ; i < cells.length ; i++)
+    	{
+    		for (int j = 0 ; j < cells[0].length ; j++)
+    			cells[i][j].repaint();
+    	}
+    }
     
     /** Returns the maximum number of players for this board
      * 

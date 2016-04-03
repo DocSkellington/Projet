@@ -2,6 +2,7 @@ package board;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 
 import gui.TextureHolder;
 
@@ -39,6 +40,12 @@ public final class Wall extends ACell
     		System.out.print(" ");
     	else
     		System.out.print("#");
+    }
+    
+    @Override
+    public void processMouseEvent(MouseEvent e)
+    {
+    	super.processMouseEvent(e);
     }
     
     @Override
