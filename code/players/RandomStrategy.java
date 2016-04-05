@@ -23,7 +23,6 @@ public final class RandomStrategy implements IStrategy
 	@Override
 	public Round strategy(Board board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
 	{
-		//System.out.println("Random strategy in process...");
 		boolean choice = randgen.nextBoolean();
 		if (choice)
 			return move(board, possibleMoves);

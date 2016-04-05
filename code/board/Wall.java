@@ -1,7 +1,11 @@
 package board;
 
+import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
 import gui.TextureHolder;
@@ -45,7 +49,29 @@ public final class Wall extends ACell
     @Override
     public void processMouseEvent(MouseEvent e)
     {
-    	super.processMouseEvent(e);
+    	if (this.isEnabled())
+    	{
+    		super.processMouseEvent(e);
+	    	ActionEvent a = null;
+	    	if (e.getID() == MouseEvent.MOUSE_ENTERED)
+	    	{
+	    		String command = this.getActionCommand();
+	    		a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "l " + command);
+	    	}
+	    	else if (e.getID() == MouseEvent.MOUSE_EXITED)
+	    	{
+	    		String command = this.getActionCommand();
+	    		a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "u " + command);
+	    	}
+	    	
+	    	if (a != null)
+	    	{
+	    		for (ActionListener al : getActionListeners())
+	    		{
+	    			al.actionPerformed(a);
+	    		}
+	    	}
+    	}
     }
     
     @Override
@@ -66,9 +92,17 @@ public final class Wall extends ACell
     public void paintComponent(Graphics g)
     {
     	super.paintComponent(g);
+    	
+    	Graphics2D g2D = (Graphics2D) g;
+    	
     	if (filled == 0)
-    		g.drawImage(holder.get("wallEmpty"), 0, 0, null);
-    	else
-    		g.drawImage(holder.get("wallFilled"), 0, 0, null);
+    		g2D.drawImage(holder.get("wallEmpty"), 0, 0, null);
+    	else if (filled == 1)
+    		g2D.drawImage(holder.get("wallFilled"), 0, 0, null);    	
+    	else if (filled == 2)
+    	{
+    		g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+    		g2D.drawImage(holder.get("wallFilled"), 0, 0, null);
+    	}
     }
 }

@@ -26,7 +26,7 @@ public class MoveTest
 		players[1] = new StrategyAI(1, 10, new ShillerStrategy());
 		players[2] = new StrategyAI(2, 10, new ShillerStrategy());
 		players[3] = new StrategyAI(3, 10, new ShillerStrategy());
-		board = new Board(players, null);
+		board = new Board(players, 9, null);
 	}
 	
 	@After

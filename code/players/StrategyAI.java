@@ -44,8 +44,6 @@ public final class StrategyAI extends APlayer
 	@Override
 	public Round play(Board board)
 	{
-		//System.out.println("Player " + (num+1) + " processing...");
-
 		Round round = strat.strategy(board, num, wallCounter, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds++);
 		if (round.getType() == Type.MOVE)
 		{

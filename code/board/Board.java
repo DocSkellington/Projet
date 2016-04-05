@@ -1,11 +1,17 @@
 package board;
 
 import players.*;
+import players.Human;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
@@ -22,27 +28,34 @@ public class Board
 {
     protected ACell[][] cells;
     protected Coordinates[] playersPositions;
+    protected ArrayList<Coordinates> possibleWalls;
     protected APlayer[] players;
     
     /** The constructor
      * @param players The array of players 
+     * @param size The size of the board
      * @param holder The holder of all needed textures (can be null if in console mode)
      *
      */
-    public Board(APlayer[] players, TextureHolder holder)
+    public Board(APlayer[] players, int size, TextureHolder holder)
     {
-        cells = new ACell[17][17];
+        cells = new ACell[2*size-1][2*size-1];
         this.players = players; 
+        possibleWalls = new ArrayList<Coordinates>();
         int numPlayers = players.length;
         
-        for (int x = 0 ; x < 17 ; x++)
+        for (int x = 0 ; x < cells.length ; x++)
         {
-            for (int y = 0 ; y < 17 ; y++)
+            for (int y = 0 ; y < cells[0].length ; y++)
             {
                 if((x % 2 == 0) && (y % 2 == 0))
                     cells[x][y] = new Case(holder);
                 else
-                    cells[x][y] = new Wall(holder);
+                {
+                	cells[x][y] = new Wall(holder);
+                	if (x % 2 != 1 || y % 2 != 1)
+                		possibleWalls.add(new Coordinates(x, y));
+                }
             }
         }
         
@@ -84,7 +97,7 @@ public class Board
         System.out.println();
     }
     
-    public void fill(JPanel panel)
+    public void fill(JPanel panel, APlayer[] players)
     {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -94,6 +107,7 @@ public class Board
 		{
 			for (int j = 0 ; j < cells.length ; j++)
 			{
+				// TODO : Size variable
 				c.gridx = j;
 				c.gridy = i;
 				if (i % 2 == 0 && j % 2 == 0)
@@ -116,6 +130,94 @@ public class Board
 					c.ipadx = 17;
 					c.ipady = 17;
 				}
+				
+				for (APlayer player : players)
+				{
+					if (player instanceof Human)
+					{
+						final Human human = (Human) player;
+						final Board board = this;
+						cells[i][j].setActionCommand("(" + j + ", " + i + ")");
+						// Case
+						if (i % 2 == 0 && j % 2 == 0)
+						{
+							cells[i][j].addActionListener(new ActionListener()
+									{
+										public void actionPerformed(ActionEvent e)
+										{
+											if (human.isActive())
+											{
+												try
+												{
+													Coordinates coord = Coordinates.parse(((JButton) e.getSource()).getActionCommand());
+													human.doMove(board, coord);
+												}
+												catch (ParseException ex)
+												{
+													throw new RuntimeException("Can not parse action command" + ex);
+												}
+											}
+										}
+									});
+						}
+						// Walls
+						else
+						{
+							if (i % 2 != 1 || j % 2 != 1)
+							{
+								cells[i][j].addActionListener(new ActionListener()
+										{
+											public void actionPerformed(ActionEvent e)
+											{
+												if (human.isActive())
+												{
+													String message = e.getActionCommand();
+													
+													if (message.charAt(0) == 'l')
+													{
+														try
+														{
+															Coordinates coord = Coordinates.parse(message.substring(2));
+															board.colorAdjacentWalls(coord, true);
+														}
+														catch(ParseException ex)
+														{
+															throw new RuntimeException("Can not parse action command" + ex);
+														}
+													}
+													else if (message.charAt(0) == 'u')
+													{
+														try
+														{
+															Coordinates coord = Coordinates.parse(message.substring(2));
+															board.colorAdjacentWalls(coord, false);
+														}
+														catch(ParseException ex)
+														{
+															throw new RuntimeException("Can not parse action command" + ex);
+														}
+													}
+													else
+													{
+
+														try
+														{
+															Coordinates coord = Coordinates.parse(message);
+															human.setWall(board, coord);
+														}
+														catch(ParseException ex)
+														{
+															throw new RuntimeException("Can not parse action command" + ex);
+														}
+													}
+												}
+											}
+										});
+							}
+						}
+					}
+				}
+				cells[i][j].setEnabled(false);
 				panel.add(cells[i][j], c);
 			}
 		}
@@ -128,6 +230,11 @@ public class Board
      *  */
     public boolean setWall(Coordinates coord)
     {
+    	if (coord.getX() == cells[0].length-1)
+    		coord = new Coordinates(coord.getX() - 2, coord.getY());
+    	if (coord.getY() == cells.length-1)
+    		coord = new Coordinates(coord.getX(), coord.getY() - 2);
+    	
     	int x = coord.getX(), y = coord.getY();
     	
         int x2 = x, y2 = y;
@@ -143,6 +250,9 @@ public class Board
             cells[y][x].setFilled(1);
             cells[(y2+y)/2][(x2+x)/2].setFilled(1);
             cells[y2][x2].setFilled(1);
+            possibleWalls.remove(new Coordinates(y, x));
+            possibleWalls.remove(new Coordinates((y2+y)/2, (x2+x)/2));
+            possibleWalls.remove(new Coordinates(y2, x2));
             return true;
     	}
     	return false;
@@ -189,7 +299,9 @@ public class Board
         cells[(y2+y)/2][(x2+x)/2].setFilled(0);
         cells[y2][x2].setFilled(0);
         if(none)
+        {
         	return false;
+        }
         return true;
     }
     
@@ -421,13 +533,13 @@ public class Board
     public Coordinates startingPos(int playerNum)
     {
 		if (playerNum == 0)
-			return new Coordinates(8, 16);
+			return new Coordinates(cells.length/2, cells.length-1);
 		else if (playerNum == 1)
-			return new Coordinates(8,0);
+			return new Coordinates(cells.length/2,0);
 		else if (playerNum == 2)
-			return new Coordinates(0, 8);
+			return new Coordinates(0, cells.length/2);
 		else
-			return new Coordinates(16,8);
+			return new Coordinates(cells.length-1, cells.length/2);
     }
 
     /** Returns the goal coordinates for a given player
@@ -479,6 +591,98 @@ public class Board
     	repaint();
     }
     
+    /** A button dis/enabler
+     * 
+     * @param enabled Whether we want to enable or disable
+     * @param coord The coordinates of the buttons to dis/enable
+     */
+    public void setEnabledButtons(boolean enabled, Coordinates[] coord)
+    {
+    	for (int i = 0 ; i < coord.length ; i++)
+    	{
+    		cells[coord[i].getY()][coord[i].getX()].setEnabled(enabled);
+    	}
+    }
+    
+    /** Disable every button */
+    public void disableAll()
+    {
+    	for (int i = 0 ; i < cells.length ; i++)
+    	{
+    		for (int j = 0 ; j < cells[0].length ; j++)
+    		{
+    			cells[i][j].setEnabled(false);
+    		}
+    	}
+    }
+    
+    /** Enable all possible walls buttons */
+    public void enableWalls()
+    {
+    	for (Coordinates coord : possibleWalls)
+    	{
+    		cells[coord.getX()][coord.getY()].setEnabled(true);
+    	}
+    }
+    
+    /** Draws a translucent wall over the board
+     * 
+     * @param coord The upper-left corner of the wall
+     * @param coloured Whether we colour the walls or not
+     */
+    public void colorAdjacentWalls(Coordinates coord, boolean coloured)
+    {
+    	if (coord.getX() == cells[0].length-1)
+    		coord = new Coordinates(coord.getX() - 2, coord.getY());
+    	if (coord.getY() == cells.length-1)
+    		coord = new Coordinates(coord.getX(), coord.getY() - 2);
+    	
+    	int filled = 0;
+    	if (coloured)
+    	{
+    		filled = 2;
+        	if (coord.getX() % 2 == 0)
+        	{
+        		if (cells[coord.getY()][coord.getX()].filled() == 0 && cells[coord.getY()][coord.getX()+2].filled() == 0 && cells[coord.getY()][coord.getX()+1].filled() == 0)
+        		{
+    	    		cells[coord.getY()][coord.getX()].setFilled(filled);
+    	    		cells[coord.getY()][coord.getX()+1].setFilled(filled);
+    	    		cells[coord.getY()][coord.getX()+2].setFilled(filled);
+        		}
+        	}
+        	else
+        	{
+        		if (cells[coord.getY()][coord.getX()].filled() == 0 && cells[coord.getY()+2][coord.getX()].filled() == 0 && cells[coord.getY()+1][coord.getX()].filled() == 0)
+        		{
+    	    		cells[coord.getY()][coord.getX()].setFilled(filled);
+    	    		cells[coord.getY()+1][coord.getX()].setFilled(filled);
+    	    		cells[coord.getY()+2][coord.getX()].setFilled(filled);
+        		}
+        	}
+    	}
+    	else
+    	{
+	    	if (coord.getX() % 2 == 0)
+	    	{
+        		if (cells[coord.getY()][coord.getX()].filled() != 1 && cells[coord.getY()][coord.getX()+2].filled() != 1 && cells[coord.getY()][coord.getX()+1].filled() != 1)
+        		{
+    	    		cells[coord.getY()][coord.getX()].setFilled(filled);
+    	    		cells[coord.getY()][coord.getX()+1].setFilled(filled);
+    	    		cells[coord.getY()][coord.getX()+2].setFilled(filled);
+        		}
+	    	}
+	    	else
+	    	{
+        		if (cells[coord.getY()][coord.getX()].filled() != 1 && cells[coord.getY()+2][coord.getX()].filled() != 1 && cells[coord.getY()+1][coord.getX()].filled() != 1)
+        		{
+    	    		cells[coord.getY()][coord.getX()].setFilled(filled);
+    	    		cells[coord.getY()+1][coord.getX()].setFilled(filled);
+    	    		cells[coord.getY()+2][coord.getX()].setFilled(filled);
+        		}
+	    	}
+    	}
+    }
+    
     /** Checks if the player can be moved at the given coordinates, moves it if possible
      * 
      * @param num The number of the player
@@ -526,18 +730,6 @@ public class Board
     {
     	int x = coord.getX(), y = coord.getY(), x2 = x, y2 = y;
     	
-    	/*if (horizontal)
-    	{
-    		if (y % 2 == 0)
-    			return false;
-    		x2 += 2;
-    	}
-    	else
-    	{
-    		if (x % 2 == 0)
-    			return false;
-    		y2 += 2;
-    	}*/
     	// Horizontal
     	if(x % 2 == 0)
     	{
@@ -558,7 +750,7 @@ public class Board
     	{
     		return false;
     	}
-    	if (filled(x, y) != 0 || filled(x2, y2) != 0 || filled((x+x2)/2, (y+y2) / 2) != 0)
+    	if ((filled(x, y) != 0 || filled(x2, y2) != 0 || filled((x+x2)/2, (y+y2) / 2) != 0) && (filled(x, y) != 2 || filled(x2, y2) != 2 || filled((x+x2)/2, (y+y2) / 2) != 2))
     		return false;
     	
     	return true;

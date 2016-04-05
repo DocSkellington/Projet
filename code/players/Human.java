@@ -12,7 +12,10 @@ import players.Round.Type;
  *
  */
 public final class Human extends APlayer
-{
+{	
+	private boolean activated;
+	private Round round;
+	
 	/** Constructor
 	 * 
 	 * @param num The player's number
@@ -24,118 +27,71 @@ public final class Human extends APlayer
 	}
 	
 	@Override
-	public Round play(Board board) {
-		System.out.println("Player " + (num+1) + ", you can play. You have " + wallCounter + " wall(s) left.");
-		boolean wantsToMove = wannaMove();
-		if (wantsToMove)
+	public Round play(Board board)
+	{
+		activated = true;
+		
+		while (activated)
 		{
-			Coordinates coord = move(board);
-			return new Round (Type.MOVE, coord);
+			board.update();
 		}
-		else
-		{
-			Coordinates coord = setAWall(board);
-			return new Round (Type.WALL, coord);
-		}
+		
+		board.disableAll();
+		return round;
+	}
+	
+	/** Whether the human is active
+	 * 
+	 * @return True if the player is active, false otherwise
+	 */
+	public boolean isActive()
+	{
+		return activated;
 	}
 
-	/** Asks the player whether they want to move or not
-	 * 
-	 * @return Returns whether the player wants to move or not
-	 */
-	private boolean wannaMove()
-	{
-		Scanner scan = new Scanner(System.in);
-		String res = "";
-		
-		System.out.println("Do you want to move or to set a wall ? (M/W)");
-		
-		do
-		{
-			res = scan.nextLine();
-		
-			if (res.equals("M"))
-				return true;
-			else if (res.equals("W"))
-				return false;
-			System.out.println("M to move or W to set a wall");
-		} while(true);
-	}
-	
-	/** Asks the player the coordinates to set the wall
+	/** Activate the possible positions
 	 * 
 	 * @param board A reference to the board
 	 */
-	private Coordinates setAWall(Board board)
+	public void move(Board board)
 	{
-		Scanner scan = new Scanner(System.in);
-		while (true)
-		{
-			System.out.println("Enter the x position of the (upper-left corner of the) wall");
-			int xw, yw;
-			
-			while (!scan.hasNextInt())
-			{
-				System.out.println("Please enter an integer.");
-				scan.next();
-			}
-			
-			xw = scan.nextInt();
-			System.out.println("Enter the y position of the (upper-left corner of the) wall");
-			
-			while (!scan.hasNextInt())
-			{
-				System.out.println("Please enter an integer.");
-				scan.next();
-			}
-			
-			yw = scan.nextInt();
-			
-			if (board.setWall(new Coordinates(xw, yw)))
-			{
-				wallCounter--;
-				return new Coordinates(xw, yw);
-			}
-			
-			System.out.println("Impossible to place the wall at the given position. Pl0x enter another position.");
-		}
-		
+		board.disableAll();
+		Coordinates[] coord = possibleMoves(board, true).toArray(new Coordinates[0]);
+		board.setEnabledButtons(true, coord);
 	}
 	
-	/** Asks the player to move.
+	/** Activate the possible walls
 	 * 
 	 * @param board A reference to the board
 	 */
-	private Coordinates move(Board board)
+	public void walls(Board board)
 	{
-		Coordinates coord = board.getCoordinates(num);
-		Scanner scan = new Scanner(System.in);
-		System.out.println("You're at " + coord);
-		
-		Coordinates[] possibleMoves = possibleMoves(board, true).toArray(new Coordinates[0]);
-		for(int i = 0 ; i < possibleMoves.length ; i++)
+		if (wallCounter > 0)
 		{
-			System.out.println("(" + (i+1) + ") " + possibleMoves[i]);
+			board.disableAll();
+			board.enableWalls();
 		}
-		
-		int choice = 0;
-		
-		while(true)
+	}
+	
+	/** Effectively moves
+	 * 
+	 * @param board A reference to the board
+	 * @param coord The coordinates to reach
+	 */
+	public void doMove(Board board, Coordinates coord)
+	{
+		board.move(num, coord);
+		activated = false;
+		round = new Round(Type.MOVE, coord);
+	}
+	
+	public void setWall(Board board, Coordinates coord)
+	{
+		if(board.setWall(coord))
 		{
-			while (!scan.hasNextInt())
-			{
-				System.out.println("Please enter an integer.");
-				scan.next();
-			}
-		
-			choice = scan.nextInt() - 1;
-			
-			if(choice >= 0 && choice < possibleMoves.length)
-			{
-				board.move(num, possibleMoves[choice]);
-				return possibleMoves[choice];
-			}
-			System.out.println("The integer must be between 1 and " + possibleMoves.length + ".");
+			activated = false;
+			round = new Round(Type.WALL, coord);
+			wallCounter--;
 		}
 	}
 }

@@ -16,7 +16,7 @@ public class FaceToFaceTest
 		players = new APlayer[2];
 		players[0] = new StrategyAI(0, 10, new ShillerStrategy());
 		players[1] = new StrategyAI(1, 10, new ShillerStrategy());
-		board = new Board(players, null);
+		board = new Board(players, 9, null);
 	}
 	
 	@After

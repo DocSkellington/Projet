@@ -17,7 +17,6 @@ public final class ShillerStrategy implements IStrategy
 	@Override
 	public Round strategy(Board board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
 	{
-		//System.out.println("Shiller strategy in process...");
 		if(numRounds < 3)
 		{
 			return move(board, numPlayer, possibleMoves);

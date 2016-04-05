@@ -1,10 +1,13 @@
 import java.util.Scanner;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import java.util.ArrayList;
 import java.text.ParseException;
@@ -14,7 +17,10 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
@@ -34,6 +40,7 @@ public final class Game
 	private Board board;
 	private ArrayList<Round> roundList; 
 	private JFrame frame;
+	private TextureHolder textureHolder;
 	
 	/** Default constructor
 	 * 
@@ -63,11 +70,17 @@ public final class Game
 		
 		JPanel main = new JPanel();
 		main.setLayout(new GridBagLayout());
-		main.setPreferredSize(new Dimension(768, 768));
 		
 		JPanel move = new JPanel(), wall = new JPanel();
-		move.add(new JButton("You don't want to move"));
-		wall.add(new JButton("There is a wall"));
+		JButton moveButton = new JButton(), wallButton = new JButton();
+		
+		moveButton.setMargin(new Insets(0, 0, 0, 0));
+		moveButton.setBorder(null);
+		wallButton.setMargin(new Insets(0, 0, 0, 0));
+		wallButton.setBorder(null);
+		
+		move.add(moveButton);
+		wall.add(wallButton);
 		
 		Box box = new Box(BoxLayout.Y_AXIS);
 		box.add(move);
@@ -77,43 +90,52 @@ public final class Game
 		frame.add(box);
 		frame.setVisible(true);
         
-        boolean running = true;
+        int numPlayers = 2, hum = 2, randAINum = 0;
+        init(numPlayers, hum, randAINum);
         
-        //while (running)
-        //{
-            int numPlayers = 4, hum = 0, randAINum = 0;
-            init(numPlayers, hum, randAINum);
-    		board.fill(main);
-    		main.repaint();
-    		main.revalidate();
-    		
-            int current = 0, winner = -1; // -1 means no winner
-            
-            while (winner == -1)
-            {
-                roundList.add(players[current].play(board));
-                board.update();
-                current = (current + 1) % numPlayers;
-                winner = board.hasWon();
-            }
-            printVictory(winner);
-            
-            /*boolean save = wannaSave();
-            if (save)
-            {
-            	try
-            	{
-            		save("Save/Save.txt");
-            	}
-            	catch(IOException e)
-            	{
-            		System.out.println(e);
-            	}
-            }*/
-            
-            //running = keepPlaying();
-            running = false;
-        //}
+        moveButton.setIcon(new ImageIcon(textureHolder.get("moveButton")));
+        wallButton.setIcon(new ImageIcon(textureHolder.get("wallButton")));
+        
+        for (int i = 0 ; i < players.length ; i++)
+        {
+        	if (players[i] instanceof Human)
+        	{
+        		final Human human = (Human) players[i];
+        		moveButton.addActionListener(new ActionListener()
+        				{
+        					public void actionPerformed(ActionEvent e)
+        					{
+        						if (human.isActive())
+        							human.move(board);
+        					}
+        				} );
+        		
+        		wallButton.addActionListener(new ActionListener()
+        				{
+							public void actionPerformed(ActionEvent e)
+							{
+								if (human.isActive())
+									human.walls(board);
+							}
+        				});
+        	}
+        }
+        
+		board.fill(main, players);
+		main.repaint();
+		main.revalidate();
+		
+        int current = 0, winner = -1; // -1 means no winner
+        
+        while (winner == -1)
+        {
+            roundList.add(players[current].play(board));
+            board.update();
+            current = (current + 1) % numPlayers;
+            winner = board.hasWon();
+        }
+        
+        printVictory(winner);
 	}
 	
 	/** Asks the number of players
@@ -315,19 +337,21 @@ public final class Game
     		players[i] = new StrategyAI(i++, walls);
     	}
     	
-        TextureHolder textureHolder = new TextureHolder();
+    	textureHolder = new TextureHolder();
         try
         {
         	textureHolder.load("case", "../data/case.jpg");
         	textureHolder.load("wallEmpty", "../data/wallEmpty.jpg");
         	textureHolder.load("wallFilled", "../data/wallFill.jpg");
+        	textureHolder.load("moveButton", "../data/moveButton.png");
+        	textureHolder.load("wallButton", "../data/wallButton.png");
         }
         catch(IOException e)
         {
         	System.out.println(e);
         }
     	
-        board = new Board(players, textureHolder);
+        board = new Board(players, 9, textureHolder);
         // This is used to hash the coordinates:
         Coordinates.size = board.getYSize();
     }
