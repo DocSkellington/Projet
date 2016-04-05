@@ -22,9 +22,34 @@
 			<classpath>
 				<pathelement location="build"/>
 			</classpath>
-			<arg value="2"/>
+			<arg value="${numGame}"/>
 			<arg value="${strat1}"/>
 			<arg value="${strat2}"/>
+		</java>
+	</target>
+	
+	<target name="stat3" depends="build">
+		<java classname="Stat">
+			<classpath>
+				<pathelement location="build"/>
+			</classpath>
+			<arg value="${numGame}"/>
+			<arg value="${strat1}"/>
+			<arg value="${strat2}"/>
+			<arg value="${strat3}"/>
+		</java>
+	</target>
+	
+	<target name="stat4" depends="build">
+		<java classname="Stat">
+			<classpath>
+				<pathelement location="build"/>
+			</classpath>
+			<arg value="${numGame}"/>
+			<arg value="${strat1}"/>
+			<arg value="${strat2}"/>
+			<arg value="${strat3}"/>
+			<arg value="${strat4}"/>
 		</java>
 	</target>
 	
