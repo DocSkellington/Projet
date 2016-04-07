@@ -1,3 +1,4 @@
+package game;
 import board.*;
 import players.*;
 import java.util.*;

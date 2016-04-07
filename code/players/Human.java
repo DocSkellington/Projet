@@ -1,6 +1,5 @@
 package players;
 
-import java.util.Scanner;
 import board.*;
 import players.Round.Type;
 

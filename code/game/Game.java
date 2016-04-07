@@ -1,3 +1,4 @@
+package game;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
@@ -7,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 import java.util.ArrayList;
@@ -16,7 +18,6 @@ import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -26,7 +27,10 @@ import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.List;
 import board.*;
+import gui.ActionButton;
+import gui.MoveButtonListener;
 import gui.TextureHolder;
+import gui.WallButtonListener;
 import players.*;
 
 /** Main class that keeps the game running
@@ -70,19 +74,21 @@ public final class Game
 		
 		JPanel main = new JPanel();
 		main.setLayout(new GridBagLayout());
+		main.setMaximumSize(new Dimension(790, 790));
 		
 		JPanel move = new JPanel(), wall = new JPanel();
-		JButton moveButton = new JButton(), wallButton = new JButton();
-		
+		ActionButton moveButton = new ActionButton(), wallButton = new ActionButton();
+
 		moveButton.setMargin(new Insets(0, 0, 0, 0));
 		moveButton.setBorder(null);
 		wallButton.setMargin(new Insets(0, 0, 0, 0));
+		wallButton.setBackground(Color.BLUE);
 		wallButton.setBorder(null);
 		
 		move.add(moveButton);
 		wall.add(wallButton);
 		
-		Box box = new Box(BoxLayout.Y_AXIS);
+		Box box = new Box(BoxLayout.X_AXIS);
 		box.add(move);
 		box.add(wall);
 		
@@ -92,7 +98,7 @@ public final class Game
         
         int numPlayers = 2, hum = 2, randAINum = 0;
         init(numPlayers, hum, randAINum);
-        
+
         moveButton.setIcon(new ImageIcon(textureHolder.get("moveButton")));
         wallButton.setIcon(new ImageIcon(textureHolder.get("wallButton")));
         
@@ -101,23 +107,8 @@ public final class Game
         	if (players[i] instanceof Human)
         	{
         		final Human human = (Human) players[i];
-        		moveButton.addActionListener(new ActionListener()
-        				{
-        					public void actionPerformed(ActionEvent e)
-        					{
-        						if (human.isActive())
-        							human.move(board);
-        					}
-        				} );
-        		
-        		wallButton.addActionListener(new ActionListener()
-        				{
-							public void actionPerformed(ActionEvent e)
-							{
-								if (human.isActive())
-									human.walls(board);
-							}
-        				});
+        		moveButton.addActionListener(new MoveButtonListener(wallButton, human, board));
+        		wallButton.addActionListener(new WallButtonListener(moveButton, human, board));
         	}
         }
         
@@ -129,8 +120,12 @@ public final class Game
         
         while (winner == -1)
         {
+        	moveButton.changeColor(current);
+        	wallButton.changeColor(current);
             roundList.add(players[current].play(board));
             board.update();
+            moveButton.setBorder(null);
+            moveButton.setBorder(null);
             current = (current + 1) % numPlayers;
             winner = board.hasWon();
         }

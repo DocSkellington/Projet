@@ -12,7 +12,7 @@
 	<target name="run" depends="build">
 		<java classname="Game" fork="yes" dir="./build/">
 			<classpath>
-				<pathelement location="build"/>
+				<pathelement location="build/game"/>
 			</classpath>
 		</java>
 	</target>
@@ -20,7 +20,7 @@
 	<target name="stat2" depends="build">
 		<java classname="Stat">
 			<classpath>
-				<pathelement location="build"/>
+				<pathelement location="build/game"/>
 			</classpath>
 			<arg value="${numGame}"/>
 			<arg value="${strat1}"/>
@@ -31,7 +31,7 @@
 	<target name="stat3" depends="build">
 		<java classname="Stat">
 			<classpath>
-				<pathelement location="build"/>
+				<pathelement location="build/game"/>
 			</classpath>
 			<arg value="${numGame}"/>
 			<arg value="${strat1}"/>
@@ -43,7 +43,7 @@
 	<target name="stat4" depends="build">
 		<java classname="Stat">
 			<classpath>
-				<pathelement location="build"/>
+				<pathelement location="build/game"/>
 			</classpath>
 			<arg value="${numGame}"/>
 			<arg value="${strat1}"/>
