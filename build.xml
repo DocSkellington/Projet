@@ -1,26 +1,29 @@
 <project name="Quoridor" default="run" basedir=".">
+	<property name="code" location="code"/>
+	<property name="build" location="build"/>
+	<property name="doc" location="doc"/>
+	
 	<target name="clean">
-		<delete dir="build"/>
-		<delete dir="clean"/>
+		<delete dir="${build}"/>
 	</target>
 	
 	<target name="build">
-		<mkdir dir="build/classes"/>
-		<javac srcdir="code" destdir="build" classpath="lib/junit-4.12.jar"/>
+		<mkdir dir="${build}"/>
+		<javac srcdir="${code}" destdir="${build}" classpath="lib/junit-4.12.jar"/>
 	</target>
 	
 	<target name="run" depends="build">
-		<java classname="Game" fork="yes" dir="./build/">
+		<java classname="game.Game" fork="yes" dir="./build/">
 			<classpath>
-				<pathelement location="build/game"/>
+				<pathelement location="${build}"/>
 			</classpath>
 		</java>
 	</target>
 	
 	<target name="stat2" depends="build">
-		<java classname="Stat">
+		<java classname="game.Stat">
 			<classpath>
-				<pathelement location="build/game"/>
+				<pathelement location="${build}"/>
 			</classpath>
 			<arg value="${numGame}"/>
 			<arg value="${strat1}"/>
@@ -29,9 +32,9 @@
 	</target>
 	
 	<target name="stat3" depends="build">
-		<java classname="Stat">
+		<java classname="game.Stat">
 			<classpath>
-				<pathelement location="build/game"/>
+				<pathelement location="${build}"/>
 			</classpath>
 			<arg value="${numGame}"/>
 			<arg value="${strat1}"/>
@@ -41,9 +44,9 @@
 	</target>
 	
 	<target name="stat4" depends="build">
-		<java classname="Stat">
+		<java classname="game.Stat">
 			<classpath>
-				<pathelement location="build/game"/>
+				<pathelement location="${build}"/>
 			</classpath>
 			<arg value="${numGame}"/>
 			<arg value="${strat1}"/>
@@ -54,8 +57,8 @@
 	</target>
 	
 	<target name="javadoc">
-		<mkdir dir="doc"/>
-		<javadoc destdir="doc" sourcepath="code/" author="true" version="true"/>
+		<mkdir dir="${doc}"/>
+		<javadoc destdir="${doc}" sourcepath="${code}" author="true" version="true"/>
 	</target>
 	
 	<target name="test" depends="build">
