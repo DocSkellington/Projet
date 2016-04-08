@@ -11,7 +11,7 @@ import players.*;
  */
 public class ClosestHeuristic implements IAStarHeuristic {
 	@Override
-	public float getCost(ACell[][] map, APlayer player, int x, int y, int tx, int ty)
+	public float getCost(int x, int y, int tx, int ty)
 	{
 		// Uses the Manhattan method
 		float dx = Math.abs(tx - x);
