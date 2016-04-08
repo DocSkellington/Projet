@@ -102,7 +102,7 @@ public class AStarPathFinder implements IPathFinder
                 if((!open.contains(neigh)) && (!closed.contains(neigh)))
                 {
                 	neigh.cost = nextStepCost;
-                	neigh.heuristic = getHeuristicCost(player, map, xp, yp, tx, ty);
+                	neigh.heuristic = getHeuristicCost(xp, yp, tx, ty);
                 	neigh.setParent(current);
                     open.add(neigh);
                 }
@@ -142,17 +142,15 @@ public class AStarPathFinder implements IPathFinder
     }
     
     /** Get the heuristic cost for the given location. This will be used to determinate the order of the locations.
-     * @param player The player who wants a path
-     * @param map The map data
      * @param x The x coordinate of the tile whose cost is being determined
 	 * @param y The y coordinate of the tile whose cost is being determined
 	 * @param tx The x coordinate of the target location
 	 * @param ty The y coordinate of the target location
 	 * @return The heuristic cost assigned to the tile
 	 */
-	public float getHeuristicCost(APlayer player, ACell[][] map, int x, int y, int tx, int ty)
+	public float getHeuristicCost(int x, int y, int tx, int ty)
 	{
-	    return heuristic.getCost(map, player, x, y, tx, ty);
+	    return heuristic.getCost(x, y, tx, ty);
 	}
 	
 	/** A simple sorted list (mainly uses the sort algorithm from Java API) */
