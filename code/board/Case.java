@@ -79,6 +79,12 @@ public final class Case extends ACell
     }
     
     @Override
+    public void repaint(Graphics g)
+    {
+    	// TODO
+    }
+    
+    @Override
     public void paintComponent(Graphics g)
     {
     	super.paintComponent(g);

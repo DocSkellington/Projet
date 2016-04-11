@@ -1,8 +1,5 @@
 package pathFinder;
 
-import board.*;
-import players.*;
-
 /** This class implements IAStarHeuristic by using the Manhattan distance approximation
  * 
  * @author Gaetan Staquet
@@ -11,7 +8,7 @@ import players.*;
  */
 public class ClosestHeuristic implements IAStarHeuristic {
 	@Override
-	public float getCost(ACell[][] map, APlayer player, int x, int y, int tx, int ty)
+	public float getCost(int x, int y, int tx, int ty)
 	{
 		// Uses the Manhattan method
 		float dx = Math.abs(tx - x);
