@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import gui.TextureHolder;
 
@@ -18,13 +19,16 @@ import gui.TextureHolder;
  */
 public final class Wall extends ACell
 {
-	/* Constructor
+	private float alpha;
+	
+	/** Constructor
 	 * 
      * @param holder The holder of all needed textures
      */
     public Wall(TextureHolder holder)
     {
         super(holder);
+        img = holder.get("wallEmpty");
     }
     
     /** Constructor
@@ -35,6 +39,7 @@ public final class Wall extends ACell
     public Wall(TextureHolder holder, int filled)
     {
     	super(holder, filled);
+        img = holder.get("wallEmpty");
     }
     
     @Override
@@ -89,20 +94,37 @@ public final class Wall extends ACell
     }
     
     @Override
+    public void repaint()
+    {
+    	super.repaint();
+    	if (holder != null)
+    	{
+    		if (filled == 0)
+	    	{
+	    		img = holder.get("wallEmpty");
+	    		alpha = 1.0f;
+	    	}
+	    	else if (filled == 1)
+	    	{
+	    		img = holder.get("wallFilled");
+	    		alpha = 1.0f;
+	    	}
+	    	else if (filled == 2)
+	    	{
+	    		alpha = 0.3f;
+	    		img = holder.get("wallFilled");
+	    	}
+    	}
+    }
+    
+    @Override
     public void paintComponent(Graphics g)
     {
     	super.paintComponent(g);
     	
     	Graphics2D g2D = (Graphics2D) g;
-    	
-    	if (filled == 0)
-    		g2D.drawImage(holder.get("wallEmpty"), 0, 0, null);
-    	else if (filled == 1)
-    		g2D.drawImage(holder.get("wallFilled"), 0, 0, null);    	
-    	else if (filled == 2)
-    	{
-    		g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
-    		g2D.drawImage(holder.get("wallFilled"), 0, 0, null);
-    	}
+
+		g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+    	g2D.drawImage(img, 0, 0, null);
     }
 }

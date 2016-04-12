@@ -96,7 +96,7 @@ public final class Game
 		frame.add(box);
 		frame.setVisible(true);
         
-        int numPlayers = 4, hum = 0, randAINum = 0;
+        int numPlayers = 4, hum = 0, randAINum = 4;
         init(numPlayers, hum, randAINum);
 
         moveButton.setIcon(new ImageIcon(textureHolder.get("moveButton")));

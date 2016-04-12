@@ -41,8 +41,9 @@ public final class RandomStrategy implements IStrategy
 	/** The bot moves to a random possible destination*/
 	private Round move(Board board, Coordinates[] possibleMoves)
 	{
+		if (possibleMoves.length == 0)
+			return new Round(Type.NONE, new Coordinates(-1, -1));
 		int choice = randgen.nextInt(possibleMoves.length);
-		//board.move(num, possibleMoves[choice]);
 		return new Round(Type.MOVE, possibleMoves[choice]);
 	}
 	

@@ -1,6 +1,7 @@
 package board;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 
@@ -17,6 +18,7 @@ public abstract class ACell extends JButton implements Cloneable
 {
     protected int filled;
     protected TextureHolder holder;
+	protected BufferedImage img;
     
     /** Default constructor
      * 

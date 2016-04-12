@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
@@ -23,7 +24,7 @@ public final class Case extends ACell
 {
 	private float alpha;
 	private Color player;
-	/* Constructor
+	/** Constructor
 	 * 
      * @param holder The holder of all needed textures
      */
@@ -33,6 +34,7 @@ public final class Case extends ACell
         Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
         this.setBorder(border);
         alpha = 0.3f;
+        img = holder.get("case");
     }
     
     /** Constructor
@@ -43,6 +45,7 @@ public final class Case extends ACell
     public Case(TextureHolder holder, int filled)
     {
     	super(holder, filled);
+        img = holder.get("case");
     }
     
     @Override
@@ -120,7 +123,7 @@ public final class Case extends ACell
     {
     	super.paintComponent(g);
     	Graphics2D g2D = (Graphics2D) g;
-    	g2D.drawImage(holder.get("case"), 0, 0, null);
+    	g2D.drawImage(img, 0, 0, null);
     	if (this.isEnabled())
     	{
         	g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
