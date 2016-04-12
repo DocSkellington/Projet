@@ -96,7 +96,7 @@ public final class Game
 		frame.add(box);
 		frame.setVisible(true);
         
-        int numPlayers = 4, hum = 4, randAINum = 0;
+        int numPlayers = 4, hum = 0, randAINum = 0;
         init(numPlayers, hum, randAINum);
 
         moveButton.setIcon(new ImageIcon(textureHolder.get("moveButton")));
@@ -124,12 +124,18 @@ public final class Game
         	wallButton.changeColor(current);
             roundList.add(players[current].play(board));
             board.update();
+            while(!board.repaint())
+            {
+            	
+            }
             moveButton.setBorder(null);
             moveButton.setBorder(null);
             current = (current + 1) % numPlayers;
             winner = board.hasWon();
         }
         
+        board.update();
+        board.repaint();
         printVictory(winner);
 	}
 	

@@ -32,7 +32,7 @@ public final class Human extends APlayer
 		
 		while (activated)
 		{
-			board.update();
+			board.repaint();
 		}
 		
 		board.disableAll();

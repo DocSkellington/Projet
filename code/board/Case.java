@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
@@ -21,6 +22,7 @@ import gui.TextureHolder;
 public final class Case extends ACell
 {
 	private float alpha;
+	private Color player;
 	/* Constructor
 	 * 
      * @param holder The holder of all needed textures
@@ -79,9 +81,38 @@ public final class Case extends ACell
     }
     
     @Override
-    public void repaint(Graphics g)
+    public void repaint()
     {
-    	// TODO
+    	super.repaint();
+    	if (filled == 1)
+    	{
+        	player = Color.RED;
+    	}
+    	else if (filled == 2)
+    	{
+        	player = Color.CYAN;
+    	}
+    	else if (filled == 3)
+    	{
+        	player = Color.YELLOW;
+    	}
+    	else if (filled == 4)
+    	{
+        	player = Color.GREEN;
+    	}
+    	else
+    		player = null;
+    	// TODO : Remove if we don't do a board for 6 players
+    	/*else if (filled == 5)
+    	{
+        	g2D.setColor(Color.CYAN);
+        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
+    	}
+    	else if (filled == 6)
+    	{
+        	g2D.setColor(Color.CYAN);
+        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
+    	}*/
     }
     
     @Override
@@ -98,36 +129,13 @@ public final class Case extends ACell
     	}
 
     	g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-    	if (filled == 1)
+    	if (player != null)
     	{
-        	g2D.setColor(Color.RED);
-        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
+    		g2D.setColor(player);
+            g2D.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING, 
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+        	g2D.fillOval(1, 1, this.getWidth()-2, this.getHeight()-2);
     	}
-    	else if (filled == 2)
-    	{
-        	g2D.setColor(Color.CYAN);
-        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
-    	}
-    	else if (filled == 3)
-    	{
-        	g2D.setColor(Color.YELLOW);
-        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
-    	}
-    	else if (filled == 4)
-    	{
-        	g2D.setColor(Color.GREEN);
-        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
-    	}
-    	// TODO : Remove if we don't do a board for 6 players
-    	/*else if (filled == 5)
-    	{
-        	g2D.setColor(Color.CYAN);
-        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
-    	}
-    	else if (filled == 6)
-    	{
-        	g2D.setColor(Color.CYAN);
-        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
-    	}*/
     }
 }

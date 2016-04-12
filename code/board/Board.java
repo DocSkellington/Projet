@@ -163,10 +163,15 @@ public class Board
      *  */
     public boolean setWall(Coordinates coord)
     {
+    	if (coord.getX() < 0 || coord.getY() < 0 || coord.getX() > cells[0].length - 1 || coord.getY() > cells.length - 1)
+    		return false;
     	if (coord.getX() == cells[0].length-1)
     		coord = new Coordinates(coord.getX() - 2, coord.getY());
     	if (coord.getY() == cells.length-1)
     		coord = new Coordinates(coord.getX(), coord.getY() - 2);
+    	
+    	if (cells[coord.getY()][coord.getX()].filled() == 1)
+    		return false;
     	
     	coord = removeShift(coord);
     	colorAdjacentWalls(coord, false);
@@ -513,27 +518,41 @@ public class Board
     /** Updates the cells */
     public void update ()
     {
-    	// TODO : Update logic any time and refresh graphics only when needed!
+    	// We reset cases
+    	for (int i = 0 ; i < cells.length ; i+=2)
+    	{
+    		for (int j = 0 ; j < cells[0].length ; j+=2)
+    		{
+    			cells[i][j].setFilled(0);
+    		}
+    	}
+    	
+    	for (int i = 0 ; i < playersPositions.length ; i++)
+    	{
+    		Coordinates coord = playersPositions[i];
+    		cells[coord.getY()][coord.getX()].setFilled(i + 1);
+    	}
+    }
+    
+    /** Repaints the board
+     * 
+     * @return True if the board has been repainted, false otherwise
+     */
+    public boolean repaint()
+    {
+
     	double cur_time = System.currentTimeMillis();
     	if (cur_time - prev_tick >= tick)
     	{
-	    	// We reset cases
-	    	for (int i = 0 ; i < cells.length ; i+=2)
+	    	for (int i = 0 ; i < cells.length ; i++)
 	    	{
-	    		for (int j = 0 ; j < cells[0].length ; j+=2)
-	    		{
-	    			cells[i][j].setFilled(0);
-	    		}
+	    		for (int j = 0 ; j < cells[0].length ; j++)
+	    			cells[i][j].repaint();
 	    	}
-	    	
-	    	for (int i = 0 ; i < playersPositions.length ; i++)
-	    	{
-	    		Coordinates coord = playersPositions[i];
-	    		cells[coord.getY()][coord.getX()].setFilled(i + 1);
-	    	}
-	    	repaint();
 	    	prev_tick = cur_time;
+	    	return true;
     	}
+    	return false;
     }
     
     /** A button dis/enabler
@@ -577,6 +596,9 @@ public class Board
      */
     public void colorAdjacentWalls(Coordinates coord, boolean coloured)
     {
+    	if ((coord.getX() % 2 == 1 && coord.getY() % 2 == 1) || coord.getX() < 0 || coord.getY() < 0
+    			|| coord.getX() > cells[0].length || coord.getY() > cells.length)
+    		return;
     	if (coord.getX() == cells[0].length-1)
     		coord = new Coordinates(coord.getX() - 2, coord.getY());
     	if (coord.getY() == cells.length-1)
@@ -700,29 +722,19 @@ public class Board
     	{
     		return false;
     	}
-    	if ((filled(x, y) != 0 || filled(x2, y2) != 0 || filled((x+x2)/2, (y+y2) / 2) != 0) && (filled(x, y) != 2 || filled(x2, y2) != 2 || filled((x+x2)/2, (y+y2) / 2) != 2))
+    	if ((filled(x, y) != 0 || filled(x2, y2) != 0 || filled((x+x2)/2, (y+y2) / 2) != 0) && (filled(x, y) != 2
+    			|| filled(x2, y2) != 2 || filled((x+x2)/2, (y+y2) / 2) != 2))
     		return false;
-    	
+
     	return true;
-    }
-    
-    // Repaint the board
-    private void repaint()
-    {
-    	for (int i = 0 ; i < cells.length ; i++)
-    	{
-    		for (int j = 0 ; j < cells[0].length ; j++)
-    			cells[i][j].repaint();
-    	}
     }
     
     private Coordinates shift(Coordinates coord)
     {
     	Coordinates newCoord = coord.clone();
-    	
     	if (coord.getX() % 2 == 0)
 		{
-    		if (coord.getX() - 2 >= 0)
+    		if (coord.getX() - 2 >= 0 && coord.getX() < cells[0].length - 3)
     		{
     			if(cells[coord.getY()][coord.getX()+1].filled() != 0 || cells[coord.getY()][coord.getX()+2].filled() != 0)
     			{
@@ -733,9 +745,9 @@ public class Board
     			}
     		}
 		}
-    	else
+    	else if (coord.getX() % 2 == 1 && coord.getY() % 2 == 0)
 		{
-    		if (coord.getY() - 2 >= 0)
+    		if (coord.getY() - 2 >= 0 && coord.getY() < cells.length - 3)
 			{
     			if(cells[coord.getY()+1][coord.getX()].filled() != 0 || cells[coord.getY()+2][coord.getX()].filled() != 0)
 				{
@@ -755,7 +767,7 @@ public class Board
     	
     	if (coord.getX() % 2 == 0)
 		{
-    		if (coord.getX() - 2 >= 0)
+    		if (coord.getX() - 2 >= 0 && coord.getX() < cells[0].length - 3)
     		{
     			if(cells[coord.getY()][coord.getX()+1].filled() != 0 || cells[coord.getY()][coord.getX()+2].filled() != 0)
     			{
@@ -766,14 +778,19 @@ public class Board
 	    		}
     		}
 		}
-    	else
+    	else if (coord.getX() % 2 == 1 && coord.getY() % 2 == 0)
 		{
-    		if (coord.getY() - 2 >= 0 && (cells[coord.getY()+1][coord.getX()].filled() != 0 || cells[coord.getY()+2][coord.getX()].filled() != 0)
-				&& cells[coord.getY()-1][coord.getX()].filled() == 2 && cells[coord.getY()-2][coord.getX()].filled() == 2)
+    		if (coord.getY() - 2 >= 0 && coord.getY() < (cells.length - 3))
 			{
-    			newCoord = new Coordinates(coord.getX(), coord.getY()-2);
+    			if (cells[coord.getY()+1][coord.getX()].filled() != 0 || cells[coord.getY()+2][coord.getX()].filled() != 0)
+				{
+    				if (cells[coord.getY()-1][coord.getX()].filled() == 2 && cells[coord.getY()-2][coord.getX()].filled() == 2)
+					{
+		    			newCoord = new Coordinates(coord.getX(), coord.getY()-2);
+					}
+				}
 			}
-		} 
+		}
     	return newCoord;
     }
     

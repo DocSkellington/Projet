@@ -77,6 +77,7 @@ public class WallTest
 		
 		board.setWall(new Coordinates(1, 0));
 		board.setWall(new Coordinates(8, 7));
+		board.setWall(new Coordinates(8, 5));
 		
 		System.out.println("Checking if we can't set a wall over another one, we're now using the board :");
 		board.print();
@@ -111,5 +112,36 @@ public class WallTest
 		Assert.assertFalse(board.setWall(new Coordinates(6, 11)));
 		System.out.println("Trying to block 1 with a wall at (8, 11)");
 		Assert.assertFalse(board.setWall(new Coordinates(8, 11)));
+	}
+	
+	@Test
+	public void shiftTest()
+	{
+		System.out.println("Starting shift test");
+		
+		System.out.println("Board before : ");
+		board.print();
+		
+		board.setWall(new Coordinates(8, 7));
+		Assert.assertTrue(board.setWall(new Coordinates(6, 7)));
+		Assert.assertTrue(board.setWall(new Coordinates(9, 6)));
+	}
+	
+	@Test
+	public void shiftTestRightEdge()
+	{
+		for (int i = 1 ; i < board.getYSize() ; i += 2)
+		{
+			Assert.assertTrue(board.setWall(new Coordinates(16, i)));
+		}
+	}
+
+	@Test
+	public void shiftTestBottomEdge()
+	{
+		for (int j = 1 ; j < board.getXSize() ; j += 2)
+		{
+			Assert.assertTrue(board.setWall(new Coordinates(j, 16)));
+		}
 	}
 }
