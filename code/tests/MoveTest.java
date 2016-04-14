@@ -13,7 +13,7 @@ import players.APlayer;
 import players.ShillerStrategy;
 import players.StrategyAI;
 
-public class MoveTest
+public class MoveTest extends TestMain
 {
 	protected Board board;
 	protected APlayer[] players;
@@ -27,24 +27,25 @@ public class MoveTest
 		players[2] = new StrategyAI(2, 10, new ShillerStrategy());
 		players[3] = new StrategyAI(3, 10, new ShillerStrategy());
 		board = new Board(players, 9, null);
+		print = Boolean.parseBoolean(System.getenv("PRINT"));
 	}
 	
 	@After
 	public void after()
 	{
-		System.out.println("End of test");
+		doPrint("End of test\n");
 	}
 	
 	@Test
 	public void smokeTest()
 	{
-		System.out.println("Starting smoke test");
+		doPrint("Starting smoke test\n");
 		for (int i = 0 ; i < 4 ; i++)
 			board.move(0, new Coordinates(board.getCoordinates(0).getX(), board.getCoordinates(0).getY()-2));
 		
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 		
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
 		Assert.assertTrue(coord.contains(new Coordinates(8, 6)));
@@ -66,11 +67,11 @@ public class MoveTest
 	@Test
 	public void edges()
 	{
-		System.out.println("Starting edges test");
+		doPrint("Starting edges test\n");
 
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 
 		// Player 1
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
@@ -144,13 +145,13 @@ public class MoveTest
 	@Test
 	public void moveThroughWalls()
 	{
-		System.out.println("Starting move through walls test");
+		doPrint("Starting move through walls test\n");
 
 		board.setWall(new Coordinates(8, 1));
 		board.setWall(new Coordinates(7, 14));
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 
 		// Player 1
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);

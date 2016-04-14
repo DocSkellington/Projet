@@ -24,6 +24,7 @@ public final class Case extends ACell
 {
 	private float alpha;
 	private Color player;
+	
 	/** Constructor
 	 * 
      * @param holder The holder of all needed textures
@@ -34,7 +35,8 @@ public final class Case extends ACell
         Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
         this.setBorder(border);
         alpha = 0.3f;
-        img = holder.get("case");
+        if (holder != null)
+        	img = holder.get("case");
     }
     
     /** Constructor
@@ -45,13 +47,15 @@ public final class Case extends ACell
     public Case(TextureHolder holder, int filled)
     {
     	super(holder, filled);
-        img = holder.get("case");
+        if (holder != null)
+    		img = holder.get("case");
     }
     
     @Override
-    public void display()
+    public String toString()
     {
-    	System.out.print(filled);
+    	String res = filled + "";
+    	return res;
     }
     
     @Override

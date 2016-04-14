@@ -19,31 +19,28 @@ public final class ShillerStrategy implements IStrategy
 	{
 		if(numRounds < 3)
 		{
-			return move(board, numPlayer, possibleMoves);
+			Round round = move(board, numPlayer, possibleMoves);
+			if (round.getType() == Type.NONE)
+				return wall(board, wallCounter, board.findPath((1+numPlayer)%board.getPlayerNumber(), true));
+			return round;
 		}
 		else if(numRounds == 3)
 		{
 			if(numPlayer == 0)
 			{
 				Round round = shiller(board, numPlayer);
-				if (round.getType() == Type.NONE)
-				{
-					return move(board, numPlayer, possibleMoves);
-				}
-				return round;
+				return decide(round, numPlayer, board, wallCounter, possibleMoves);
 			}
 			else
 			{
 				if(checkShiller(board, numPlayer))
 				{
 					Round round = shiller(board, numPlayer);
-					if (round.getType() == Type.NONE)
-					{
-						return move(board, numPlayer, possibleMoves);
-					}
+					round = decide(round, numPlayer, board, wallCounter, possibleMoves);
 					return round;
 				}
-				return move(board, numPlayer, possibleMoves);
+				Round round = move(board, numPlayer, possibleMoves);
+				return decide(round, numPlayer, board, wallCounter, possibleMoves);
 			}
 		}
 		else
@@ -71,12 +68,16 @@ public final class ShillerStrategy implements IStrategy
 			{
 				Round round = wall(board, wallCounter, bestPath);
 				if (round.getType() == Type.NONE)
-					return move(board, numPlayer, possibleMoves);
+				{
+					round = move(board, numPlayer, possibleMoves);
+					round = decide(round, numPlayer, board, wallCounter, possibleMoves);
+				}
 				return round;
 			}
 			else
 			{
-				return move(board, numPlayer, possibleMoves);
+				Round round = move(board, numPlayer, possibleMoves);
+				return decide(round, numPlayer, board, wallCounter, possibleMoves);
 			}
 		}
 	}
@@ -88,6 +89,8 @@ public final class ShillerStrategy implements IStrategy
 		// If there isn't any available path right now, we take the first possible move
 		if (bestPath == null)
 		{
+			if (possibleMoves.length == 0)
+				return new Round(Type.NONE, new Coordinates(-1, -1));
 			coord = possibleMoves[0];
 		}
 		else
@@ -229,5 +232,17 @@ public final class ShillerStrategy implements IStrategy
 			}
 		}
 		return new Round(Type.NONE, new Coordinates(-1, -1));
+	}
+	
+	private Round decide(Round round, int numPlayer, Board board, int wallCounter, Coordinates[] possibleMoves)
+	{
+		if (round.getType() == Type.NONE)
+		{
+			Path path = board.findPath((1+numPlayer)%board.getPlayerNumber(), true);
+			if (path == null)
+				path = board.findPath((1+numPlayer)%board.getPlayerNumber(), false);
+			return wall(board, wallCounter, path);
+		}
+		return round;
 	}
 }

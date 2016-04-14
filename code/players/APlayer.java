@@ -58,6 +58,15 @@ public abstract class APlayer
 		return possibleMoves(board, withPlayer, board.getCoordinates(num));
 	}
 	
+	/** Gets the number of available walls
+	 * 
+	 * @return The number of available walls 
+	 */
+	public int getWallCounter()
+	{
+		return wallCounter;
+	}
+	
 	/** Gives the possible moves of this player for a precise position
 	 * 
 	 * @param board The board

@@ -5,7 +5,7 @@ import org.junit.*;
 import board.*;
 import players.*;
 
-public class FaceToFaceTest
+public class FaceToFaceTest extends TestMain
 {
 	protected Board board;
 	protected APlayer[] players;
@@ -22,21 +22,21 @@ public class FaceToFaceTest
 	@After
 	public void after()
 	{
-		System.out.println("End of test");
+		doPrint("End of test\n");
 	}
 	
 	@Test
 	public void faceToFaceVertical()
 	{
-		System.out.println("Starting face-to-face vertical test");
+		doPrint("Starting face-to-face vertical test\n");
 		for (int i = 0 ; i < 4 ; i++)
 			board.move(0, new Coordinates(board.getCoordinates(0).getX(), board.getCoordinates(0).getY()-2));
 		for (int i = 0 ; i < 3 ; i++)
 			board.move(1, new Coordinates(board.getCoordinates(1).getX(), board.getCoordinates(1).getY()+2));
 
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 		// Player 1
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
 		Assert.assertTrue(coord.contains(new Coordinates(8, 4)));
@@ -75,7 +75,7 @@ public class FaceToFaceTest
 	@Test
 	public void faceToFaceHorizontal()
 	{
-		System.out.println("Starting face-to-face horizontal test");
+		doPrint("Starting face-to-face horizontal test\n");
 		for (int i = 0 ; i < 4 ; i++)
 			board.move(0, new Coordinates(board.getCoordinates(0).getX(), board.getCoordinates(0).getY()-2));
 		board.move(0, new Coordinates(board.getCoordinates(0).getX()+2, board.getCoordinates(0).getY()));
@@ -83,8 +83,8 @@ public class FaceToFaceTest
 			board.move(1, new Coordinates(board.getCoordinates(1).getX(), board.getCoordinates(1).getY()+2));
 		
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 
 		// Player 1
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
@@ -124,7 +124,7 @@ public class FaceToFaceTest
 	@Test
 	public void faceToFaceVerticalWithWalls()
 	{
-		System.out.println("Starting face-to-face vertical with walls test");
+		doPrint("Starting face-to-face vertical with walls test\n");
 		for (int i = 0 ; i < 4 ; i++)
 			board.move(0, new Coordinates(board.getCoordinates(0).getX(), board.getCoordinates(0).getY()-2));
 		for (int i = 0 ; i < 3 ; i++)
@@ -133,8 +133,8 @@ public class FaceToFaceTest
 		board.setWall(new Coordinates(8, 9));
 		board.setWall(new Coordinates(8, 5));
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 
 		// Player 1
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
@@ -174,7 +174,7 @@ public class FaceToFaceTest
 	@Test
 	public void faceToFaceHorizontalWithWalls()
 	{
-		System.out.println("Starting face-to-face horizontal with walls test");
+		doPrint("Starting face-to-face horizontal with walls test\n");
 		for (int i = 0 ; i < 4 ; i++)
 			board.move(0, new Coordinates(board.getCoordinates(0).getX(), board.getCoordinates(0).getY()-2));
 		board.move(0, new Coordinates(board.getCoordinates(0).getX()+2, board.getCoordinates(0).getY()));
@@ -184,8 +184,8 @@ public class FaceToFaceTest
 		board.setWall(new Coordinates(7, 8));
 		board.setWall(new Coordinates(11, 8));
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 
 		// Player 1
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
@@ -225,7 +225,7 @@ public class FaceToFaceTest
 	@Test
 	public void faceToFaceVerticalWithWallsAndSide()
 	{
-		System.out.println("Starting face-to-face vertical with walls and side test");
+		doPrint("Starting face-to-face vertical with walls and side test\n");
 		for (int i = 0 ; i < 4 ; i++)
 			board.move(0, new Coordinates(board.getCoordinates(0).getX(), board.getCoordinates(0).getY()-2));
 		for (int i = 0 ; i < 3 ; i++)
@@ -235,8 +235,8 @@ public class FaceToFaceTest
 		board.setWall(new Coordinates(8, 5));
 		board.setWall(new Coordinates(9, 6));
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 
 		// Player 1
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
@@ -272,7 +272,7 @@ public class FaceToFaceTest
 	@Test
 	public void faceToFaceHorizontalWithWallsAndSide()
 	{
-		System.out.println("Starting face-to-face horizontal with walls and side test");
+		doPrint("Starting face-to-face horizontal with walls and side test\n");
 		for (int i = 0 ; i < 4 ; i++)
 			board.move(0, new Coordinates(board.getCoordinates(0).getX(), board.getCoordinates(0).getY()-2));
 		board.move(0, new Coordinates(board.getCoordinates(0).getX()+2, board.getCoordinates(0).getY()));
@@ -283,8 +283,8 @@ public class FaceToFaceTest
 		board.setWall(new Coordinates(11, 8));
 		board.setWall(new Coordinates(8, 7));
 		board.update();
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 
 		// Player 1
 		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);

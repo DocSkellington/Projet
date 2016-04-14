@@ -66,33 +66,39 @@ public class Board
         update();
     }
     
-    /** Draws the board in the command prompt district */
-    public void print()
+    @Override
+    public String toString()
     {
-        System.out.print(" ");
+    	String res = " ";
         for(int i = 0 ; i < cells.length ; i++)
         {
-            System.out.print("_");
+            res += "_";
         }
-        System.out.println();
+        res += "\n";
         
         for (int x = 0 ; x < cells.length ; x++)
         {
-            System.out.print("|");
+            res += "|";
             for (int y = 0 ; y < cells.length ; y++)
             {
-            	cells[x][y].display();
+            	res += cells[x][y].toString();
             }
-            System.out.println("|");
+            res += "|\n";
         }
         
-        System.out.print(" ");
+        res += " ";
         for(int i = 0 ; i < cells.length ; i++)
         {
-            //System.out.print("\u0304");
-        	System.out.print("-");
+        	res += "-";
         }
-        System.out.println();
+        res += "\n";
+        return res;
+    }
+    
+    /** Draws the board in the command prompt district */
+    public void print()
+    {
+    	System.out.println(toString());
     }
     
     public void fill(JPanel panel, APlayer[] players)

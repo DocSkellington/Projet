@@ -28,7 +28,8 @@ public final class Wall extends ACell
     public Wall(TextureHolder holder)
     {
         super(holder);
-        img = holder.get("wallEmpty");
+        if (holder != null)
+        	img = holder.get("wallEmpty");
     }
     
     /** Constructor
@@ -39,16 +40,17 @@ public final class Wall extends ACell
     public Wall(TextureHolder holder, int filled)
     {
     	super(holder, filled);
-        img = holder.get("wallEmpty");
+        if (holder != null)
+        	img = holder.get("wallEmpty");
     }
     
     @Override
-    public void display()
+    public String toString()
     {
     	if (filled == 0)
-    		System.out.print(" ");
+    		return " ";
     	else
-    		System.out.print("#");
+    		return "#";
     }
     
     @Override

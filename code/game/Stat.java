@@ -38,10 +38,10 @@ public final class Stat
         {
         	winnerList[i] = 0;
         }
-        int start = 0;
-		while (gameNum-- > 0)
+        int start = 0, cur = 0;
+		while (cur++ < gameNum)
 		{
-			System.out.println("Starting game n°" + gameNum);
+			System.out.println("Starting game n°" + cur + "/" + gameNum);
 			Board board = new Board(playerList, 9, null);
 			int wallCounter = 10;
 			if (playerList.length == 3)
@@ -63,7 +63,6 @@ public final class Stat
                 current = (current + 1) % playerList.length;
                 winner = board.hasWon();
             }
-            //board.print();
             if ((winner+start-1)%playerList.length == -1)
                 winnerList[winnerList.length-1]++;
 		    else
@@ -93,7 +92,7 @@ public final class Stat
 		int[] winnerList = stat.run();
 		for (int i = 0 ; i < winnerList.length ; i++)
 		{
-			System.out.println("Player " + (i+1) +  " has " + (winnerList[i]) + " wins. They have won " + (((double)winnerList[i]/gameNum)*100) + "% of their games.");
+			System.out.printf("Player %d has %d wins. They have won %.3f %% of their games.\n", i+1, winnerList[i], (((double)winnerList[i]/gameNum)*100));
 		}
 	}
 	

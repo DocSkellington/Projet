@@ -11,7 +11,7 @@ import players.APlayer;
 import players.ShillerStrategy;
 import players.StrategyAI;
 
-public class WallTest
+public class WallTest extends TestMain
 {
 	protected Board board;
 	protected APlayer[] players;
@@ -28,18 +28,18 @@ public class WallTest
 	@After
 	public void after()
 	{
-		System.out.println("Board after");
-		board.print();
-		System.out.println("End of test");
+		doPrint("Board after\n");
+		printBoard(board);
+		doPrint("End of test\n");
 	}
 	
 	@Test
 	public void smokeTest()
 	{
-		System.out.println("Starting smoke test");
+		doPrint("Starting smoke test\n");
 
-		System.out.println("Board before : ");
-		board.print();
+		doPrint("Board before : \n");
+		printBoard(board);
 		
 		Assert.assertTrue(board.setWall(new Coordinates(7, 8)));
 		
@@ -48,10 +48,10 @@ public class WallTest
 	@Test
 	public void wrongWalls()
 	{
-		System.out.println("Starting the wrong positions test");
+		doPrint("Starting the wrong positions test\n");
 
-		System.out.println("Board before : ");
-		board.print();
+		doPrint("Board before : \n");
+		printBoard(board);
 		
 		for (int i = 0 ; i <= 16 ; i += 2)
 		{
@@ -72,15 +72,15 @@ public class WallTest
 		Assert.assertFalse(board.setWall(new Coordinates(-2, 0)));
 		Assert.assertFalse(board.setWall(new Coordinates(0, -2)));
 		
-		System.out.println("The board is :");
-		board.print();
+		doPrint("The board is :\n");
+		printBoard(board);
 		
 		board.setWall(new Coordinates(1, 0));
 		board.setWall(new Coordinates(8, 7));
 		board.setWall(new Coordinates(8, 5));
 		
-		System.out.println("Checking if we can't set a wall over another one, we're now using the board :");
-		board.print();
+		doPrint("Checking if we can't set a wall over another one, we're now using the board :\n");
+		printBoard(board);
 		
 		Assert.assertFalse(board.setWall(new Coordinates(0, 1)));
 		Assert.assertFalse(board.setWall(new Coordinates(9, 6)));
@@ -89,16 +89,16 @@ public class WallTest
 	@Test
 	public void blockPath()
 	{
-		System.out.println("Starting the block path test");
+		doPrint("Starting the block path test\n");
 
-		System.out.println("Board before : ");
-		board.print();
+		doPrint("Board before : \n");
+		printBoard(board);
 		
 		for (int i = 0 ; i <= 12 ; i += 4)
 			Assert.assertTrue(board.setWall(new Coordinates(i, 1)));
 		
 		Assert.assertTrue(board.setWall(new Coordinates(13, 2)));
-		System.out.println("Trying to block 2 with a wall at (14, 5)");
+		doPrint("Trying to block 2 with a wall at (14, 5)\n");
 		Assert.assertFalse(board.setWall(new Coordinates(14, 5)));
 		
 		Assert.assertTrue(board.setWall(new Coordinates(0, 15)));
@@ -108,19 +108,19 @@ public class WallTest
 		Assert.assertTrue(board.setWall(new Coordinates(7, 12)));
 		Assert.assertTrue(board.setWall(new Coordinates(9, 12)));
 
-		System.out.println("Trying to block 1 with a wall at (6, 11)");
+		doPrint("Trying to block 1 with a wall at (6, 11)\n");
 		Assert.assertFalse(board.setWall(new Coordinates(6, 11)));
-		System.out.println("Trying to block 1 with a wall at (8, 11)");
+		doPrint("Trying to block 1 with a wall at (8, 11)\n");
 		Assert.assertFalse(board.setWall(new Coordinates(8, 11)));
 	}
 	
 	@Test
 	public void shiftTest()
 	{
-		System.out.println("Starting shift test");
+		doPrint("Starting shift test\n");
 		
-		System.out.println("Board before : ");
-		board.print();
+		doPrint("Board before : \n");
+		printBoard(board);
 		
 		board.setWall(new Coordinates(8, 7));
 		Assert.assertTrue(board.setWall(new Coordinates(6, 7)));

@@ -7,6 +7,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -14,6 +15,7 @@ import javax.swing.border.Border;
 import java.util.ArrayList;
 import java.text.ParseException;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -96,8 +98,9 @@ public final class Game
 		frame.add(box);
 		frame.setVisible(true);
         
-        int numPlayers = 4, hum = 0, randAINum = 4;
+        int numPlayers = 4, hum = 0, randAINum = 0;
         init(numPlayers, hum, randAINum);
+        
 
         moveButton.setIcon(new ImageIcon(textureHolder.get("moveButton")));
         wallButton.setIcon(new ImageIcon(textureHolder.get("wallButton")));
@@ -115,6 +118,21 @@ public final class Game
 		board.fill(main, players);
 		main.repaint();
 		main.revalidate();
+		
+        JLabel[] labels = new JLabel[numPlayers+1];
+        labels[0] = new JLabel("Number of available walls:");
+        frame.add(labels[0]);
+        for (int i = 0 ; i < numPlayers ; i++)
+        {
+        	labels[i] = new JLabel("J" + (i+1) + ": " + players[i].getWallCounter() + " walls");
+            labels[i].setVerticalTextPosition(JLabel.BOTTOM);
+            labels[i].setHorizontalTextPosition(JLabel.LEFT);
+            labels[i].setAlignmentX(Component.CENTER_ALIGNMENT);
+            frame.add(labels[i]);
+        }
+        frame.repaint();
+        frame.revalidate();
+        
 		
         int current = 0, winner = -1; // -1 means no winner
         

@@ -25,7 +25,12 @@ public final class RandomStrategy implements IStrategy
 	{
 		boolean choice = randgen.nextBoolean();
 		if (choice)
-			return move(board, possibleMoves);
+		{
+			Round round = move(board, possibleMoves);
+			if (round.getType() == Type.NONE)
+				return setAWall(board, wallCounter);
+			return round;
+		}
 		else
 		{
 			Round round = setAWall(board, wallCounter);

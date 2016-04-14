@@ -11,7 +11,7 @@ import players.APlayer;
 import players.ShillerStrategy;
 import players.StrategyAI;
 
-public class VictoryTest
+public class VictoryTest extends TestMain
 {
 	protected Board board;
 	protected APlayer[] players;
@@ -23,22 +23,22 @@ public class VictoryTest
 		players[0] = new StrategyAI(0, 10, new ShillerStrategy());
 		players[1] = new StrategyAI(1, 10, new ShillerStrategy());
 		board = new Board(players, 9, null);
-		System.out.println("The board is : ");
-		board.print();
+		doPrint("The board is : \n");
+		printBoard(board);
 	}
 	
 	@After
 	public void after()
 	{
-		System.out.println("End of test");
+		doPrint("End of test\n");
 	}
 	
 	@Test
 	public void victory1()
 	{
-		System.out.println("Starting victory 1 test");
+		doPrint("Starting victory 1 test\n");
 		
-		System.out.println("There isn't any winner");
+		doPrint("There isn't any winner\n");
 		Assert.assertTrue(board.hasWon() == -1);
 		
 		board.move(0, new Coordinates(10, 16));
@@ -47,19 +47,19 @@ public class VictoryTest
 		
 		board.update();
 		
-		System.out.println("The player 1 has moved:");
-		board.print();
+		doPrint("The player 1 has moved:\n");
+		printBoard(board);
 		
 		Assert.assertTrue(board.hasWon() == 0);
-		System.out.println("Player 1 has won");
+		doPrint("Player 1 has won\n");
 	}
 	
 	@Test
 	public void victory2()
 	{
-		System.out.println("Starting victory 2 test");
+		doPrint("Starting victory 2 test\n");
 		
-		System.out.println("There isn't any winner");
+		doPrint("There isn't any winner\n");
 		Assert.assertTrue(board.hasWon() == -1);
 		
 		board.move(1, new Coordinates(10, 0));
@@ -68,10 +68,10 @@ public class VictoryTest
 		
 		board.update();
 		
-		System.out.println("The player 2 has moved:");
-		board.print();
+		doPrint("The player 2 has moved:\n");
+		printBoard(board);
 		
 		Assert.assertTrue(board.hasWon() == 1);
-		System.out.println("Player 2 has won");
+		doPrint("Player 2 has won\n");
 	}
 }
