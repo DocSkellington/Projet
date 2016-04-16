@@ -67,17 +67,7 @@ public class Path
         return getStep(index).y;
     }
     
-    /** Adds a step of value (x, y) at the end of the path
-     * 
-     * @param x The x coordinate of the step
-     * @param y The y coordinate of the step
-     */
-    public void appendStep(int x, int y)
-    {
-        steps.add(new Step(x, y));
-    }
-    
-    /** Adds  a step of value (x, y) at the beginning of the path
+    /** Adds a step of value (x, y) at the beginning of the path
      * 
      * @param x The x coordinate of the step
      * @param y The y coordinate of the step
