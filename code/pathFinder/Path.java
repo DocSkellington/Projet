@@ -106,7 +106,7 @@ public class Path
      */
     public class Step
     {
-        private int x, y;
+        private final int x, y;
         
         /** The constructor of a Step
          * 
