@@ -17,29 +17,23 @@ import gui.TextureHolder;
 public abstract class ACell extends JButton implements Cloneable
 {
     protected int filled;
-    protected TextureHolder holder;
 	protected BufferedImage img;
     
-    /** Default constructor
-     * 
-     * @param holder The holder of all needed textures
-     * */
-    public ACell(TextureHolder holder)
+    /** Default constructor */
+    public ACell()
     {
-        filled = 0;
-        this.holder = holder;
-		this.setBorder(null);
-		this.setEnabled(false);
+    	this(0);
     }
     
     /** Constructor
      *  
      * @param filled Whether the cell is filled or not
-     * @param holder The holder of all needed textures
      */
-    public ACell(TextureHolder holder, int filled)
+    public ACell(int filled)
     {
     	this.filled = filled;
+		this.setBorder(null);
+		this.setEnabled(false);
     }
     
     /** Fills the cell

@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
  * @author Thibaut De Cooman
  *
  */
-public class TextureHolder implements Cloneable
+public final class TextureHolder
 {
 	private HashMap<String, BufferedImage> images;
 	
@@ -52,11 +52,5 @@ public class TextureHolder implements Cloneable
 	public void clear()
 	{
 		images.clear();
-	}
-	
-	@Override
-	public TextureHolder clone()
-	{
-		return null;
 	}
 }

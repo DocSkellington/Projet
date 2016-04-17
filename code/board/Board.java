@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import gui.CaseListener;
-import gui.TextureHolder;
 import gui.WallListener;
 import pathFinder.*;
 
@@ -32,10 +31,8 @@ public class Board
     /** The constructor
      * @param players The array of players 
      * @param size The size of the board
-     * @param holder The holder of all needed textures (can be null if in console mode)
-     *
      */
-    public Board(APlayer[] players, int size, TextureHolder holder)
+    public Board(APlayer[] players, int size)
     {
         cells = new ACell[2*size-1][2*size-1];
         this.players = players; 
@@ -47,10 +44,10 @@ public class Board
             for (int y = 0 ; y < cells[0].length ; y++)
             {
                 if((x % 2 == 0) && (y % 2 == 0))
-                    cells[x][y] = new Case(holder);
+                    cells[x][y] = new Case();
                 else
                 {
-                	cells[x][y] = new Wall(holder);
+                	cells[x][y] = new Wall();
                 	if (x % 2 != 1 || y % 2 != 1)
                 		possibleWalls.add(new Coordinates(x, y));
                 }
@@ -101,12 +98,18 @@ public class Board
     	System.out.println(toString());
     }
     
+    /** Fills the panel with every cell/button. Also sets the listeners
+     * 
+     * @param panel The panel to fill
+     * @param players The array of players
+     */
     public void fill(JPanel panel, APlayer[] players)
     {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
 		c.fill = GridBagConstraints.BOTH;
+		
 		for (int i = 0 ; i < cells[0].length ; i++)
 		{
 			for (int j = 0 ; j < cells.length ; j++)
@@ -140,7 +143,10 @@ public class Board
 					if (player instanceof Human)
 					{
 						final Human human = (Human) player;
+						
+						// We set the coordinates of the cell to be able to get them when the button is pressed
 						cells[i][j].setActionCommand("(" + j + ", " + i + ")");
+						
 						// Case
 						if (i % 2 == 0 && j % 2 == 0)
 						{
@@ -156,6 +162,7 @@ public class Board
 						}
 					}
 				}
+				// We deactivate the cell
 				cells[i][j].setEnabled(false);
 				panel.add(cells[i][j], c);
 			}
@@ -166,19 +173,24 @@ public class Board
      * 
      * @param coord The coordinates of the wall
      * @return True if the wall is set, false otherwise.
-     *  */
+     */
     public boolean setWall(Coordinates coord)
     {
+    	// If outside the board
     	if (coord.getX() < 0 || coord.getY() < 0 || coord.getX() > cells[0].length - 1 || coord.getY() > cells.length - 1)
     		return false;
+    	
+    	// If the coord is on the edge of the board, we shift from 2 cells
     	if (coord.getX() == cells[0].length-1)
     		coord = new Coordinates(coord.getX() - 2, coord.getY());
     	if (coord.getY() == cells.length-1)
     		coord = new Coordinates(coord.getX(), coord.getY() - 2);
     	
+    	// If the cell is already filled by a wall, we can't set a wall here.
     	if (cells[coord.getY()][coord.getX()].filled() == 1)
     		return false;
     	
+    	// We remove the translucent wall (gui)
     	coord = removeShift(coord);
     	colorAdjacentWalls(coord, false);
     	coord = shift(coord);
@@ -195,11 +207,15 @@ public class Board
         else
         	x2 += 2;
         
+        // If we can set the wall
     	if(canSetWall(coord))
     	{
+    		// We effectively set the wall
             cells[y][x].setFilled(1);
             cells[(y2+y)/2][(x2+x)/2].setFilled(1);
             cells[y2][x2].setFilled(1);
+            
+            // We remove the 3 cells from the possibleWalls (so, they can't be enabled).
             possibleWalls.remove(new Coordinates(y, x));
             possibleWalls.remove(new Coordinates((y2+y)/2, (x2+x)/2));
             possibleWalls.remove(new Coordinates(y2, x2));
@@ -262,6 +278,7 @@ public class Board
      */
     public boolean hasWall(Coordinates coord)
     {
+    	// If the coordinates are wrong
     	if (!tryWall(coord))
     		return true;
     	
@@ -373,10 +390,7 @@ public class Board
             for (int j = 0 ; j < map.length ; j++)
             {
                 // Since copying an object would simply copy the reference, we create new cells
-                if (cells[i][j] instanceof Wall)
-                    map[i][j] = cells[i][j].clone();
-                else
-                    map[i][j] = cells[i][j].clone();
+                map[i][j] = cells[i][j].clone();
             }
         }
         return map;
@@ -387,7 +401,7 @@ public class Board
      */
     public int getXSize()
     {
-        return cells.length;
+        return cells[0].length;
     }
 
     /** Get the y size of the board
@@ -395,7 +409,7 @@ public class Board
      */
     public int getYSize()
     {
-        return cells[0].length;
+        return cells.length;
     }
     
     /** Get the number of players
@@ -465,6 +479,7 @@ public class Board
     		throw new RuntimeException("Too far");
     	}
     	
+    	// If there isn't any wall and if the target case is empty (only considered if withPlayer == true), we can move
     	if (filled((sx+tx)/2, (sy+ty)/2) != 0 || (filled(tx, ty) != 0 && withPlayer))
 		{
     		return true;
@@ -533,6 +548,7 @@ public class Board
     		}
     	}
     	
+    	// We fill the cases with a player on them
     	for (int i = 0 ; i < playersPositions.length ; i++)
     	{
     		Coordinates coord = playersPositions[i];
@@ -546,7 +562,7 @@ public class Board
      */
     public boolean repaint()
     {
-
+    	// To avoid refreshing too frequently, we check if the difference between the current time and the last time we repainted is bigger than a constant
     	double cur_time = System.currentTimeMillis();
     	if (cur_time - prev_tick >= tick)
     	{
@@ -602,9 +618,11 @@ public class Board
      */
     public void colorAdjacentWalls(Coordinates coord, boolean coloured)
     {
+		// If it's outside the board
     	if ((coord.getX() % 2 == 1 && coord.getY() % 2 == 1) || coord.getX() < 0 || coord.getY() < 0
     			|| coord.getX() > cells[0].length || coord.getY() > cells.length)
     		return;
+    	// If it's on the edge
     	if (coord.getX() == cells[0].length-1)
     		coord = new Coordinates(coord.getX() - 2, coord.getY());
     	if (coord.getY() == cells.length-1)
@@ -623,6 +641,8 @@ public class Board
     	    		cells[coord.getY()][coord.getX()+1].setFilled(2);
     	    		cells[coord.getY()][coord.getX()+2].setFilled(2);
         		}
+        		else
+        			possibleWalls.remove(coord);
         	}
         	else
         	{
@@ -633,6 +653,8 @@ public class Board
     	    		cells[coord.getY()+1][coord.getX()].setFilled(2);
     	    		cells[coord.getY()+2][coord.getX()].setFilled(2);
         		}
+        		else
+        			possibleWalls.remove(coord);
         	}
     	}
     	else
@@ -673,8 +695,7 @@ public class Board
     	// If the target case is out of the board
     	if (coord.getY() >= cells.length || coord.getX() >= cells.length || coord.getX() < 0 || coord.getY() < 0)
     	{
-    		System.out.println("Out of the board");
-    		return false;
+    		throw new RuntimeException("Out of the board");
     	}
     	// If the target case is filled
     	if (cells[coord.getY()][coord.getX()].filled() > 0)
@@ -682,8 +703,7 @@ public class Board
     	// If the player wants to move more than 4 cases away
     	if (Math.abs(coord.getX()-playerPos.getX()) > 4 || Math.abs(coord.getY()-playerPos.getY()) > 4)
     	{
-    		System.out.println("Target case is too far from original position");
-    		return false;
+    		throw new RuntimeException("Target case is too far from original position");
     	}
     	playerPos.move(coord.getX()-playerPos.getX(), coord.getY()-playerPos.getY());
     	return true;
@@ -696,7 +716,7 @@ public class Board
      */
     public Coordinates getCoordinates(int num)
     {
-    	return new Coordinates(playersPositions[num].getX(), playersPositions[num].getY());
+    	return playersPositions[num].clone();
     }
     
     /** Checks if a wall can be set at a given position
@@ -711,6 +731,7 @@ public class Board
     	// Horizontal
     	if(x % 2 == 0)
     	{
+    		// If x and y are even, it's a player case. So it's impossible to set a wall
     		if(y % 2 == 0)
     			return false;
     		x2 += 2;
@@ -718,6 +739,7 @@ public class Board
     	// Vertical
     	else
     	{
+    		// If x and y are odd, it's impossible to set a wall
     		if(y % 2 == 1)
     			return false;
     		y2 += 2;
@@ -728,6 +750,7 @@ public class Board
     	{
     		return false;
     	}
+    	// If one of the case is filled, we can set a wall
     	if ((filled(x, y) != 0 || filled(x2, y2) != 0 || filled((x+x2)/2, (y+y2) / 2) != 0) && (filled(x, y) != 2
     			|| filled(x2, y2) != 2 || filled((x+x2)/2, (y+y2) / 2) != 2))
     		return false;
@@ -735,30 +758,40 @@ public class Board
     	return true;
     }
     
+    // Shift coordinates to left/down 
     private Coordinates shift(Coordinates coord)
     {
     	Coordinates newCoord = coord.clone();
+    	// x is even => vertical wall
     	if (coord.getX() % 2 == 0)
 		{
-    		if (coord.getX() - 2 >= 0 && coord.getX() < cells[0].length - 3)
+    		// If inside the checkable part of the board
+    		if (coord.getX() - 2 >= 0 && coord.getX() <= cells[0].length - 3)
     		{
+    			// If the 2 cases on the right are filled
     			if(cells[coord.getY()][coord.getX()+1].filled() != 0 || cells[coord.getY()][coord.getX()+2].filled() != 0)
     			{
+    				// If the 2 cases on the left are empty
     				if(cells[coord.getY()][coord.getX()-1].filled() == 0 && cells[coord.getY()][coord.getX()-2].filled() == 0)
 					{
+    					// We can shift the coordinates
 		    			newCoord = new Coordinates(coord.getX()-2, coord.getY());
 					}
     			}
     		}
 		}
+    	// horizontal wall
     	else if (coord.getX() % 2 == 1 && coord.getY() % 2 == 0)
 		{
-    		if (coord.getY() - 2 >= 0 && coord.getY() < cells.length - 3)
+    		if (coord.getY() - 2 >= 0 && coord.getY() <= cells.length - 3)
 			{
+    			// If the 2 cells below are filled
     			if(cells[coord.getY()+1][coord.getX()].filled() != 0 || cells[coord.getY()+2][coord.getX()].filled() != 0)
 				{
+    				// If the 2 cells above are empty
     				if(cells[coord.getY()-1][coord.getX()].filled() == 0 && cells[coord.getY()-2][coord.getX()].filled() == 0)
 					{
+    					// We can shift the coordinates
 		    			newCoord = new Coordinates(coord.getX(), coord.getY()-2);
 					}
 				}
@@ -767,16 +800,20 @@ public class Board
     	return newCoord;
     }
     
+    // Shift coordinates to right/up
     private Coordinates removeShift(Coordinates coord)
     {
     	Coordinates newCoord = coord.clone();
     	
+    	// x even => vertical wall
     	if (coord.getX() % 2 == 0)
 		{
-    		if (coord.getX() - 2 >= 0 && coord.getX() < cells[0].length - 3)
+    		if (coord.getX() - 2 >= 0 && coord.getX() <= cells[0].length - 3)
     		{
+    			// If the 2 cases on the right are filled
     			if(cells[coord.getY()][coord.getX()+1].filled() != 0 || cells[coord.getY()][coord.getX()+2].filled() != 0)
     			{
+    				// If the 2 cases on the left are translucent
     				if(cells[coord.getY()][coord.getX()-1].filled() == 2 && cells[coord.getY()][coord.getX()-2].filled() == 2)
 					{
 		    			newCoord = new Coordinates(coord.getX()-2, coord.getY());
@@ -786,10 +823,12 @@ public class Board
 		}
     	else if (coord.getX() % 2 == 1 && coord.getY() % 2 == 0)
 		{
-    		if (coord.getY() - 2 >= 0 && coord.getY() < (cells.length - 3))
+    		if (coord.getY() - 2 >= 0 && coord.getY() <= (cells.length - 3))
 			{
+    			// If the 2 cases on the right are filled
     			if (cells[coord.getY()+1][coord.getX()].filled() != 0 || cells[coord.getY()+2][coord.getX()].filled() != 0)
 				{
+    				// If the 2 cases above are translucent
     				if (cells[coord.getY()-1][coord.getX()].filled() == 2 && cells[coord.getY()-2][coord.getX()].filled() == 2)
 					{
 		    			newCoord = new Coordinates(coord.getX(), coord.getY()-2);

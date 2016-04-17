@@ -1,14 +1,10 @@
 package gui;
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
+
+import game.Game;
 
 public final class ActionButton extends JButton
 {
@@ -24,13 +20,6 @@ public final class ActionButton extends JButton
 	 */
     public void changeColor (int numPlayer)
     {
-    	if (numPlayer == 0)
-    		this.setBackground(Color.RED);
-    	else if (numPlayer == 1)
-    		this.setBackground(Color.CYAN);
-    	else if (numPlayer == 2)
-    		this.setBackground(Color.YELLOW);
-    	else if (numPlayer == 3)
-    		this.setBackground(Color.GREEN);
+    	this.setBackground(Game.getColor(numPlayer));
     }
 }

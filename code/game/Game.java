@@ -1,35 +1,35 @@
 package game;
+
 import java.util.Scanner;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 
 import java.util.ArrayList;
 import java.text.ParseException;
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Label;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.List;
-import board.*;
+import board.Board;
+import board.Coordinates;
 import gui.ActionButton;
+import gui.ColorHolder;
 import gui.MoveButtonListener;
 import gui.TextureHolder;
 import gui.WallButtonListener;
@@ -46,11 +46,17 @@ public final class Game
 	private Board board;
 	private ArrayList<Round> roundList; 
 	private JFrame frame;
-	private TextureHolder textureHolder;
+	private JPanel main;
+	private ActionButton moveButton, wallButton;
+	private JLabel labels[];
 	
-	/** Default constructor
-	 * 
-	 */
+	/** The holder of every texture needed by the graphical interface */
+	public static TextureHolder textureHolder;
+
+	/** The holder of every color needed by the graphical interface (to draw players) */
+	public static ColorHolder colorHolder;
+	
+	/** Default constructor */
 	public Game()
 	{
 		roundList = new ArrayList<Round>();
@@ -64,47 +70,16 @@ public final class Game
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocation((c.width-frame.getSize().width)/2, (c.height-frame.getSize().height)/2);
 		frame.setResizable(false);
+		frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
 	}
 	
-	/** What keeps the game running
-	 * 
-	 */
+	/** What keeps the game running */
 	public void run()
 	{
-		BoxLayout layout = new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS);
-		frame.setLayout(layout);
-		
-		JPanel main = new JPanel();
-		main.setLayout(new GridBagLayout());
-		main.setMaximumSize(new Dimension(790, 790));
-		
-		JPanel move = new JPanel(), wall = new JPanel();
-		ActionButton moveButton = new ActionButton(), wallButton = new ActionButton();
-
-		moveButton.setMargin(new Insets(0, 0, 0, 0));
-		moveButton.setBorder(null);
-		wallButton.setMargin(new Insets(0, 0, 0, 0));
-		wallButton.setBackground(Color.BLUE);
-		wallButton.setBorder(null);
-		
-		move.add(moveButton);
-		wall.add(wallButton);
-		
-		Box box = new Box(BoxLayout.X_AXIS);
-		box.add(move);
-		box.add(wall);
-		
-		frame.add(main);
-		frame.add(box);
-		frame.setVisible(true);
+        int numPlayers = 4, hum = 4, randAINum = 0;
         
-        int numPlayers = 4, hum = 0, randAINum = 0;
         init(numPlayers, hum, randAINum);
-        
 
-        moveButton.setIcon(new ImageIcon(textureHolder.get("moveButton")));
-        wallButton.setIcon(new ImageIcon(textureHolder.get("wallButton")));
-        
         for (int i = 0 ; i < players.length ; i++)
         {
         	if (players[i] instanceof Human)
@@ -116,44 +91,35 @@ public final class Game
         }
         
 		board.fill(main, players);
+		
 		main.repaint();
 		main.revalidate();
-		
-        JLabel[] labels = new JLabel[numPlayers+1];
-        labels[0] = new JLabel("Number of available walls:");
-        frame.add(labels[0]);
-        for (int i = 0 ; i < numPlayers ; i++)
-        {
-        	labels[i] = new JLabel("J" + (i+1) + ": " + players[i].getWallCounter() + " walls");
-            labels[i].setVerticalTextPosition(JLabel.BOTTOM);
-            labels[i].setHorizontalTextPosition(JLabel.LEFT);
-            labels[i].setAlignmentX(Component.CENTER_ALIGNMENT);
-            frame.add(labels[i]);
-        }
-        frame.repaint();
-        frame.revalidate();
-        
 		
         int current = 0, winner = -1; // -1 means no winner
         
         while (winner == -1)
         {
+        	// We update the buttons and the label
         	moveButton.changeColor(current);
         	wallButton.changeColor(current);
+            updateLabels(current);
+            // The current player plays
             roundList.add(players[current].play(board));
             board.update();
+            // As long as we can't refresh the graphical interface, we wait.
             while(!board.repaint())
-            {
-            	
-            }
+            {}
             moveButton.setBorder(null);
-            moveButton.setBorder(null);
+            wallButton.setBorder(null);
+            // Next player
             current = (current + 1) % numPlayers;
             winner = board.hasWon();
         }
         
         board.update();
-        board.repaint();
+        // As long as we can't refresh the graphical interface, we wait.
+        while(!board.repaint())
+        {}
         printVictory(winner);
 	}
 	
@@ -327,7 +293,7 @@ public final class Game
         System.out.println("The list of rounds : " + roundList);
     }
     
-    /** Initializes the players list
+    /** Initialises the players list
      * 
      * @param playersNumber The number of players
      * @param humNumber The number of human players
@@ -336,6 +302,7 @@ public final class Game
     {
     	players = new APlayer[playersNumber];
     	
+    	// The number of available walls per player
     	int walls = 10;
     	if (playersNumber == 4)
     		walls = 5;
@@ -343,19 +310,34 @@ public final class Game
     		walls = 7;
     	
     	int i = 0;
+    	// The human players
     	while(i < humNumber)
     	{
     		players[i] = new Human(i++, walls);
     	}
+    	// The random AIs
     	while(i < humNumber + randAINum)
     	{
     		players[i] = new StrategyAI(i++, walls, new RandomStrategy());
     	}
+    	// The Shiller AIs
     	while(i < playersNumber)
     	{
     		players[i] = new StrategyAI(i++, walls);
     	}
-    	
+
+        graphInit(playersNumber);
+        
+        board = new Board(players, 9);
+        
+        // This is used to hash the coordinates:
+        Coordinates.size = board.getYSize();
+    }
+    
+    /* Initialises the graphical components */
+    private void graphInit(int numPlayers)
+    {
+    	// Texture holder loads every image
     	textureHolder = new TextureHolder();
         try
         {
@@ -369,14 +351,87 @@ public final class Game
         {
         	System.out.println(e);
         }
-    	
-        board = new Board(players, 9, textureHolder);
-        // This is used to hash the coordinates:
-        Coordinates.size = board.getYSize();
+        
+        // Colour holder loads every colour
+        colorHolder = new ColorHolder();
+        colorHolder.load(0, Color.RED);
+        colorHolder.load(1, Color.CYAN);
+        colorHolder.load(2, Color.YELLOW);
+        colorHolder.load(3, Color.GREEN);
+
+    	// The panel for the board
+		main = new JPanel();
+		main.setLayout(new GridBagLayout());
+		main.setMaximumSize(new Dimension(790, 790));
+
+		// The panel for everything on the right of the board
+		JPanel right = new JPanel(new BorderLayout());
+		
+		// The buttons for the human players
+		JPanel buttons = new JPanel();
+		moveButton = new ActionButton();
+		wallButton = new ActionButton();
+
+		moveButton.setMargin(new Insets(0, 0, 0, 0));
+		moveButton.setBorder(null);
+        moveButton.setIcon(new ImageIcon(textureHolder.get("moveButton")));
+        
+		wallButton.setMargin(new Insets(0, 0, 0, 0));
+		wallButton.setBackground(Color.BLUE);
+		wallButton.setBorder(null);
+        wallButton.setIcon(new ImageIcon(textureHolder.get("wallButton")));
+        
+		buttons.add(moveButton);
+		buttons.add(wallButton);
+
+		right.add(buttons, BorderLayout.NORTH);
+		
+		// Font used for the labels
+		Font font = new Font("Impact", Font.PLAIN, 20);
+		// The labels to show the current player and the number of available walls for each player
+		Box labelsBox = new Box(BoxLayout.Y_AXIS);
+        labels = new JLabel[numPlayers+2];
+        labels[0] = new JLabel("");
+        labels[1] = new JLabel("Number of available walls:");
+        labelsBox.add(labels[0]);
+        labelsBox.add(labels[1]);
+    	labels[0].setAlignmentX(Label.CENTER_ALIGNMENT);
+    	labels[0].setFont(font);
+    	labels[1].setAlignmentX(Label.CENTER_ALIGNMENT);
+    	labels[1].setFont(font);
+        for (int i = 0 ; i < numPlayers ; i++)
+        {
+        	labels[i+2] = new JLabel("");
+        	labels[i+2].setFont(font);
+        	labels[i+2].setAlignmentX(Label.CENTER_ALIGNMENT);
+        	labelsBox.add(labels[i+2]);
+        }
+        updateLabels(0);
+        
+        right.add(labelsBox, BorderLayout.CENTER);
+        
+		frame.add(main);
+		frame.add(Box.createRigidArea(new Dimension(10, 0)));
+		frame.add(right);
+		frame.setVisible(true);
+    }
+    
+    private void updateLabels(int curPlayer)
+    {
+    	labels[0].setText("Current Player: " + (curPlayer+1));
+    	labels[0].setForeground(getColor(curPlayer));
+        for (int i = 2 ; i < labels.length ; i++)
+        {
+        	if (players[i-2].getWallCounter() == 1)
+        		labels[i].setText("J" + (i-1) + ": 1 wall");
+        	else
+        		labels[i].setText("J" + (i-1) + ": " + players[i-2].getWallCounter() + " walls");
+        }
     }
     
     private void save(String filepath) throws IOException
     {
+    	// TODO : utiliser flux d'objet
     	Path file = Paths.get(filepath);
     	List<String> lines = new ArrayList<String>();
     	
@@ -396,6 +451,32 @@ public final class Game
     		rounds.add(Round.parse(string));
     	}
     	roundList = rounds;
+    }
+    
+    /** Gets the image inside textureHolder binded to the key
+     * 
+     * @param key The key of the image
+     * 
+     * @return An image if it exists, null otherwise
+     */
+    public static BufferedImage getImage(String key)
+    {
+    	if(textureHolder != null)
+    		return textureHolder.get(key);
+    	return null;
+    }
+
+    /** Gets the colour inside colorHolder binded to the key
+     * 
+     * @param key The key of the image
+     * 
+     * @return A Color if it exists, null otherwise
+     */
+    public static Color getColor(Integer key)
+    {
+    	if(colorHolder != null)
+    		return colorHolder.get(key);
+    	return null;
     }
     
     /** Main method

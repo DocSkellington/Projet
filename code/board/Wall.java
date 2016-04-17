@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import game.Game;
 import gui.TextureHolder;
 
 /** Walls are obstacles set on the board by the players
@@ -21,27 +22,20 @@ public final class Wall extends ACell
 {
 	private float alpha;
 	
-	/** Constructor
-	 * 
-     * @param holder The holder of all needed textures
-     */
-    public Wall(TextureHolder holder)
+	/** Constructor */
+    public Wall()
     {
-        super(holder);
-        if (holder != null)
-        	img = holder.get("wallEmpty");
+    	this(0);
     }
     
     /** Constructor
      * 
      * @param filled The content of the case
-     * @param holder The holder of all needed textures
      */
-    public Wall(TextureHolder holder, int filled)
+    public Wall(int filled)
     {
-    	super(holder, filled);
-        if (holder != null)
-        	img = holder.get("wallEmpty");
+    	super(filled);
+    	repaint();
     }
     
     @Override
@@ -62,11 +56,13 @@ public final class Wall extends ACell
 	    	ActionEvent a = null;
 	    	if (e.getID() == MouseEvent.MOUSE_ENTERED)
 	    	{
+	    		// If the mouse has entered the wall cell, we throw an event to light on a wall
 	    		String command = this.getActionCommand();
 	    		a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "l " + command);
 	    	}
 	    	else if (e.getID() == MouseEvent.MOUSE_EXITED)
 	    	{
+	    		// If the mouse has exited the wall cell, we throw an event to switch off the wall
 	    		String command = this.getActionCommand();
 	    		a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "u " + command);
 	    	}
@@ -84,9 +80,7 @@ public final class Wall extends ACell
     @Override
     public Wall clone()
     {
-    	if (holder == null)
-    		return new Wall(null, filled);
-    	return new Wall(holder.clone(), filled);
+    	return new Wall(filled);
     }
     
     @Override
@@ -99,23 +93,24 @@ public final class Wall extends ACell
     public void repaint()
     {
     	super.repaint();
-    	if (holder != null)
+    	
+    	// We choose the texture according to filled value
+    	switch (filled)
     	{
-    		if (filled == 0)
-	    	{
-	    		img = holder.get("wallEmpty");
-	    		alpha = 1.0f;
-	    	}
-	    	else if (filled == 1)
-	    	{
-	    		img = holder.get("wallFilled");
-	    		alpha = 1.0f;
-	    	}
-	    	else if (filled == 2)
-	    	{
-	    		alpha = 0.3f;
-	    		img = holder.get("wallFilled");
-	    	}
+    	case 0:
+    		img = Game.getImage("wallEmpty");
+    		alpha = 1.0f;
+    		break;
+    	case 1:
+    		img = Game.getImage("wallFilled");
+    		alpha = 1.0f;
+    		break;
+    	case 2:
+    		img = Game.getImage("wallFilled");
+    		alpha = 0.3f;
+    		break;
+		default:
+			throw new RuntimeException("Invalid number: " + filled);
     	}
     }
     

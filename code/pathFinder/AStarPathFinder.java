@@ -218,7 +218,7 @@ public class AStarPathFinder
 	/** A single node in the search graph */
 	private class Node implements Comparable<Node>
 	{
-	    private int x, y;
+	    private final int x, y;
 	    private float cost, heuristic;
 	    private Node parent;
 	    

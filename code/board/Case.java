@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
+import game.Game;
 import gui.TextureHolder;
 
 /** A Case is a Cell on which a player can walk
@@ -25,30 +26,23 @@ public final class Case extends ACell
 	private float alpha;
 	private Color player;
 	
-	/** Constructor
-	 * 
-     * @param holder The holder of all needed textures
-     */
-    public Case(TextureHolder holder)
+	/** Constructor */
+    public Case()
     {
-        super(holder);
-        Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
-        this.setBorder(border);
-        alpha = 0.3f;
-        if (holder != null)
-        	img = holder.get("case");
+        this(0);
     }
     
     /** Constructor
      * 
      * @param filled The content of the case
-     * @param holder The holder of all needed textures
      */
-    public Case(TextureHolder holder, int filled)
+    public Case(int filled)
     {
-    	super(holder, filled);
-        if (holder != null)
-    		img = holder.get("case");
+    	super(filled);
+        Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+        this.setBorder(border);
+        alpha = 0.3f;
+        img = Game.getImage("case");
     }
     
     @Override
@@ -61,9 +55,7 @@ public final class Case extends ACell
     @Override
     public Case clone()
     {
-    	if (holder == null)
-    		return new Case(null, filled);
-    	return new Case(holder.clone(), filled);
+    	return new Case(filled);
     }
     
     @Override
@@ -91,35 +83,7 @@ public final class Case extends ACell
     public void repaint()
     {
     	super.repaint();
-    	if (filled == 1)
-    	{
-        	player = Color.RED;
-    	}
-    	else if (filled == 2)
-    	{
-        	player = Color.CYAN;
-    	}
-    	else if (filled == 3)
-    	{
-        	player = Color.YELLOW;
-    	}
-    	else if (filled == 4)
-    	{
-        	player = Color.GREEN;
-    	}
-    	else
-    		player = null;
-    	// TODO : Remove if we don't do a board for 6 players
-    	/*else if (filled == 5)
-    	{
-        	g2D.setColor(Color.CYAN);
-        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
-    	}
-    	else if (filled == 6)
-    	{
-        	g2D.setColor(Color.CYAN);
-        	g2D.fillOval(0, 0, this.getWidth(), this.getHeight());
-    	}*/
+    	player = Game.getColor(filled-1);
     }
     
     @Override
@@ -127,21 +91,24 @@ public final class Case extends ACell
     {
     	super.paintComponent(g);
     	Graphics2D g2D = (Graphics2D) g;
+    	// We draw the case
     	g2D.drawImage(img, 0, 0, null);
+    	
     	if (this.isEnabled())
     	{
+    		// We draw a green square if the case is enabled
         	g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
     		g2D.setColor(Color.GREEN);
     		g2D.fillRect(0, 0, this.getWidth(), this.getHeight());
     	}
 
     	g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+    	
     	if (player != null)
     	{
+    		// We draw the player
     		g2D.setColor(player);
-            g2D.setRenderingHint(
-                    RenderingHints.KEY_ANTIALIASING, 
-                    RenderingHints.VALUE_ANTIALIAS_ON);
+            g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         	g2D.fillOval(1, 1, this.getWidth()-2, this.getHeight()-2);
     	}
     }
