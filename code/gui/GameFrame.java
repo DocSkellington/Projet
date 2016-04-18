@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Rectangle;
@@ -31,8 +32,8 @@ import players.Human;
  */
 public class GameFrame extends JFrame
 {
-	private JPanel board;
-	private ActionButton moveButton, wallButton, removeButton;
+	private JPanel board, right;
+	private ActionButton moveButton, wallButton, removeButton, rewindButton;
 	private JLabel labels[];
 	private APlayer[] players;
 	
@@ -40,11 +41,11 @@ public class GameFrame extends JFrame
 	 * 
 	 * @param players The array of players
 	 */
-	public GameFrame(APlayer[] players)
+	public GameFrame(APlayer[] players, Game game)
 	{
 		super("Quoridor");
 		this.players = players;
-		init();
+		init(game);
 	}
 	
 	/** Updates the labels (changes colour of the first line and updates the number of available walls)
@@ -106,7 +107,7 @@ public class GameFrame extends JFrame
 	}
 	
 	// Initialise everything
-	private void init()
+	private void init(Game game)
 	{
 		int numPlayers = players.length;
 		
@@ -126,13 +127,16 @@ public class GameFrame extends JFrame
 		board.setMaximumSize(new Dimension(790, 790));
 
 		// The panel for everything on the right of the board
-		JPanel right = new JPanel(new BorderLayout());
+		right = new JPanel(new BorderLayout());
 		
 		// The buttons for the human players
-		JPanel buttons = new JPanel();
+		Box buttons = new Box(BoxLayout.Y_AXIS);
+        Box moveWallButtons = new Box(BoxLayout.X_AXIS);
+        Box removeRewindButtons = new Box(BoxLayout.X_AXIS);
 		moveButton = new ActionButton();
 		wallButton = new ActionButton();
 		removeButton = new ActionButton();
+		rewindButton = new ActionButton();
 
 		moveButton.setMargin(new Insets(0, 0, 0, 0));
 		moveButton.setBorder(null);
@@ -147,10 +151,22 @@ public class GameFrame extends JFrame
         removeButton.setBorder(null);
         removeButton.setText("Remove wall");
         //removeButton.setIcon(new ImageIcon(Game.getImage("removeButton")));
+
+        rewindButton.setMargin(new Insets(0, 0, 0, 0));
+        rewindButton.setBorder(null);
+        rewindButton.setText("Rewind");
+        rewindButton.addActionListener(new RewindListener(game));
         
-		buttons.add(moveButton);
-		buttons.add(wallButton);
-		buttons.add(removeButton);
+        moveWallButtons.add(moveButton);
+        moveWallButtons.add(Box.createRigidArea(new Dimension(10, 0)));
+        moveWallButtons.add(wallButton);
+        removeRewindButtons.add(removeButton);
+        removeRewindButtons.add(Box.createRigidArea(new Dimension(10, 0)));
+        removeRewindButtons.add(rewindButton);
+        
+        buttons.add(moveWallButtons);
+        buttons.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttons.add(removeRewindButtons);
 
 		right.add(buttons, BorderLayout.NORTH);
 		
@@ -185,4 +201,5 @@ public class GameFrame extends JFrame
         this.add(right);
         this.setVisible(true);
 	}
+	
 }

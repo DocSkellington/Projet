@@ -12,12 +12,13 @@ import java.util.HashSet;
  */
 public abstract class APlayer
 {
-	protected int num, wallCounter;
+	protected int num, wallCounter, waitingTurns;
 	
 	/** The default constructor */
 	public APlayer()
 	{
 		wallCounter = 10;
+		waitingTurns = 0;
 	}
 	
 	/** The constructor that must be used
@@ -29,6 +30,7 @@ public abstract class APlayer
 	{
 		this.num = num;
 		this.wallCounter = wallCounter;
+		waitingTurns = 0;
 	}
 	
 	/** This function handles the turn of a player.
@@ -37,6 +39,32 @@ public abstract class APlayer
 	 * @return The played round
 	 */
 	public abstract Round play(Board board);
+	
+	/** Plays the given round (this is used to load/replay)
+	 * 
+	 * @param board The board
+	 * @param round The round to do
+	 */
+	public void play(Board board, Round round)
+	{
+		switch(round.getType())
+		{
+		case MOVE:
+			board.move(num, round.getCoord());
+			break;
+		case WALL:
+			board.setWall(round.getCoord());
+			break;
+		case DEST:
+			board.destroyWall(round.getCoord());
+			waitingTurns++;
+			break;
+		case NONE:
+			if (waitingTurns > 0)
+				waitingTurns--;
+			break;
+		}
+	}
 	
 	/** Gets the number of the Player
 	 * 
@@ -67,13 +95,13 @@ public abstract class APlayer
 		return wallCounter;
 	}
 	
-	/** Plays back a round
+	/** Sets the wall counter (used to "reset" the player)
 	 * 
-	 * @param round
+	 * @param wallCounter The new wallCounter
 	 */
-	public void rewind(Round round)
+	public void setWallCounter(int wallCounter)
 	{
-		
+		this.wallCounter = wallCounter;
 	}
 	
 	/** Gives the possible moves of this player for a precise position

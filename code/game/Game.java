@@ -41,7 +41,7 @@ import players.*;
  * @author Gaetan Staquet
  * @author Thibaut De Cooman
  */
-public final class Game extends JFrame
+public final class Game
 {
 	private APlayer[] players;
 	private Board board;
@@ -49,6 +49,7 @@ public final class Game extends JFrame
 	private GameFrame frame;
 	// Remembers the index in roundList of the move of the last human who has played
 	private int previousHuman;
+	private int curPlayer;
 	
 	/** The holder of every texture needed by the graphical interface */
 	public static TextureHolder textureHolder;
@@ -69,39 +70,33 @@ public final class Game extends JFrame
 	/** What keeps the game running */
 	public void run()
 	{
-        int numPlayers = 4, hum = 4, randAINum = 0;
+        int numPlayers = 2, hum = 2, randAINum = 0;
         
         init(numPlayers, hum, randAINum);
 
-        for (int i = 0 ; i < players.length ; i++)
-        {
-        	if (players[i] instanceof Human)
-        	{
-        		frame.addActionButtonListener((Human) players[i], board);
-    		}
-        }
-        
-		board.fill(frame.getBoard(), players);
-		
-		frame.repaint();
-		frame.revalidate();
-		
-        int current = 0, winner = -1; // -1 means no winner
+        curPlayer = 0;
+        int winner = -1; // -1 means no winner
         
         while (winner == -1)
         {
         	// We update the buttons and the label
-        	frame.changeActionButtonColor(current);
-            frame.updateLabels(current);
+        	frame.changeActionButtonColor(curPlayer);
+            frame.updateLabels(curPlayer);
             // The current player plays
-            roundList.add(players[current].play(board));
+            roundList.add(players[curPlayer].play(board));
             board.update();
             // As long as we can't refresh the graphical interface, we wait.
             while(!board.repaint())
             {}
             frame.setActionButtonBorder(null);
+            
+            // TODO: Make it work!
+            // Update previousHuman
+            if (players[curPlayer] instanceof Human)
+            	previousHuman = roundList.size() - 1;
+            
             // Next player
-            current = (current + 1) % numPlayers;
+            curPlayer = (curPlayer + 1) % numPlayers;
             winner = board.hasWon();
         }
         
@@ -117,14 +112,55 @@ public final class Game extends JFrame
 	 */
 	public void rewind()
 	{
-		// TODO: todo
+		// Delete the last rounds
 		if (previousHuman != -1)
 		{
 			for (int i = roundList.size() - 1 ; i >= previousHuman ; i--)
 			{
-				
+				roundList.remove(i);
 			}
 		}
+		
+		// Execute all the rounds
+		executeRounds();
+	}
+	
+	// Execute the roundList
+	private void executeRounds()
+	{
+		// Reset the players
+		int wall = 10;
+		if (players.length == 3)
+			wall = 7;
+		else if (players.length == 4)
+			wall = 5;
+		
+		for (APlayer player : players)
+			player.setWallCounter(wall);
+		
+		// Reset the board
+		board = new Board(players, 9);
+		
+		board.print();
+		
+		System.out.println(roundList);
+		
+		// Plays the rounds until the end
+		int cur = 0;
+		for (Round round : roundList)
+		{
+			players[cur].play(board, round);
+			board.update();
+			cur = (cur + 1) % players.length;
+		}
+		System.out.println("Done");
+		board.update();
+		curPlayer = cur;
+		while(!board.repaint())
+		{
+			System.out.println("Hello");
+		}
+		board.print();
 	}
 	
 	/** Asks the number of players
@@ -336,6 +372,23 @@ public final class Game extends JFrame
         
         // This is used to hash the coordinates:
         Coordinates.size = board.getYSize();
+
+        // Add the listeners
+        for (i = 0 ; i < players.length ; i++)
+        {
+        	if (players[i] instanceof Human)
+        	{
+        		frame.addActionButtonListener((Human) players[i], board);
+    		}
+        }
+        
+        // Fills the board panel
+		board.fill(frame.getBoard(), players);
+		
+		// Update the frame
+		frame.repaint();
+		frame.revalidate();
+		
     }
     
     /* Initialises the graphical components */
@@ -363,7 +416,7 @@ public final class Game extends JFrame
         colorHolder.load(2, Color.YELLOW);
         colorHolder.load(3, Color.GREEN);
 
-        frame = new GameFrame(players);
+        frame = new GameFrame(players, this);
     }
     
     private void save(String filepath) throws IOException

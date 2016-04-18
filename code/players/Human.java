@@ -28,15 +28,22 @@ public final class Human extends APlayer
 	@Override
 	public Round play(Board board)
 	{
-		activated = true;
-		
-		while (activated)
+		if (waitingTurns == 0)
 		{
-			board.repaint();
+			activated = true;
+			while (activated)
+			{
+				board.repaint();
+			}
+			
+			board.disableAll();
+			return round;
 		}
-		
-		board.disableAll();
-		return round;
+		else
+		{
+			waitingTurns--;
+			return new Round(Type.NONE, new Coordinates(-1, -1));
+		}
 	}
 	
 	/** Whether the human is active
@@ -82,23 +89,6 @@ public final class Human extends APlayer
 		board.enableWalls(true);
 	}
 	
-	/** Removes a wall
-	 * 
-	 * @param board The board
-	 * @param coord The upper left coordinates of the wall to destroy
-	 */
-	public void destroyWall(Board board, Coordinates coord)
-	{
-		// TODO: Make the player wait 1 turn
-		if(board.destroyWall(coord))
-		{
-			activated = false;
-			round = new Round(Type.DEST, coord);
-		}
-		else
-			System.err.println("Error");
-	}
-	
 	/** Effectively moves
 	 * 
 	 * @param board A reference to the board
@@ -111,6 +101,11 @@ public final class Human extends APlayer
 		round = new Round(Type.MOVE, coord);
 	}
 	
+	/** Effectively sets a wall
+	 * 
+	 * @param board The board
+	 * @param coord The upper-left coordinates of the wall to destroy
+	 */
 	public void setWall(Board board, Coordinates coord)
 	{
 		if(board.setWall(coord))
@@ -120,4 +115,29 @@ public final class Human extends APlayer
 			wallCounter--;
 		}
 	}
+
+	/** Removes a wall
+	 * 
+	 * @param board The board
+	 * @param coord The upper left coordinates of the wall to destroy
+	 */
+	public void destroyWall(Board board, Coordinates coord)
+	{
+		// TODO: Make the player wait 1 turn
+		if(board.destroyWall(coord))
+		{
+			activated = false;
+			round = new Round(Type.DEST, coord);
+			waitingTurns++;
+		}
+	}
+	
+	/** Skips the turn
+	 * 
+	 */
+	public void skip()
+	{
+		activated = true;
+	}
+	
 }

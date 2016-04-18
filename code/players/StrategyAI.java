@@ -44,20 +44,34 @@ public final class StrategyAI extends APlayer
 	@Override
 	public Round play(Board board)
 	{
-		Round round = strat.strategy(board, num, wallCounter, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds++);
-		if (round.getType() == Type.MOVE)
+		if (waitingTurns == 0)
 		{
-			board.move(num, round.getCoord());
-			return round;
+			Round round = strat.strategy(board, num, wallCounter, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds++);
+			if (round.getType() == Type.MOVE)
+			{
+				board.move(num, round.getCoord());
+				return round;
+			}
+			else if (round.getType() == Type.WALL)
+			{
+				board.setWall(round.getCoord());
+				wallCounter--;
+				return round;
+			}
+			else if (round.getType() == Type.DEST)
+			{
+				board.destroyWall(round.getCoord());
+				waitingTurns++;
+				return round;
+			}
+			// Can only occur in 3-4 players mode
+			else
+				return round;
 		}
-		else if (round.getType() == Type.WALL)
-		{
-			board.setWall(round.getCoord());
-			wallCounter--;
-			return round;
-		}
-		// Can only occur in 3-4 players mode
 		else
-			return round;
+		{
+			waitingTurns--;
+			return new Round(Type.NONE, new Coordinates(-1, -1));
+		}
 	}
 }
