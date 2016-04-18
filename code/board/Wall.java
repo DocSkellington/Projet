@@ -1,6 +1,7 @@
 package board;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -21,6 +22,7 @@ import gui.TextureHolder;
 public final class Wall extends ACell
 {
 	private float alpha;
+	private boolean destroy;
 	
 	/** Constructor */
     public Wall()
@@ -36,6 +38,25 @@ public final class Wall extends ACell
     {
     	super(filled);
     	repaint();
+    	destroy = false;
+    }
+    
+    /** Sets destroy
+     * 
+     * @param destroy The new value of destroy
+     */
+    public void setDestroy(boolean destroy)
+    {
+    	this.destroy = destroy;
+    }
+    
+    /** Gets destroy
+     * 
+     * @return destroy
+     */
+    public boolean getDestroy()
+    {
+    	return destroy;
     }
     
     @Override
@@ -108,6 +129,10 @@ public final class Wall extends ACell
     	case 2:
     		img = Game.getImage("wallFilled");
     		alpha = 0.3f;
+    		break;
+    	case 3:
+    		img = Game.getImage("wallEmpty");
+    		alpha = 1.0f;
     		break;
 		default:
 			throw new RuntimeException("Invalid number: " + filled);

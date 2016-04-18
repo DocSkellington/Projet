@@ -19,7 +19,8 @@ public final class Round
 	{
 		NONE,
 		MOVE,
-		WALL;
+		WALL,
+		DEST;
 	}
 	
 	/** Constructor

@@ -30,6 +30,7 @@ import board.Board;
 import board.Coordinates;
 import gui.ActionButton;
 import gui.ColorHolder;
+import gui.GameFrame;
 import gui.MoveButtonListener;
 import gui.TextureHolder;
 import gui.WallButtonListener;
@@ -40,15 +41,14 @@ import players.*;
  * @author Gaetan Staquet
  * @author Thibaut De Cooman
  */
-public final class Game
+public final class Game extends JFrame
 {
 	private APlayer[] players;
 	private Board board;
 	private ArrayList<Round> roundList; 
-	private JFrame frame;
-	private JPanel main;
-	private ActionButton moveButton, wallButton;
-	private JLabel labels[];
+	private GameFrame frame;
+	// Remembers the index in roundList of the move of the last human who has played
+	private int previousHuman;
 	
 	/** The holder of every texture needed by the graphical interface */
 	public static TextureHolder textureHolder;
@@ -59,18 +59,11 @@ public final class Game
 	/** Default constructor */
 	public Game()
 	{
+		players = null;
+		board = null;
 		roundList = new ArrayList<Round>();
-		
-		// Init of graphics environment
-		GraphicsEnvironment a = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] b = a.getScreenDevices();
-		Rectangle c = b[0].getDefaultConfiguration().getBounds();
-		frame = new JFrame("Quoridor");
-		frame.setSize(1024, 768);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocation((c.width-frame.getSize().width)/2, (c.height-frame.getSize().height)/2);
-		frame.setResizable(false);
-		frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.X_AXIS));
+		frame = null;
+		previousHuman = -1;
 	}
 	
 	/** What keeps the game running */
@@ -84,33 +77,29 @@ public final class Game
         {
         	if (players[i] instanceof Human)
         	{
-        		final Human human = (Human) players[i];
-        		moveButton.addActionListener(new MoveButtonListener(wallButton, human, board));
-        		wallButton.addActionListener(new WallButtonListener(moveButton, human, board));
-        	}
+        		frame.addActionButtonListener((Human) players[i], board);
+    		}
         }
         
-		board.fill(main, players);
+		board.fill(frame.getBoard(), players);
 		
-		main.repaint();
-		main.revalidate();
+		frame.repaint();
+		frame.revalidate();
 		
         int current = 0, winner = -1; // -1 means no winner
         
         while (winner == -1)
         {
         	// We update the buttons and the label
-        	moveButton.changeColor(current);
-        	wallButton.changeColor(current);
-            updateLabels(current);
+        	frame.changeActionButtonColor(current);
+            frame.updateLabels(current);
             // The current player plays
             roundList.add(players[current].play(board));
             board.update();
             // As long as we can't refresh the graphical interface, we wait.
             while(!board.repaint())
             {}
-            moveButton.setBorder(null);
-            wallButton.setBorder(null);
+            frame.setActionButtonBorder(null);
             // Next player
             current = (current + 1) % numPlayers;
             winner = board.hasWon();
@@ -121,6 +110,21 @@ public final class Game
         while(!board.repaint())
         {}
         printVictory(winner);
+	}
+	
+	/** Cancels the rounds done since the last time a human played 
+	 * 
+	 */
+	public void rewind()
+	{
+		// TODO: todo
+		if (previousHuman != -1)
+		{
+			for (int i = roundList.size() - 1 ; i >= previousHuman ; i--)
+			{
+				
+			}
+		}
 	}
 	
 	/** Asks the number of players
@@ -359,74 +363,7 @@ public final class Game
         colorHolder.load(2, Color.YELLOW);
         colorHolder.load(3, Color.GREEN);
 
-    	// The panel for the board
-		main = new JPanel();
-		main.setLayout(new GridBagLayout());
-		main.setMaximumSize(new Dimension(790, 790));
-
-		// The panel for everything on the right of the board
-		JPanel right = new JPanel(new BorderLayout());
-		
-		// The buttons for the human players
-		JPanel buttons = new JPanel();
-		moveButton = new ActionButton();
-		wallButton = new ActionButton();
-
-		moveButton.setMargin(new Insets(0, 0, 0, 0));
-		moveButton.setBorder(null);
-        moveButton.setIcon(new ImageIcon(textureHolder.get("moveButton")));
-        
-		wallButton.setMargin(new Insets(0, 0, 0, 0));
-		wallButton.setBackground(Color.BLUE);
-		wallButton.setBorder(null);
-        wallButton.setIcon(new ImageIcon(textureHolder.get("wallButton")));
-        
-		buttons.add(moveButton);
-		buttons.add(wallButton);
-
-		right.add(buttons, BorderLayout.NORTH);
-		
-		// Font used for the labels
-		Font font = new Font("Impact", Font.PLAIN, 20);
-		// The labels to show the current player and the number of available walls for each player
-		Box labelsBox = new Box(BoxLayout.Y_AXIS);
-        labels = new JLabel[numPlayers+2];
-        labels[0] = new JLabel("");
-        labels[1] = new JLabel("Number of available walls:");
-        labelsBox.add(labels[0]);
-        labelsBox.add(labels[1]);
-    	labels[0].setAlignmentX(Label.CENTER_ALIGNMENT);
-    	labels[0].setFont(font);
-    	labels[1].setAlignmentX(Label.CENTER_ALIGNMENT);
-    	labels[1].setFont(font);
-        for (int i = 0 ; i < numPlayers ; i++)
-        {
-        	labels[i+2] = new JLabel("");
-        	labels[i+2].setFont(font);
-        	labels[i+2].setAlignmentX(Label.CENTER_ALIGNMENT);
-        	labelsBox.add(labels[i+2]);
-        }
-        updateLabels(0);
-        
-        right.add(labelsBox, BorderLayout.CENTER);
-        
-		frame.add(main);
-		frame.add(Box.createRigidArea(new Dimension(10, 0)));
-		frame.add(right);
-		frame.setVisible(true);
-    }
-    
-    private void updateLabels(int curPlayer)
-    {
-    	labels[0].setText("Current Player: " + (curPlayer+1));
-    	labels[0].setForeground(getColor(curPlayer));
-        for (int i = 2 ; i < labels.length ; i++)
-        {
-        	if (players[i-2].getWallCounter() == 1)
-        		labels[i].setText("J" + (i-1) + ": 1 wall");
-        	else
-        		labels[i].setText("J" + (i-1) + ": " + players[i-2].getWallCounter() + " walls");
-        }
+        frame = new GameFrame(players);
     }
     
     private void save(String filepath) throws IOException

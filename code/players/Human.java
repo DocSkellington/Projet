@@ -68,8 +68,35 @@ public final class Human extends APlayer
 		if (wallCounter > 0)
 		{
 			board.disableAll();
-			board.enableWalls();
+			board.enableWalls(false);
 		}
+	}
+	
+	/** Activate the walls who can be destroyed
+	 * 
+	 * @param board The board
+	 */
+	public void removeWalls(Board board)
+	{
+		board.disableAll();
+		board.enableWalls(true);
+	}
+	
+	/** Removes a wall
+	 * 
+	 * @param board The board
+	 * @param coord The upper left coordinates of the wall to destroy
+	 */
+	public void destroyWall(Board board, Coordinates coord)
+	{
+		// TODO: Make the player wait 1 turn
+		if(board.destroyWall(coord))
+		{
+			activated = false;
+			round = new Round(Type.DEST, coord);
+		}
+		else
+			System.err.println("Error");
 	}
 	
 	/** Effectively moves

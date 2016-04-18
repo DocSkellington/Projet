@@ -11,23 +11,25 @@ import javax.swing.border.Border;
 import board.Board;
 import players.Human;
 
-/** The listener for the move button (used by human players to activate the cases them can reach)
+/** The listener for the remove wall button
  * 
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  *
  */
-public final class MoveButtonListener implements ActionListener
+public final class RemoveWallButtonListener implements ActionListener
 {
 	private ActionButton wall;
 	private Human human;
 	private Board board;
-	
+
 	/** Constructor
 	 * 
 	 * @param wall The wall button
 	 * @param human A human
 	 * @param board The board
 	 */
-	public MoveButtonListener(ActionButton wall, Human human, Board board)
+	public RemoveWallButtonListener(ActionButton wall, Human human, Board board)
 	{
 		this.wall = wall;
 		this.human = human;
@@ -42,7 +44,8 @@ public final class MoveButtonListener implements ActionListener
 			Border border = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 			((JButton) e.getSource()).setBorder(border);
 			wall.setBorder(null);
-			human.move(board);
+			human.removeWalls(board);
 		}
 	}
+
 }

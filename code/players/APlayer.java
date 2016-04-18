@@ -67,6 +67,15 @@ public abstract class APlayer
 		return wallCounter;
 	}
 	
+	/** Plays back a round
+	 * 
+	 * @param round
+	 */
+	public void rewind(Round round)
+	{
+		
+	}
+	
 	/** Gives the possible moves of this player for a precise position
 	 * 
 	 * @param board The board

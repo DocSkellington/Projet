@@ -6,6 +6,7 @@ import java.text.ParseException;
 
 import board.Board;
 import board.Coordinates;
+import board.Wall;
 import players.Human;
 
 public final class WallListener implements ActionListener
@@ -25,13 +26,17 @@ public final class WallListener implements ActionListener
 		if (human.isActive())
 		{
 			String message = e.getActionCommand();
+			boolean destroy = ((Wall)e.getSource()).getDestroy();
 			
 			if (message.charAt(0) == 'l')
 			{
 				try
 				{
 					Coordinates coord = Coordinates.parse(message.substring(2));
-					board.colorAdjacentWalls(coord, true);
+					if (destroy)
+						board.colorAdjacentWallsDestroy(coord, true);
+					else
+						board.colorAdjacentWalls(coord, true);
 				}
 				catch(ParseException ex)
 				{
@@ -43,7 +48,10 @@ public final class WallListener implements ActionListener
 				try
 				{
 					Coordinates coord = Coordinates.parse(message.substring(2));
-					board.colorAdjacentWalls(coord, false);
+					if (destroy)
+						board.colorAdjacentWallsDestroy(coord, false);
+					else
+						board.colorAdjacentWalls(coord, false);
 				}
 				catch(ParseException ex)
 				{
@@ -56,7 +64,12 @@ public final class WallListener implements ActionListener
 				try
 				{
 					Coordinates coord = Coordinates.parse(message);
-					human.setWall(board, coord);
+					if (destroy)
+					{
+						human.destroyWall(board, coord);
+					}
+					else
+						human.setWall(board, coord);
 				}
 				catch(ParseException ex)
 				{

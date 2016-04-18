@@ -22,7 +22,7 @@ public class Board
 {
     protected ACell[][] cells;
     protected Coordinates[] playersPositions;
-    protected ArrayList<Coordinates> possibleWalls;
+    protected ArrayList<Coordinates> placedWalls;
     protected APlayer[] players;
     
     protected final double tick = 33.3333;
@@ -36,7 +36,7 @@ public class Board
     {
         cells = new ACell[2*size-1][2*size-1];
         this.players = players; 
-        possibleWalls = new ArrayList<Coordinates>();
+        placedWalls = new ArrayList<Coordinates>();
         int numPlayers = players.length;
         
         for (int x = 0 ; x < cells.length ; x++)
@@ -48,8 +48,6 @@ public class Board
                 else
                 {
                 	cells[x][y] = new Wall();
-                	if (x % 2 != 1 || y % 2 != 1)
-                		possibleWalls.add(new Coordinates(x, y));
                 }
             }
         }
@@ -195,30 +193,28 @@ public class Board
     	colorAdjacentWalls(coord, false);
     	coord = shift(coord);
     	
-    	int x = coord.getX(), y = coord.getY();
-    	
-        int x2 = x, y2 = y;
-        // Vertical
-        if (x % 2 == 1)
-        {
-        	y2 += 2;
-        }
-        // Horizontal
-        else
-        	x2 += 2;
-        
         // If we can set the wall
     	if(canSetWall(coord))
     	{
+	    	int x = coord.getX(), y = coord.getY();
+	    	
+	        int x2 = x, y2 = y;
+	        // Vertical
+	        if (x % 2 == 1)
+	        {
+	        	y2 += 2;
+	        }
+	        // Horizontal
+	        else
+	        	x2 += 2;
+        
     		// We effectively set the wall
             cells[y][x].setFilled(1);
             cells[(y2+y)/2][(x2+x)/2].setFilled(1);
             cells[y2][x2].setFilled(1);
             
-            // We remove the 3 cells from the possibleWalls (so, they can't be enabled).
-            possibleWalls.remove(new Coordinates(y, x));
-            possibleWalls.remove(new Coordinates((y2+y)/2, (x2+x)/2));
-            possibleWalls.remove(new Coordinates(y2, x2));
+            // We add the upper left coordinates in placedWalls
+            placedWalls.add(coord);
             return true;
     	}
     	return false;
@@ -279,11 +275,44 @@ public class Board
     public boolean hasWall(Coordinates coord)
     {
     	// If the coordinates are wrong
-    	if (!tryWall(coord))
-    		return true;
+    	if (coord.getX() < 0 || coord.getX() >= cells[0].length || coord.getY() < 0 || coord.getY() >= cells[0].length)
+    	{
+    		throw new RuntimeException("Out of the board");
+    	}
     	
-    	if (filled(coord) == 1)
+    	if (filled(coord) != 0 && filled(coord) != 2)
     		return true;
+    	return false;
+    }
+    
+    public boolean destroyWall(Coordinates coord)
+    {
+    	if (!hasWall(coord))
+    		return false;
+    	
+    	int x = coord.getX(), y = coord.getY();
+    	if (coord.getX() == cells[0].length-1)
+    		x -= 2;
+    	if (coord.getY() == cells.length-1)
+    		y -= 2;
+    	
+    	if (placedWalls.contains(new Coordinates(x, y)))
+    	{
+    		int x2 = 0, y2 = 0;
+    		
+    		if (x % 2 == 0)
+    			x2 = 2;
+    		else
+    			y2 = 2;
+    		
+    		cells[y][x].setFilled(0);
+    		cells[y+y2/2][x+x2/2].setFilled(0);
+    		cells[y+y2][x+x2].setFilled(0);
+    		
+    		placedWalls.remove(new Coordinates(x, y));
+    		return true;
+    	}
+    	
     	return false;
     }
     
@@ -602,12 +631,33 @@ public class Board
     	}
     }
     
-    /** Enable all possible walls buttons */
-    public void enableWalls()
+    /** Enable all possible walls buttons
+     * 
+     * @param destroy If we want to destroy the walls
+     */
+    public void enableWalls(boolean destroy)
     {
-    	for (Coordinates coord : possibleWalls)
+    	for (int i = 0 ; i < cells.length ; i++)
     	{
-    		cells[coord.getX()][coord.getY()].setEnabled(true);
+    		for (int j = 0 ; j < cells[0].length ; j++)
+    		{
+    			if (i % 2 != j % 2)
+    			{
+    				if (destroy)
+    				{
+    					if (hasWall(new Coordinates(j, i)))
+    					{
+    						cells[i][j].setEnabled(true);
+    						((Wall)cells[i][j]).setDestroy(true);
+    					}
+    				}
+    				else
+    				{
+    					cells[i][j].setEnabled(true);
+						((Wall)cells[i][j]).setDestroy(false);
+    				}
+    			}
+    		}
     	}
     }
     
@@ -632,6 +682,7 @@ public class Board
     	if (coloured)
     	{
         	coord = shift(coord);
+    		// If we can set a wall, we set the value of this cells at 2
         	if (coord.getX() % 2 == 0)
         	{
         		if (cells[coord.getY()][coord.getX()].filled() == 0 && cells[coord.getY()][coord.getX()+2].filled() == 0
@@ -641,8 +692,6 @@ public class Board
     	    		cells[coord.getY()][coord.getX()+1].setFilled(2);
     	    		cells[coord.getY()][coord.getX()+2].setFilled(2);
         		}
-        		else
-        			possibleWalls.remove(coord);
         	}
         	else
         	{
@@ -653,13 +702,12 @@ public class Board
     	    		cells[coord.getY()+1][coord.getX()].setFilled(2);
     	    		cells[coord.getY()+2][coord.getX()].setFilled(2);
         		}
-        		else
-        			possibleWalls.remove(coord);
         	}
     	}
     	else
     	{
     		coord = removeShift(coord);
+    		// If the cells aren't filled by a wall, we set the value of this cells at 0
 	    	if (coord.getX() % 2 == 0)
 	    	{
         		if (cells[coord.getY()][coord.getX()].filled() != 1 && cells[coord.getY()][coord.getX()+2].filled() != 1
@@ -678,6 +726,71 @@ public class Board
     	    		cells[coord.getY()][coord.getX()].setFilled(0);
     	    		cells[coord.getY()+1][coord.getX()].setFilled(0);
     	    		cells[coord.getY()+2][coord.getX()].setFilled(0);
+        		}
+	    	}
+    	}
+    }
+    
+    public void colorAdjacentWallsDestroy(Coordinates coord, boolean coloured)
+    {
+		// If it's outside the board
+    	if ((coord.getX() % 2 == 1 && coord.getY() % 2 == 1) || coord.getX() < 0 || coord.getY() < 0
+    			|| coord.getX() > cells[0].length || coord.getY() > cells.length)
+    		return;
+    	// If it's on the edge
+    	if (coord.getX() == cells[0].length-1)
+    		coord = new Coordinates(coord.getX() - 2, coord.getY());
+    	if (coord.getY() == cells.length-1)
+    		coord = new Coordinates(coord.getX(), coord.getY() - 2);
+    	
+    	
+    	if (coloured)
+    	{
+        	//coord = shift(coord);
+        	// If there is a wall, we set the value of the cells at 3
+        	if (coord.getX() % 2 == 0)
+        	{
+        		if (cells[coord.getY()][coord.getX()].filled() == 1 && cells[coord.getY()][coord.getX()+2].filled() == 1
+        				&& cells[coord.getY()][coord.getX()+1].filled() == 1)
+        		{
+    	    		cells[coord.getY()][coord.getX()].setFilled(3);
+    	    		cells[coord.getY()][coord.getX()+1].setFilled(3);
+    	    		cells[coord.getY()][coord.getX()+2].setFilled(3);
+        		}
+        	}
+        	else
+        	{
+        		if (cells[coord.getY()][coord.getX()].filled() == 1 && cells[coord.getY()+2][coord.getX()].filled() == 1
+        				&& cells[coord.getY()+1][coord.getX()].filled() == 1)
+        		{
+    	    		cells[coord.getY()][coord.getX()].setFilled(3);
+    	    		cells[coord.getY()+1][coord.getX()].setFilled(3);
+    	    		cells[coord.getY()+2][coord.getX()].setFilled(3);
+        		}
+        	}
+    	}
+    	else
+    	{
+    		//coord = removeShift(coord);
+    		// If the cases are filled with 3, we set the cells at 1
+	    	if (coord.getX() % 2 == 0)
+	    	{
+        		if (cells[coord.getY()][coord.getX()].filled() == 3 && cells[coord.getY()][coord.getX()+2].filled() == 3
+        				&& cells[coord.getY()][coord.getX()+1].filled() == 3)
+        		{
+    	    		cells[coord.getY()][coord.getX()].setFilled(1);
+    	    		cells[coord.getY()][coord.getX()+1].setFilled(1);
+    	    		cells[coord.getY()][coord.getX()+2].setFilled(1);
+        		}
+	    	}
+	    	else
+	    	{
+        		if (cells[coord.getY()][coord.getX()].filled() == 3 && cells[coord.getY()+2][coord.getX()].filled() == 3
+        				&& cells[coord.getY()+1][coord.getX()].filled() == 3)
+        		{
+    	    		cells[coord.getY()][coord.getX()].setFilled(1);
+    	    		cells[coord.getY()+1][coord.getX()].setFilled(1);
+    	    		cells[coord.getY()+2][coord.getX()].setFilled(1);
         		}
 	    	}
     	}
@@ -750,7 +863,7 @@ public class Board
     	{
     		return false;
     	}
-    	// If one of the case is filled, we can set a wall
+    	// If one of the case is filled, we can't set a wall
     	if ((filled(x, y) != 0 || filled(x2, y2) != 0 || filled((x+x2)/2, (y+y2) / 2) != 0) && (filled(x, y) != 2
     			|| filled(x2, y2) != 2 || filled((x+x2)/2, (y+y2) / 2) != 2))
     		return false;
