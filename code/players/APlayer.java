@@ -1,6 +1,8 @@
 package players;
 
 import board.*;
+import players.Round.Type;
+
 import java.util.HashSet;
 
 /** Abstract class to handle a player.
@@ -38,7 +40,21 @@ public abstract class APlayer
 	 * @param board The board
 	 * @return The played round
 	 */
-	public abstract Round play(Board board);
+	public Round play(Board board)
+	{
+		if (waitingTurns >= 0)
+		{
+			return doPlay(board);
+		}
+		waitingTurns--;
+		return skip();
+	}
+	
+	/** Skip/Stops this turn */
+	public Round skip()
+	{
+		return new Round(Type.NONE, new Coordinates(-1, -1));
+	}
 	
 	/** Plays the given round (this is used to load/replay)
 	 * 
@@ -197,4 +213,7 @@ public abstract class APlayer
 		
 		return coord;
 	}
+	
+	// Effectively plays
+	protected abstract Round doPlay(Board board);
 }

@@ -13,6 +13,8 @@ import players.Human;
 
 /** The listener for the move button (used by human players to activate the cases them can reach)
  * 
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  *
  */
 public final class MoveButtonListener implements ActionListener

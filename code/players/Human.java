@@ -25,27 +25,6 @@ public final class Human extends APlayer
 		super(num, wallCounter);
 	}
 	
-	@Override
-	public Round play(Board board)
-	{
-		if (waitingTurns == 0)
-		{
-			activated = true;
-			while (activated)
-			{
-				board.repaint();
-			}
-			
-			board.disableAll();
-			return round;
-		}
-		else
-		{
-			waitingTurns--;
-			return new Round(Type.NONE, new Coordinates(-1, -1));
-		}
-	}
-	
 	/** Whether the human is active
 	 * 
 	 * @return True if the player is active, false otherwise
@@ -132,12 +111,25 @@ public final class Human extends APlayer
 		}
 	}
 	
-	/** Skips the turn
-	 * 
-	 */
-	public void skip()
+	@Override
+	public Round skip()
+	{
+		System.err.println("Skips");
+		activated = false;
+		return super.skip();
+	}
+	
+	@Override
+	protected Round doPlay(Board board)
 	{
 		activated = true;
+		while (activated)
+		{
+			board.repaint();
+		}
+		
+		board.disableAll();
+		return round;
 	}
 	
 }

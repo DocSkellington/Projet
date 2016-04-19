@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Rectangle;
@@ -27,7 +26,8 @@ import players.Human;
 
 /** The main frame. It manages the button, labels and menu needed.
  * 
- * @author GaetanStaquet
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
  *
  */
 public class GameFrame extends JFrame
@@ -45,6 +45,16 @@ public class GameFrame extends JFrame
 	{
 		super("Quoridor");
 		this.players = players;
+
+		// Init of graphics environment
+		GraphicsEnvironment a = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] b = a.getScreenDevices();
+		Rectangle c = b[0].getDefaultConfiguration().getBounds();
+		this.setSize(1050, 800);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocation((c.width-this.getSize().width)/2, (c.height-this.getSize().height)/2);
+		this.setResizable(false);
+		
 		init(game);
 	}
 	
@@ -106,19 +116,24 @@ public class GameFrame extends JFrame
 		return board;
 	}
 	
+	public void reset(APlayer[] players, Game game)
+	{
+		this.players = players;
+		this.getContentPane().removeAll();
+		board = right = null;
+		labels = null;
+		moveButton = wallButton = removeButton = rewindButton = null;
+		this.setJMenuBar(null);
+		init(game);
+		validate();
+		repaint();
+	}
+	
 	// Initialise everything
 	private void init(Game game)
 	{
 		int numPlayers = players.length;
 		
-		// Init of graphics environment
-		GraphicsEnvironment a = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] b = a.getScreenDevices();
-		Rectangle c = b[0].getDefaultConfiguration().getBounds();
-		this.setSize(1024, 768);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocation((c.width-this.getSize().width)/2, (c.height-this.getSize().height)/2);
-		this.setResizable(false);
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
 	
     	// The panel for the board
@@ -195,6 +210,8 @@ public class GameFrame extends JFrame
         updateLabels(0);
         
         right.add(labelsBox, BorderLayout.CENTER);
+        
+        setJMenuBar(new MenuBar(game));
         
         this.add(board);
         this.add(Box.createRigidArea(new Dimension(10, 0)));

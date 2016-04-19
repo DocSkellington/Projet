@@ -9,11 +9,22 @@ import board.Coordinates;
 import board.Wall;
 import players.Human;
 
+/** The listener for the walls (used for human players)
+ * 
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
+ *
+ */
 public final class WallListener implements ActionListener
 {
 	private Human human;
 	private Board board;
 	
+	/** The constructor
+	 * 
+	 * @param human The human bound to this player
+	 * @param board The board
+	 */
 	public WallListener(Human human, Board board)
 	{
 		this.human = human;

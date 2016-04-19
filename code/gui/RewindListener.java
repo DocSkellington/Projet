@@ -13,9 +13,12 @@ import java.awt.event.ActionListener;
  */
 public class RewindListener implements ActionListener
 {
-
 	Game game;
 	
+	/** The constructor
+	 * 
+	 * @param game The game
+	 */
 	public RewindListener(Game game)
 	{
 		this.game = game;

@@ -10,11 +10,22 @@ import board.Board;
 import board.Coordinates;
 import players.Human;
 
+/** The listener for the case (used for human players)
+ * 
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
+ *
+ */
 public final class CaseListener implements ActionListener
 {
 	private Human human;
 	private Board board;
 	
+	/** The constructor
+	 * 
+	 * @param human The human bound to the listener
+	 * @param board The board
+	 */
 	public CaseListener(Human human, Board board)
 	{
 		this.human = human;

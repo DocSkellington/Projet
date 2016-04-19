@@ -2,25 +2,10 @@ package game;
 
 import java.util.Scanner;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import java.util.ArrayList;
 import java.text.ParseException;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Label;
-import java.awt.Rectangle;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -28,12 +13,9 @@ import java.nio.file.*;
 import java.util.List;
 import board.Board;
 import board.Coordinates;
-import gui.ActionButton;
 import gui.ColorHolder;
 import gui.GameFrame;
-import gui.MoveButtonListener;
 import gui.TextureHolder;
-import gui.WallButtonListener;
 import players.*;
 
 /** Main class that keeps the game running
@@ -50,6 +32,8 @@ public final class Game
 	// Remembers the index in roundList of the move of the last human who has played
 	private int previousHuman;
 	private int curPlayer;
+	private boolean keep;
+	private int numOfRun;
 	
 	/** The holder of every texture needed by the graphical interface */
 	public static TextureHolder textureHolder;
@@ -65,25 +49,46 @@ public final class Game
 		roundList = new ArrayList<Round>();
 		frame = null;
 		previousHuman = -1;
+		keep = true;
+		numOfRun = 0;
+	}
+	
+	public void newGame()
+	{
+		if (players != null)
+			players[curPlayer].skip();
+		
+		keep = false;
+		
+		// TODO : Asks how many players
+		init(2, 2, 0);
+		System.err.println("Init done");
+		keep = true;
+		board.print();
+		// TODO : Why run freezes ?
+		while(!board.repaint()){}
+		run();
 	}
 	
 	/** What keeps the game running */
-	public void run()
+	private void run()
 	{
-        int numPlayers = 2, hum = 2, randAINum = 0;
-        
-        init(numPlayers, hum, randAINum);
-
+		numOfRun++;
+		System.out.println(numOfRun);
+		
+		int numPlayers = players.length;
         curPlayer = 0;
         int winner = -1; // -1 means no winner
         
-        while (winner == -1)
+        while (winner == -1 && keep)
         {
+        	System.err.println("Start of " + curPlayer);
         	// We update the buttons and the label
         	frame.changeActionButtonColor(curPlayer);
             frame.updateLabels(curPlayer);
             // The current player plays
             roundList.add(players[curPlayer].play(board));
+            System.err.println("played");
             board.update();
             // As long as we can't refresh the graphical interface, we wait.
             while(!board.repaint())
@@ -98,6 +103,7 @@ public final class Game
             // Next player
             curPlayer = (curPlayer + 1) % numPlayers;
             winner = board.hasWon();
+        	System.err.println("End of " + curPlayer);
         }
         
         board.update();
@@ -105,6 +111,15 @@ public final class Game
         while(!board.repaint())
         {}
         printVictory(winner);
+        numOfRun--;
+	}
+	
+	/** Exits the game
+	 * 
+	 */
+	public void exit()
+	{
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 	
 	/** Cancels the rounds done since the last time a human played 
@@ -112,6 +127,10 @@ public final class Game
 	 */
 	public void rewind()
 	{
+		// Stop the current player
+		players[curPlayer].skip();
+
+		System.err.println(roundList);
 		// Delete the last rounds
 		if (previousHuman != -1)
 		{
@@ -120,6 +139,8 @@ public final class Game
 				roundList.remove(i);
 			}
 		}
+		
+		System.err.println(roundList);
 		
 		// Execute all the rounds
 		executeRounds();
@@ -139,11 +160,11 @@ public final class Game
 			player.setWallCounter(wall);
 		
 		// Reset the board
-		board = new Board(players, 9);
+		board.reset();
 		
-		board.print();
+		//board.print();
 		
-		System.out.println(roundList);
+		//System.out.println(roundList);
 		
 		// Plays the rounds until the end
 		int cur = 0;
@@ -153,14 +174,13 @@ public final class Game
 			board.update();
 			cur = (cur + 1) % players.length;
 		}
-		System.out.println("Done");
+		//System.out.println("Done");
 		board.update();
+		//System.out.println("Update done");
 		curPlayer = cur;
-		while(!board.repaint())
-		{
-			System.out.println("Hello");
-		}
-		board.print();
+		while(!board.repaint()){}
+		//System.out.println("execute done");
+		//board.print();
 	}
 	
 	/** Asks the number of players
@@ -416,7 +436,17 @@ public final class Game
         colorHolder.load(2, Color.YELLOW);
         colorHolder.load(3, Color.GREEN);
 
-        frame = new GameFrame(players, this);
+        // It the window does not yet exist, we create it
+        if(frame == null)
+        {
+        	System.err.println("New frame");
+        	frame = new GameFrame(players, this);
+        }
+        else
+        {
+        	System.err.println("Frame reset");
+        	frame.reset(players, this);
+        }
     }
     
     private void save(String filepath) throws IOException
@@ -476,7 +506,7 @@ public final class Game
     public static void main(String[] args)
     {    	
     	Game game = new Game();
-    	game.run();
+    	game.newGame();
     }
     
 }

@@ -6,6 +6,12 @@ import javax.swing.JButton;
 
 import game.Game;
 
+/** This class defines an action button (move/wall/...)
+ * 
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
+ *
+ */
 public final class ActionButton extends JButton
 {
 	@Override

@@ -61,6 +61,24 @@ public class Board
         update();
     }
     
+    public void reset()
+    {
+    	// Reset the walls
+    	for(Coordinates wall : placedWalls)
+    	{
+    		destroyWall(wall);
+    	}
+    	placedWalls = new ArrayList<Coordinates>();
+    	
+    	// Reset the players positions
+        playersPositions = new Coordinates[playersPositions.length];
+        for (int i = 0 ; i < playersPositions.length ; i++)
+        {
+        	playersPositions[i] = startingPos(i);
+        }
+        update();
+    }
+    
     @Override
     public String toString()
     {
@@ -165,6 +183,9 @@ public class Board
 				panel.add(cells[i][j], c);
 			}
 		}
+		
+		panel.repaint();
+		panel.revalidate();
 	}
     
     /** Sets a wall if it can
