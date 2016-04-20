@@ -114,7 +114,6 @@ public final class Human extends APlayer
 	@Override
 	public Round skip()
 	{
-		System.err.println("Skips");
 		activated = false;
 		return super.skip();
 	}
@@ -125,10 +124,25 @@ public final class Human extends APlayer
 		activated = true;
 		while (activated)
 		{
+        	// Stop to play if the thread is interrupted
+			if(Thread.currentThread().isInterrupted())
+			{
+				return new Round(Type.NONE, new Coordinates(-1, -1));
+			}
+			
 			board.repaint();
 		}
 		
 		board.disableAll();
+		
+		// We wait to be sure that round is updated
+		try
+		{
+			Thread.sleep(10);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		} 
 		return round;
 	}
 	

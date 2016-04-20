@@ -54,7 +54,8 @@ public class GameFrame extends JFrame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation((c.width-this.getSize().width)/2, (c.height-this.getSize().height)/2);
 		this.setResizable(false);
-		
+
+		this.setAlwaysOnTop(true);
 		init(game);
 	}
 	

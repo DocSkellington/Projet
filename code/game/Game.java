@@ -1,7 +1,7 @@
 package game;
 
+import java.util.concurrent.*;
 import java.util.Scanner;
-
 import java.util.ArrayList;
 import java.text.ParseException;
 import java.awt.Color;
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.List;
+
 import board.Board;
 import board.Coordinates;
 import gui.ColorHolder;
@@ -25,15 +26,15 @@ import players.*;
  */
 public final class Game
 {
+	// We want to use an unique thread to run the game
+	private ExecutorService gameExecutor = Executors.newSingleThreadExecutor();
+	private Future<?> gameTask;
+	
 	private APlayer[] players;
 	private Board board;
 	private ArrayList<Round> roundList; 
 	private GameFrame frame;
-	// Remembers the index in roundList of the move of the last human who has played
-	private int previousHuman;
 	private int curPlayer;
-	private boolean keep;
-	private int numOfRun;
 	
 	/** The holder of every texture needed by the graphical interface */
 	public static TextureHolder textureHolder;
@@ -48,70 +49,27 @@ public final class Game
 		board = null;
 		roundList = new ArrayList<Round>();
 		frame = null;
-		previousHuman = -1;
-		keep = true;
-		numOfRun = 0;
+        curPlayer = 0;
 	}
 	
+	/** Create a new game and launch it */
 	public void newGame()
 	{
-		if (players != null)
-			players[curPlayer].skip();
+		// Cancelling the current thread
+		// TODO : Ask if sure
+		if (gameTask != null)
+			gameTask.cancel(true);
 		
-		keep = false;
-		
-		// TODO : Asks how many players
-		init(2, 2, 0);
-		System.err.println("Init done");
-		keep = true;
-		board.print();
-		// TODO : Why run freezes ?
-		while(!board.repaint()){}
-		run();
-	}
-	
-	/** What keeps the game running */
-	private void run()
-	{
-		numOfRun++;
-		System.out.println(numOfRun);
-		
-		int numPlayers = players.length;
-        curPlayer = 0;
-        int winner = -1; // -1 means no winner
-        
-        while (winner == -1 && keep)
-        {
-        	System.err.println("Start of " + curPlayer);
-        	// We update the buttons and the label
-        	frame.changeActionButtonColor(curPlayer);
-            frame.updateLabels(curPlayer);
-            // The current player plays
-            roundList.add(players[curPlayer].play(board));
-            System.err.println("played");
-            board.update();
-            // As long as we can't refresh the graphical interface, we wait.
-            while(!board.repaint())
-            {}
-            frame.setActionButtonBorder(null);
-            
-            // TODO: Make it work!
-            // Update previousHuman
-            if (players[curPlayer] instanceof Human)
-            	previousHuman = roundList.size() - 1;
-            
-            // Next player
-            curPlayer = (curPlayer + 1) % numPlayers;
-            winner = board.hasWon();
-        	System.err.println("End of " + curPlayer);
-        }
-        
-        board.update();
-        // As long as we can't refresh the graphical interface, we wait.
-        while(!board.repaint())
-        {}
-        printVictory(winner);
-        numOfRun--;
+		// Starting a new thread (init + play)
+		gameTask = gameExecutor.submit(new Runnable()
+			{
+				public void run()
+				{
+					init(2, 2, 0);
+			        curPlayer = 0;
+					play();
+				}
+			});
 	}
 	
 	/** Exits the game
@@ -121,29 +79,90 @@ public final class Game
 	{
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
+
+	// What keeps the game running
+	private void play()
+	{		
+		int numPlayers = players.length;
+        int winner = -1; // -1 means no winner
+        
+        while (winner == -1)
+        {
+        	// Stop to play if the thread is interrupted
+        	if (Thread.currentThread().isInterrupted())
+        		return;
+        	
+        	// We update the buttons and the label
+        	frame.changeActionButtonColor(curPlayer);
+            frame.updateLabels(curPlayer);
+            // The current player plays
+            roundList.add(players[curPlayer].play(board));
+            
+            // Update logical part of the board
+            board.update();
+            
+            // As long as we can't refresh the graphical interface, we wait.
+            while(!board.repaint());
+            
+            frame.setActionButtonBorder(null);
+            
+            // Next player
+            curPlayer = (curPlayer + 1) % numPlayers;
+            winner = board.hasWon();
+        }
+        
+        board.update();
+        // As long as we can't refresh the graphical interface, we wait.
+        while(!board.repaint())
+        {}
+        printVictory(winner);
+	}
 	
-	/** Cancels the rounds done since the last time a human played 
+	
+	/** Cancels the rounds done since the last time the current player played 
 	 * 
 	 */
 	public void rewind()
 	{
-		// Stop the current player
-		players[curPlayer].skip();
+		// Cancelling the current thread
+		if (gameTask != null)
+			gameTask.cancel(true);
 
-		System.err.println(roundList);
-		// Delete the last rounds
-		if (previousHuman != -1)
+		// To be sure that the thread is finished
+		try
 		{
-			for (int i = roundList.size() - 1 ; i >= previousHuman ; i--)
-			{
-				roundList.remove(i);
-			}
+			Thread.sleep(300);
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+
+		// We want to cancel every move done since the last time the current player played
+		// If the current player has not already played
+		if (roundList.size() < players.length)
+		{
+			// We simply start a new game
+			newGame();
+			return;
 		}
 		
-		System.err.println(roundList);
+		// Delete the last rounds
+		int start = roundList.size() - 1 - (players.length);
+		for (int i = roundList.size() - 1 ; i >= start ; i--)
+			roundList.remove(i);
 		
-		// Execute all the rounds
-		executeRounds();
+		// Starting a new thread (init + play).
+		// We do not change curPlayer because we do not want to allow the other player(s) to play before the human who asked to rewind.
+		gameTask = gameExecutor.submit(new Runnable()
+			{
+				public void run()
+				{
+					init(2, 2, 0);
+					executeRounds();
+					play();
+				}
+			});
 	}
 	
 	// Execute the roundList
@@ -439,12 +458,10 @@ public final class Game
         // It the window does not yet exist, we create it
         if(frame == null)
         {
-        	System.err.println("New frame");
         	frame = new GameFrame(players, this);
         }
         else
         {
-        	System.err.println("Frame reset");
         	frame.reset(players, this);
         }
     }
@@ -504,7 +521,7 @@ public final class Game
      * @param args Arguments
      */
     public static void main(String[] args)
-    {    	
+    {
     	Game game = new Game();
     	game.newGame();
     }
