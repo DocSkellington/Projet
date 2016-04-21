@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -54,6 +53,7 @@ public final class Game
 		roundList = new ArrayList<Round>();
 		frame = null;
         curPlayer = 0;
+        texAndColorLoad();
 	}
 	
 	/** Create a new game and launch it
@@ -83,15 +83,13 @@ public final class Game
 					if (frame == null)
 					{
 						frame = new GameFrame(new APlayer[0], Game.this);
-						System.out.println("Test");
 						frame.setVisible(true);
 					}
 					
-					int[] playersList = new int[4];
+					ArrayList<Integer> playersList = new ArrayList<Integer>();
 					PlayerPrompt prompt = new PlayerPrompt(frame, "Players choice", true, Game.this, playersList);
 					prompt.setVisible(true);
-					System.err.println("Done");
-					init(2, 1, 0);
+					init(playersList.toArray(new Integer[0]));
 			        curPlayer = 0;
 					play();
 				}
@@ -105,43 +103,6 @@ public final class Game
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 
-	// What keeps the game running
-	private void play()
-	{		
-		int numPlayers = players.length;
-        int winner = -1; // -1 means no winner
-        
-        while (winner == -1)
-        {
-        	// Stop to play if the thread is interrupted
-        	if (Thread.currentThread().isInterrupted())
-        		return;
-        	
-        	// We update the buttons and the label
-        	frame.changeActionButtonColor(curPlayer);
-            frame.updateLabels(curPlayer);
-            // The current player plays
-            roundList.add(players[curPlayer].play(board));
-            
-            // Update logical part of the board
-            board.update();
-            
-            // As long as we can't refresh the graphical interface, we wait.
-            while(!board.repaint());
-            
-            frame.setActionButtonBorder(null);
-            
-            // Next player
-            curPlayer = (curPlayer + 1) % numPlayers;
-            winner = board.hasWon();
-        }
-        
-        board.update();
-        // As long as we can't refresh the graphical interface, we wait.
-        while(!board.repaint());
-        printVictory(winner);
-	}
-	
 	
 	/** Cancels the rounds done since the last time the current player played */
 	public void rewind()
@@ -164,7 +125,6 @@ public final class Game
 		// If the current player has not already played
 		if (roundList.size() < players.length)
 		{
-			System.out.println("New Game");
 			// We simply start a new game
 			newGame(false);
 			return;
@@ -181,11 +141,53 @@ public final class Game
 			{
 				public void run()
 				{
-					init(2, 2, 0);
+					init(players);
 					executeRounds();
 					play();
 				}
 			});
+	}
+	
+	// What keeps the game running
+	private void play()
+	{		
+		int numPlayers = players.length;
+        int winner = -1; // -1 means no winner
+        
+        // TODO : POURQUOI CA RALENTIT QUAND IL Y A UNE IA ?!
+        
+        while (winner == -1)
+        {
+        	Board.human = false;
+        	// Stop to play if the thread is interrupted
+        	if (Thread.currentThread().isInterrupted())
+        		return;
+        	
+        	// We update the buttons and the label
+        	frame.changeActionButtonColor(curPlayer);
+            frame.updateLabels(curPlayer);
+            // The current player plays
+            roundList.add(players[curPlayer].play(board));
+            
+            // Update logical part of the board
+            board.update();
+            
+            // As long as we can't refresh the graphical interface, we wait.
+            while (System.currentTimeMillis() - Board.prev_tick < Board.tick && !Board.human);
+            board.repaint();
+            Board.prev_tick = System.currentTimeMillis();
+            
+            frame.setActionButtonBorder(null);
+            
+            // Next player
+            curPlayer = (curPlayer + 1) % numPlayers;
+            winner = board.hasWon();
+        }
+        
+        board.update();
+        // As long as we can't refresh the graphical interface, we wait.
+        while(!board.repaint());
+        printVictory(winner);
 	}
 	
 	// Execute the roundList
@@ -199,14 +201,10 @@ public final class Game
 			wall = 5;
 		
 		for (APlayer player : players)
-			player.setWallCounter(wall);
+			player.reset(wall);
 		
 		// Reset the board
 		board.reset();
-		
-		//board.print();
-		
-		//System.out.println(roundList);
 		
 		// Plays the rounds until the end
 		int cur = 0;
@@ -216,13 +214,9 @@ public final class Game
 			board.update();
 			cur = (cur + 1) % players.length;
 		}
-		//System.out.println("Done");
 		board.update();
-		//System.out.println("Update done");
 		curPlayer = cur;
-		while(!board.repaint()){}
-		//System.out.println("execute done");
-		//board.print();
+		while(!board.repaint());
 	}
 	
 	/** Asks the number of players
@@ -395,14 +389,41 @@ public final class Game
         System.out.println("The list of rounds : " + roundList);
     }
     
+    private void init(Integer[] playersInt)
+    {
+    	APlayer[] playersList = new APlayer[playersInt.length];
+    	
+    	for (int i = 0 ; i < playersInt.length ; i++)
+    	{
+    		switch(playersInt[i])
+    		{
+    		case 0:
+    			playersList[i] = new Human(i, 10);
+				break;
+    		case 1:
+    			playersList[i] = new StrategyAI(i, 10, new RandomStrategy());
+    			break;
+    		case 2:
+    			playersList[i] = new StrategyAI(i, 10, new ShillerStrategy());
+    			break;
+    		case 3:
+    			playersList[i] = new StrategyAI(i, 10, new StraightStrategy());
+    			break;
+    		}
+    	}
+    	init(playersList);
+    }
+    
     /** Initialises the players list
      * 
      * @param playersNumber The number of players
      * @param humNumber The number of human players
      */
-    private void init(int playersNumber, int humNumber, int randAINum)
+    private void init(APlayer[] playersList)
     {
-    	players = new APlayer[playersNumber];
+    	int playersNumber = playersList.length;
+    	
+    	players = playersList;
     	
     	// The number of available walls per player
     	int walls = 10;
@@ -411,24 +432,13 @@ public final class Game
     	else if (playersNumber == 3)
     		walls = 7;
     	
-    	int i = 0;
-    	// The human players
-    	while(i < humNumber)
+    	for (int i = 0 ; i < playersNumber ; i++)
     	{
-    		players[i] = new Human(i++, walls);
+    		players[i].reset(walls);
     	}
-    	// The random AIs
-    	while(i < humNumber + randAINum)
-    	{
-    		players[i] = new StrategyAI(i++, walls, new RandomStrategy());
-    	}
-    	// The Shiller AIs
-    	while(i < playersNumber)
-    	{
-    		players[i] = new StrategyAI(i++, walls);
-    	}
-
-        graphInit(playersNumber);
+    	
+    	// We recreate the frame
+        frame.reset(players, this);
         
         board = new Board(players, 9);
         
@@ -436,7 +446,7 @@ public final class Game
         Coordinates.size = board.getYSize();
 
         // Add the listeners
-        for (i = 0 ; i < players.length ; i++)
+        for (int i = 0 ; i < players.length ; i++)
         {
         	if (players[i] instanceof Human)
         	{
@@ -453,8 +463,7 @@ public final class Game
 		
     }
     
-    /* Initialises the graphical components */
-    private void graphInit(int numPlayers)
+    private void texAndColorLoad()
     {
     	// Texture holder loads every image
     	textureHolder = new TextureHolder();
@@ -468,7 +477,7 @@ public final class Game
         }
         catch(IOException e)
         {
-        	System.out.println(e);
+        	System.err.println(e);
         }
         
         // Colour holder loads every colour
@@ -477,9 +486,6 @@ public final class Game
         colorHolder.load(1, Color.CYAN);
         colorHolder.load(2, Color.YELLOW);
         colorHolder.load(3, Color.GREEN);
-
-        // It the window does not yet exist, we create it
-        frame.reset(players, this);
     }
     
     private void save(String filepath) throws IOException

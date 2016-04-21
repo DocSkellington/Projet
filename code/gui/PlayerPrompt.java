@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -26,7 +27,7 @@ public final class PlayerPrompt extends JDialog implements ActionListener
 	protected int numOfPlayers = 2;
 	
 	protected JPanel panel, players;
-	protected JComboBox<String>[] combo;
+	protected ArrayList<JComboBox<String>> combo;
 	
 	/** The constructor
 	 * 
@@ -36,9 +37,10 @@ public final class PlayerPrompt extends JDialog implements ActionListener
 	 * @param game The game
 	 * @param playersListInt The array to fill with the data given by the user
 	 */
-	public PlayerPrompt(JFrame owner, String title, boolean modal, final Game game, final int[] playersListInt)
+	public PlayerPrompt(JFrame owner, String title, boolean modal, final Game game, final ArrayList<Integer> playersListInt)
 	{
 		super(owner, title, modal);
+		combo = new ArrayList<JComboBox<String>>();
 		this.setSize(600, 200);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
@@ -52,12 +54,11 @@ public final class PlayerPrompt extends JDialog implements ActionListener
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					for (int i = 0 ; i < playersListInt.length ; i++)
-						playersListInt[i] = 0;
+					playersListInt.clear();
 					
-					for (int i = 0 ; i < combo.length ; i++)
+					for (int i = 0 ; i < combo.size() ; i++)
 					{
-						playersListInt[i] = combo[i].getSelectedIndex();
+						playersListInt.add(combo.get(i).getSelectedIndex());
 					}
 
 					PlayerPrompt.this.dispatchEvent(new WindowEvent(PlayerPrompt.this, WindowEvent.WINDOW_CLOSING));
@@ -107,7 +108,9 @@ public final class PlayerPrompt extends JDialog implements ActionListener
 			JLabel text = new JLabel("Player " + (i+1) + ":");
 			text.setAlignmentX(CENTER_ALIGNMENT);
 			playerBox.add(text);
-			playerBox.add(new JComboBox<String>(playersType));
+			JComboBox<String> comboBox = new JComboBox<String>(playersType);
+			playerBox.add(comboBox);
+			combo.add(comboBox);
 			
 			if (i > 0)
 				playersBox.add(Box.createRigidArea(new Dimension(50, 0)));

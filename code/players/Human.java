@@ -121,6 +121,7 @@ public final class Human extends APlayer
 	@Override
 	protected Round doPlay(Board board)
 	{
+		Board.human = true;
 		activated = true;
 		while (activated)
 		{
@@ -138,7 +139,7 @@ public final class Human extends APlayer
 		// We wait to be sure that round is updated
 		try
 		{
-			Thread.sleep(50);
+			Thread.sleep(100);
 		} catch (InterruptedException e)
 		{
 			e.printStackTrace();

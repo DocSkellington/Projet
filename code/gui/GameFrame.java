@@ -56,9 +56,7 @@ public class GameFrame extends JFrame
 		this.setResizable(false);
 
 		this.setAlwaysOnTop(true);
-		System.err.println("Init game");
 		init(game);
-		System.err.println("done");
 	}
 	
 	/** Updates the labels (changes colour of the first line and updates the number of available walls)
@@ -210,9 +208,7 @@ public class GameFrame extends JFrame
         	labelsBox.add(labels[i+2]);
         }
         
-        System.out.println("Updating");
         updateLabels(0);
-        System.out.println("done");
         
         right.add(labelsBox, BorderLayout.CENTER);
         

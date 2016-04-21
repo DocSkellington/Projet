@@ -40,7 +40,7 @@ public abstract class APlayer
 	 * @param board The board
 	 * @return The played round
 	 */
-	public Round play(Board board)
+	public synchronized Round play(Board board)
 	{
 		if (waitingTurns == 0)
 		{
@@ -115,11 +115,11 @@ public abstract class APlayer
 		return wallCounter;
 	}
 	
-	/** Sets the wall counter (used to "reset" the player)
+	/** Reset the main fields of this player and set wallCounter to the given value
 	 * 
 	 * @param wallCounter The new wallCounter
 	 */
-	public void setWallCounter(int wallCounter)
+	public void reset(int wallCounter)
 	{
 		this.wallCounter = wallCounter;
 	}

@@ -4,6 +4,7 @@ import players.*;
 import players.Human;
 
 import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -25,8 +26,9 @@ public class Board
     protected ArrayList<Coordinates> placedWalls;
     protected APlayer[] players;
     
-    protected final double tick = 33.3333;
-    protected double prev_tick = 0.00;
+    public static final double tick = 333.3333;
+    public static double prev_tick = 0.00;
+    public static boolean human = false;
     
     /** The constructor
      * @param players The array of players 
@@ -613,15 +615,17 @@ public class Board
     public boolean repaint()
     {
     	// To avoid refreshing too frequently, we check if the difference between the current time and the last time we repainted is bigger than a constant
-    	double cur_time = System.currentTimeMillis();
-    	if (cur_time - prev_tick >= tick)
+    	long now = System.currentTimeMillis();
+    	if(System.currentTimeMillis() - prev_tick >= tick)
     	{
 	    	for (int i = 0 ; i < cells.length ; i++)
 	    	{
 	    		for (int j = 0 ; j < cells[0].length ; j++)
+	    		{
 	    			cells[i][j].repaint();
+	    		}
 	    	}
-	    	prev_tick = cur_time;
+	    	prev_tick = now;
 	    	return true;
     	}
     	return false;

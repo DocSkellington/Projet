@@ -27,6 +27,13 @@ public final class StrategyAI extends APlayer
 		numRounds = 0;
 		strat = new ShillerStrategy();
 	}
+	
+	@Override
+	public void reset(int wallCounter)
+	{
+		super.reset(wallCounter);
+		numRounds = 0;
+	}
 
 	/** A constructor
 	 * 
