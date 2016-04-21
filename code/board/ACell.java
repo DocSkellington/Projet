@@ -45,6 +45,13 @@ public abstract class ACell extends JButton implements Cloneable
         filled = f;
     }
     
+    @Override
+    public void updateUI()
+    {
+    	super.updateUI();
+    	this.setBorder(null);
+    }
+    
     /** Whether the cell is filled
      * 
      * @return Whether the cell is filled

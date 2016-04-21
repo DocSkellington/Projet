@@ -9,6 +9,8 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
@@ -154,11 +156,8 @@ public final class Game
 		int numPlayers = players.length;
         int winner = -1; // -1 means no winner
         
-        // TODO : POURQUOI CA RALENTIT QUAND IL Y A UNE IA ?!
-        
         while (winner == -1)
         {
-        	Board.human = false;
         	// Stop to play if the thread is interrupted
         	if (Thread.currentThread().isInterrupted())
         		return;
@@ -173,8 +172,10 @@ public final class Game
             board.update();
             
             // As long as we can't refresh the graphical interface, we wait.
-            while (System.currentTimeMillis() - Board.prev_tick < Board.tick && !Board.human);
-            board.repaint();
+            SwingUtilities.updateComponentTreeUI(frame);
+            frame.invalidate();
+            while(!board.repaint());
+            frame.revalidate();
             Board.prev_tick = System.currentTimeMillis();
             
             frame.setActionButtonBorder(null);

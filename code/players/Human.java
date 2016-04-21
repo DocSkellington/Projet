@@ -121,7 +121,6 @@ public final class Human extends APlayer
 	@Override
 	protected Round doPlay(Board board)
 	{
-		Board.human = true;
 		activated = true;
 		while (activated)
 		{

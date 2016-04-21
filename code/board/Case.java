@@ -26,6 +26,7 @@ public final class Case extends ACell
 {
 	private float alpha;
 	private Color player;
+	private Border border;
 	
 	/** Constructor */
     public Case()
@@ -40,7 +41,7 @@ public final class Case extends ACell
     public Case(int filled)
     {
     	super(filled);
-        Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+        border = BorderFactory.createLineBorder(Color.BLACK, 1);
         this.setBorder(border);
         alpha = 0.3f;
         img = Game.getImage("case");
@@ -57,6 +58,13 @@ public final class Case extends ACell
     public Case clone()
     {
     	return new Case(filled);
+    }
+    
+    @Override
+    public void updateUI()
+    {
+    	super.updateUI();
+    	this.setBorder(border);
     }
     
     @Override

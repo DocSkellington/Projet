@@ -28,7 +28,6 @@ public class Board
     
     public static final double tick = 333.3333;
     public static double prev_tick = 0.00;
-    public static boolean human = false;
     
     /** The constructor
      * @param players The array of players 
@@ -48,9 +47,7 @@ public class Board
                 if((x % 2 == 0) && (y % 2 == 0))
                     cells[x][y] = new Case();
                 else
-                {
                 	cells[x][y] = new Wall();
-                }
             }
         }
         
