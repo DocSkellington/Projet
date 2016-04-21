@@ -7,6 +7,9 @@ import java.text.ParseException;
 import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
@@ -16,6 +19,7 @@ import board.Board;
 import board.Coordinates;
 import gui.ColorHolder;
 import gui.GameFrame;
+import gui.PlayerPrompt;
 import gui.TextureHolder;
 import players.*;
 
@@ -52,29 +56,50 @@ public final class Game
         curPlayer = 0;
 	}
 	
-	/** Create a new game and launch it */
-	public void newGame()
+	/** Create a new game and launch it
+	 * 
+	 * @param askSure If the method must ask if the user really wants to launch a new game
+	 */
+	public void newGame(boolean askSure)
 	{
-		// Cancelling the current thread
-		// TODO : Ask if sure
+		if (askSure)
+		{
+			int choice = JOptionPane.showConfirmDialog(frame, "Do you really want to start a new game?");
+			if (choice != JOptionPane.OK_OPTION)
+				return;
+		}
+		
+		// Canceling the current thread
 		if (gameTask != null)
 			gameTask.cancel(true);
+		
+		roundList.clear();
 		
 		// Starting a new thread (init + play)
 		gameTask = gameExecutor.submit(new Runnable()
 			{
 				public void run()
 				{
-					init(2, 2, 0);
+					if (frame == null)
+					{
+						frame = new GameFrame(new APlayer[0], Game.this);
+						System.out.println("Test");
+						frame.setVisible(true);
+					}
+					
+					int[] playersList = new int[4];
+					PlayerPrompt prompt = new PlayerPrompt(frame, "Players choice", true, Game.this, playersList);
+					prompt.setVisible(true);
+					System.err.println("Done");
+					init(2, 1, 0);
 			        curPlayer = 0;
 					play();
 				}
 			});
 	}
 	
-	/** Exits the game
-	 * 
-	 */
+	
+	/** Exits the game */
 	public void exit()
 	{
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
@@ -113,25 +138,22 @@ public final class Game
         
         board.update();
         // As long as we can't refresh the graphical interface, we wait.
-        while(!board.repaint())
-        {}
+        while(!board.repaint());
         printVictory(winner);
 	}
 	
 	
-	/** Cancels the rounds done since the last time the current player played 
-	 * 
-	 */
+	/** Cancels the rounds done since the last time the current player played */
 	public void rewind()
 	{
-		// Cancelling the current thread
+		// Canceling the current thread
 		if (gameTask != null)
 			gameTask.cancel(true);
 
 		// To be sure that the thread is finished
 		try
 		{
-			Thread.sleep(300);
+			Thread.sleep(600);
 		}
 		catch(InterruptedException e)
 		{
@@ -142,14 +164,15 @@ public final class Game
 		// If the current player has not already played
 		if (roundList.size() < players.length)
 		{
+			System.out.println("New Game");
 			// We simply start a new game
-			newGame();
+			newGame(false);
 			return;
 		}
 		
 		// Delete the last rounds
-		int start = roundList.size() - 1 - (players.length);
-		for (int i = roundList.size() - 1 ; i >= start ; i--)
+		int start = roundList.size() - 1 - players.length;
+		for (int i = roundList.size() - 1 ; i >= start && i >= 0 ; i--)
 			roundList.remove(i);
 		
 		// Starting a new thread (init + play).
@@ -456,14 +479,7 @@ public final class Game
         colorHolder.load(3, Color.GREEN);
 
         // It the window does not yet exist, we create it
-        if(frame == null)
-        {
-        	frame = new GameFrame(players, this);
-        }
-        else
-        {
-        	frame.reset(players, this);
-        }
+        frame.reset(players, this);
     }
     
     private void save(String filepath) throws IOException
@@ -523,7 +539,7 @@ public final class Game
     public static void main(String[] args)
     {
     	Game game = new Game();
-    	game.newGame();
+    	game.newGame(false);
     }
     
 }

@@ -138,7 +138,7 @@ public final class Human extends APlayer
 		// We wait to be sure that round is updated
 		try
 		{
-			Thread.sleep(10);
+			Thread.sleep(50);
 		} catch (InterruptedException e)
 		{
 			e.printStackTrace();

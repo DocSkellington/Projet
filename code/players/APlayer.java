@@ -42,12 +42,15 @@ public abstract class APlayer
 	 */
 	public Round play(Board board)
 	{
-		if (waitingTurns >= 0)
+		if (waitingTurns == 0)
 		{
 			return doPlay(board);
 		}
-		waitingTurns--;
-		return skip();
+		else
+		{
+			waitingTurns--;
+			return skip();
+		}
 	}
 	
 	/** Skip/Stops this turn */
@@ -70,6 +73,7 @@ public abstract class APlayer
 			break;
 		case WALL:
 			board.setWall(round.getCoord());
+			wallCounter--;
 			break;
 		case DEST:
 			board.destroyWall(round.getCoord());

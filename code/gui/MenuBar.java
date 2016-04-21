@@ -40,7 +40,7 @@ public class MenuBar extends JMenuBar
 				@Override
 				public void actionPerformed(ActionEvent arg0)
 				{
-					game.newGame();
+					game.newGame(true);
 				}
 			});
 		loadGame.addActionListener(new ActionListener()
@@ -89,7 +89,7 @@ public class MenuBar extends JMenuBar
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					System.out.println("Entirely concieved by Thibaut De Cooman, with a little help from Gaëtan Staquet. Or was it the other way around?");
+					System.out.println("Entirely concieved by Thibaut De Cooman, with a little help from Gaï¿½tan Staquet. Or was it the other way around?");
 				}
 			});
 	}
