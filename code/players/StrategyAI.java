@@ -49,6 +49,12 @@ public final class StrategyAI extends APlayer
 	}
 	
 	@Override
+	public String toString()
+	{
+		return strat.toString();
+	}
+	
+	@Override
 	protected Round doPlay(Board board)
 	{
 		Round round = strat.strategy(board, num, wallCounter, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds++);

@@ -43,6 +43,12 @@ public final class RandomStrategy implements IStrategy
 		}
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "random";
+	}
+	
 	/** The bot moves to a random possible destination*/
 	private Round move(Board board, Coordinates[] possibleMoves)
 	{

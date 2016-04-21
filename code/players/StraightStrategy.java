@@ -28,6 +28,12 @@ public final class StraightStrategy implements IStrategy
 		return wall(board, numPlayer, wallCounter);
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "straight";
+	}
+	
 	private Round move (Board board, Coordinates[] possibleMoves, int numPlayer)
 	{
 		Path bestPath = board.findPath(numPlayer, true);

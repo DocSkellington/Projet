@@ -26,7 +26,7 @@ public class Board
     protected ArrayList<Coordinates> placedWalls;
     protected APlayer[] players;
     
-    public static final double tick = 333.3333;
+    public static final double tick = 333.333;
     public static double prev_tick = 0.00;
     
     /** The constructor

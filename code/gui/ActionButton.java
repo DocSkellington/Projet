@@ -28,4 +28,11 @@ public final class ActionButton extends JButton
     {
     	this.setBackground(Game.getColor(numPlayer));
     }
+    
+    @Override
+    public void updateUI()
+    {
+    	super.updateUI();
+    	this.setBorder(null);
+    }
 }

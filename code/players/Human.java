@@ -119,6 +119,12 @@ public final class Human extends APlayer
 	}
 	
 	@Override
+	public String toString()
+	{
+		return "human";
+	}
+	
+	@Override
 	protected Round doPlay(Board board)
 	{
 		activated = true;

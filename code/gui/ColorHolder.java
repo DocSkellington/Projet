@@ -1,12 +1,7 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
-
-import javax.imageio.ImageIO;
 
 /** Holds the colours used by the gui
  * 

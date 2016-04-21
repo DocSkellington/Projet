@@ -99,6 +99,7 @@ public final class PlayerPrompt extends JDialog implements ActionListener
 	private void update()
 	{
 		players.removeAll();
+		combo.clear();
 		String[] playersType = {"Human", "Random", "Shiller", "Straight"};
 		Box playersBox = new Box(BoxLayout.X_AXIS);
 		for (int i = 0 ; i < numOfPlayers ; i++)

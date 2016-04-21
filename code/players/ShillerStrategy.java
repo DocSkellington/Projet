@@ -26,7 +26,7 @@ public final class ShillerStrategy implements IStrategy
 		}
 		else if(numRounds == 3)
 		{
-			if(numPlayer == 0)
+			if(numPlayer == 0 || numPlayer == 2)
 			{
 				Round round = shiller(board, numPlayer);
 				return decide(round, numPlayer, board, wallCounter, possibleMoves);
@@ -82,6 +82,12 @@ public final class ShillerStrategy implements IStrategy
 		}
 	}
 
+	@Override
+	public String toString()
+	{
+		return "shiller";
+	}
+	
 	private Round move(Board board, int numPlayer, Coordinates[] possibleMoves)
 	{
 		Path bestPath = board.findPath(numPlayer, true);
