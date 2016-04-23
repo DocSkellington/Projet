@@ -1,6 +1,8 @@
 package game;
 import board.*;
 import players.*;
+
+import java.text.ParseException;
 import java.util.*;
 
 /** The stats class
@@ -48,10 +50,12 @@ public final class Stat
 				wallCounter = 7;
 			else if (playerList.length == 4)
 				wallCounter = 5;
+			
 			for (int i = 0 ; i < playerList.length ; i++) 
 			{
 				playerList[i] = new StrategyAI(i, wallCounter, strategies[(i+start)%strategies.length]);
 			}
+			
 			start = (start+1) % playerList.length;
 
             int current = 0, winner = -1; // -1 means no winner
@@ -85,6 +89,8 @@ public final class Stat
 				strategy.add(new RandomStrategy());
 			else if (args[i].equals("shiller"))
 				strategy.add(new ShillerStrategy());
+			else if (args[i].equals("straight"))
+				strategy.add(new StraightStrategy());
 			else
 				throw new RuntimeException("No such AI. Please refer to the manual");
 		}

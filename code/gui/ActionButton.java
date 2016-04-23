@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Graphics;
+import java.awt.Insets;
 
 import javax.swing.JButton;
 
@@ -14,6 +15,12 @@ import game.Game;
  */
 public final class ActionButton extends JButton
 {
+	public ActionButton()
+	{
+		this.setMargin(new Insets(0, 0, 0, 0));
+		this.setBorder(null);
+	}
+	
 	@Override
 	public void paintComponent(Graphics g)
 	{

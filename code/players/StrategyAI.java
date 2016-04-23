@@ -57,7 +57,7 @@ public final class StrategyAI extends APlayer
 	@Override
 	protected Round doPlay(Board board)
 	{
-		Round round = strat.strategy(board, num, wallCounter, possibleMoves(board, true).toArray(new Coordinates[0]), numRounds++);
+		Round round = strat.strategy(board, num, wallCounter, possibleMoves(board, true), numRounds++);
 		if (round.getType() == Type.MOVE)
 		{
 			board.move(num, round.getCoord());

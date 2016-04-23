@@ -33,7 +33,7 @@ import players.Human;
 public class GameFrame extends JFrame
 {
 	private JPanel board, right;
-	private ActionButton moveButton, wallButton, removeButton;
+	private ActionButton moveButton, wallButton, removeButton, skipButton;
 	private JLabel labels[];
 	private APlayer[] players;
 	
@@ -55,7 +55,6 @@ public class GameFrame extends JFrame
 		this.setLocation((c.width-this.getSize().width)/2, (c.height-this.getSize().height)/2);
 		this.setResizable(false);
 
-		this.setAlwaysOnTop(true);
 		init(game);
 	}
 	
@@ -80,10 +79,18 @@ public class GameFrame extends JFrame
 	 * 
 	 * @param curPlayer The number of the current Player
 	 */
-	public void changeActionButtonColor(int curPlayer)
+	public void updateActionButton(int curPlayer, Board board)
 	{
 		moveButton.changeColor(curPlayer);
 		wallButton.changeColor(curPlayer);
+		removeButton.changeColor(curPlayer);
+		skipButton.changeColor(curPlayer);
+		
+		// Check if the skip button must be activated
+		if (players[curPlayer].possibleMoves(board, true).length == 0 && players[curPlayer].getWallCounter() == 0)
+			skipButton.setEnabled(true);
+		else
+			skipButton.setEnabled(false);
 	}
 
 	/** Add the listeners to move and wall buttons
@@ -93,9 +100,10 @@ public class GameFrame extends JFrame
 	 */
 	public void addActionButtonListener(Human human, Board board)
 	{
-		moveButton.addActionListener(new MoveButtonListener(wallButton, human, board));
-		wallButton.addActionListener(new WallButtonListener(moveButton, human, board));
-		removeButton.addActionListener(new RemoveWallButtonListener(wallButton, human, board));
+		moveButton.addActionListener(new MoveButtonListener(this, human, board));
+		wallButton.addActionListener(new WallButtonListener(this, human, board));
+		removeButton.addActionListener(new RemoveWallButtonListener(this, human, board));
+		skipButton.addActionListener(new SkipButtonListener(this, human));
 	}
 	
 	/** Changes the border of the action buttons
@@ -106,6 +114,8 @@ public class GameFrame extends JFrame
 	{
         moveButton.setBorder(border);
         wallButton.setBorder(border);
+        removeButton.setBorder(border);
+        skipButton.setBorder(border);
 	}
 	
 	/** Gets a reference to the board panel
@@ -152,26 +162,23 @@ public class GameFrame extends JFrame
 		moveButton = new ActionButton();
 		wallButton = new ActionButton();
 		removeButton = new ActionButton();
+		skipButton = new ActionButton();
 
-		moveButton.setMargin(new Insets(0, 0, 0, 0));
-		moveButton.setBorder(null);
         moveButton.setIcon(new ImageIcon(Game.getImage("moveButton")));
         
-		wallButton.setMargin(new Insets(0, 0, 0, 0));
-		wallButton.setBackground(Color.BLUE);
-		wallButton.setBorder(null);
         wallButton.setIcon(new ImageIcon(Game.getImage("wallButton")));
 
-        removeButton.setMargin(new Insets(0, 0, 0, 0));
-        removeButton.setBorder(null);
         removeButton.setText("Remove wall");
         //removeButton.setIcon(new ImageIcon(Game.getImage("removeButton")));
+        
+        skipButton.setText("Skip");
 
         moveWallButtons.add(moveButton);
         moveWallButtons.add(Box.createRigidArea(new Dimension(10, 0)));
         moveWallButtons.add(wallButton);
         removeSkipButtons.add(removeButton);
         removeSkipButtons.add(Box.createRigidArea(new Dimension(10, 0)));
+        removeSkipButtons.add(skipButton);
         
         buttons.add(moveWallButtons);
         buttons.add(Box.createRigidArea(new Dimension(0, 10)));

@@ -85,7 +85,7 @@ public class AStarPathFinder
             open.remove(current);
             closed.add(current);
             
-            Coordinates[] neighbours = player.possibleMoves(board, withPlayer, coord).toArray(new Coordinates[0]);
+            Coordinates[] neighbours = player.possibleMoves(board, withPlayer, coord);
             
             for (Coordinates neighbour : neighbours)
             {

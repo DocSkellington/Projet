@@ -163,7 +163,7 @@ public final class Game
         		return;
         	
         	// We update the buttons and the label
-        	frame.changeActionButtonColor(curPlayer);
+        	frame.updateActionButton(curPlayer, board);
             frame.updateLabels(curPlayer);
             // The current player plays
             roundList.add(players[curPlayer].play(board));
@@ -227,7 +227,6 @@ public final class Game
     private void printVictory(int winner)
     {
         System.out.println("Congratulations, Player " + (winner + 1) + " ! You can leave the Arena now and rest... You've earned it!");
-        System.out.println("The list of rounds : " + roundList);
     }
     
     private void init(Integer[] playersInt)
@@ -356,7 +355,7 @@ public final class Game
     	int i = 0;
     	// Load the players
     	int numPlayers = Integer.parseInt(list.get(i++));
-    	APlayer[] newPlayers = new APlayer[numPlayers];
+    	final APlayer[] newPlayers = new APlayer[numPlayers];
     	
 		for (; i <= numPlayers ; i++)
 		{
@@ -389,7 +388,7 @@ public final class Game
 		{
 			public void run()
 			{
-				init(players);
+				init(newPlayers);
 				executeRounds();
 				play();
 			}

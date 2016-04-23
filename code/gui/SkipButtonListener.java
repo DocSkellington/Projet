@@ -8,32 +8,17 @@ import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
-import board.Board;
 import players.Human;
 
-/** The listener for the remove wall button
- * 
- * @author Gaetan Staquet
- * @author Thibaut De Cooman
- *
- */
-public final class RemoveWallButtonListener implements ActionListener
+public class SkipButtonListener implements ActionListener
 {
-	private GameFrame frame;
 	private Human human;
-	private Board board;
-
-	/** Constructor
-	 * 
-	 * @param wall The wall button
-	 * @param human A human
-	 * @param board The board
-	 */
-	public RemoveWallButtonListener(GameFrame frame, Human human, Board board)
+	private GameFrame frame;
+	
+	public SkipButtonListener(GameFrame frame, Human human)
 	{
-		this.frame = frame;
 		this.human = human;
-		this.board = board;
+		this.frame = frame;
 	}
 	
 	@Override
@@ -44,7 +29,7 @@ public final class RemoveWallButtonListener implements ActionListener
 			frame.setActionButtonBorder(null);
 			Border border = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 			((JButton) e.getSource()).setBorder(border);
-			human.removeWalls(board);
+			human.skip();
 		}
 	}
 

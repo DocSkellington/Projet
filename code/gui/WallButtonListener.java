@@ -19,7 +19,7 @@ import players.Human;
  */
 public class WallButtonListener implements ActionListener
 {
-	private ActionButton move;
+	private GameFrame frame;
 	private Human human;
 	private Board board;
 	
@@ -29,9 +29,9 @@ public class WallButtonListener implements ActionListener
 	 * @param human The human bound to this listener
 	 * @param board The board
 	 */
-	public WallButtonListener(ActionButton move, Human human, Board board)
+	public WallButtonListener(GameFrame frame, Human human, Board board)
 	{
-		this.move = move;
+		this.frame = frame;
 		this.human = human;
 		this.board = board;
 	}
@@ -41,9 +41,9 @@ public class WallButtonListener implements ActionListener
 	{
 		if (human.isActive())
 		{
+			frame.setActionButtonBorder(null);
 			Border border = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 			((JButton) e.getSource()).setBorder(border);
-			move.setBorder(null);
 			human.walls(board);
 		}
 	}

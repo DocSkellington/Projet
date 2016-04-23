@@ -1,5 +1,7 @@
 package tests;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.junit.After;
@@ -45,8 +47,8 @@ public class MoveTest extends TestMain
 		board.update();
 		doPrint("The board is : \n");
 		printBoard(board);
-		
-		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
+
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(players[0].possibleMoves(board, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 8)));
@@ -73,7 +75,7 @@ public class MoveTest extends TestMain
 		printBoard(board);
 
 		// Player 1
-		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(players[0].possibleMoves(board, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 14)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 16)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 16)));
@@ -90,7 +92,7 @@ public class MoveTest extends TestMain
 		}
 		
 		// Player 2
-		coord = players[1].possibleMoves(board, true);
+		coord = new ArrayList<Coordinates>(Arrays.asList(players[1].possibleMoves(board, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 0)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 0)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 2)));
@@ -107,7 +109,7 @@ public class MoveTest extends TestMain
 		}
 		
 		// Player 3
-		coord = players[2].possibleMoves(board, true);
+		coord = new ArrayList<Coordinates>(Arrays.asList(players[2].possibleMoves(board, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(0, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(0, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(2, 8)));
@@ -124,7 +126,7 @@ public class MoveTest extends TestMain
 		}
 		
 		// Player 4
-		coord = players[3].possibleMoves(board, true);
+		coord = new ArrayList<Coordinates>(Arrays.asList(players[3].possibleMoves(board, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(14, 8)));
 		Assert.assertTrue(coord.contains(new Coordinates(16, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(16, 10)));
@@ -153,7 +155,7 @@ public class MoveTest extends TestMain
 		printBoard(board);
 
 		// Player 1
-		HashSet<Coordinates> coord = players[0].possibleMoves(board, true);
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(players[0].possibleMoves(board, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 14)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 16)));
 		Assert.assertFalse(coord.contains(new Coordinates(6, 16)));
@@ -169,7 +171,7 @@ public class MoveTest extends TestMain
 		}
 		
 		// Player 2
-		coord = players[1].possibleMoves(board, true);
+		coord = new ArrayList<Coordinates>(Arrays.asList(players[1].possibleMoves(board, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 0)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 0)));
 		Assert.assertFalse(coord.contains(new Coordinates(8, 2)));

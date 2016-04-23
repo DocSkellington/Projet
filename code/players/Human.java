@@ -41,7 +41,7 @@ public final class Human extends APlayer
 	public void move(Board board)
 	{
 		board.disableAll();
-		Coordinates[] coord = possibleMoves(board, true).toArray(new Coordinates[0]);
+		Coordinates[] coord = possibleMoves(board, true);
 		board.setEnabledButtons(true, coord);
 	}
 	
