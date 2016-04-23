@@ -39,6 +39,7 @@ public final class WallListener implements ActionListener
 			String message = e.getActionCommand();
 			boolean destroy = ((Wall)e.getSource()).getDestroy();
 			
+			// Light on
 			if (message.charAt(0) == 'l')
 			{
 				try
@@ -54,6 +55,7 @@ public final class WallListener implements ActionListener
 					throw new RuntimeException("Can not parse action command" + ex);
 				}
 			}
+			// Light off
 			else if (message.charAt(0) == 'u')
 			{
 				try
@@ -69,6 +71,7 @@ public final class WallListener implements ActionListener
 					throw new RuntimeException("Can not parse action command" + ex);
 				}
 			}
+			// Click
 			else
 			{
 

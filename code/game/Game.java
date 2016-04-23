@@ -226,7 +226,8 @@ public final class Game
      */
     private void printVictory(int winner)
     {
-        System.out.println("Congratulations, Player " + (winner + 1) + " ! You can leave the Arena now and rest... You've earned it!");
+		String message = "Congratulations, " + players[winner].getName();
+    	JOptionPane.showMessageDialog(frame, message, "Victory", JOptionPane.PLAIN_MESSAGE);
     }
     
     private void init(Integer[] playersInt)

@@ -25,7 +25,7 @@ public final class RemoveWallButtonListener implements ActionListener
 
 	/** Constructor
 	 * 
-	 * @param wall The wall button
+	 * @param frame The game frame
 	 * @param human A human
 	 * @param board The board
 	 */
