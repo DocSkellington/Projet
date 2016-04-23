@@ -28,13 +28,6 @@ public final class StrategyAI extends APlayer
 		strat = new ShillerStrategy();
 	}
 	
-	@Override
-	public void reset(int wallCounter)
-	{
-		super.reset(wallCounter);
-		numRounds = 0;
-	}
-
 	/** A constructor
 	 * 
 	 * @param num The number of this player
@@ -46,6 +39,13 @@ public final class StrategyAI extends APlayer
 		super(num, wallCounter);
 		numRounds = 0;
 		this.strat = strat;
+	}
+	
+	@Override
+	public void reset(int wallCounter)
+	{
+		super.reset(wallCounter);
+		numRounds = 0;
 	}
 	
 	@Override

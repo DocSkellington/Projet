@@ -3,6 +3,7 @@ package players;
 import board.*;
 import players.Round.Type;
 
+import java.text.ParseException;
 import java.util.HashSet;
 
 /** Abstract class to handle a player.
@@ -220,4 +221,28 @@ public abstract class APlayer
 	
 	// Effectively plays
 	protected abstract Round doPlay(Board board);
+	
+	/** Parse a string and create a new player with the given number (and 10 walls)
+	 * 
+	 * @param num The number of the player
+	 * @param string The string to parse
+	 * @return A reference to the new player (Human/StrategyAI)
+	 * @throws ParseException If the string is incorrect, a ParseException is thrown
+	 */
+	public static APlayer parse(int num, String string) throws ParseException
+	{
+		switch(string)
+		{
+		case "human":
+			return new Human(num, 10);
+		case "shiller":
+			return new StrategyAI(num, 10, new ShillerStrategy());
+		case "random":
+			return new StrategyAI(num, 10, new RandomStrategy());
+		case "straight":
+			return new StrategyAI(num, 10, new StraightStrategy());
+		default:
+			throw new ParseException("Invalid player", 0);
+		}
+	}
 }

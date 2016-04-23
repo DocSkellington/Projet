@@ -33,7 +33,7 @@ import players.Human;
 public class GameFrame extends JFrame
 {
 	private JPanel board, right;
-	private ActionButton moveButton, wallButton, removeButton, rewindButton;
+	private ActionButton moveButton, wallButton, removeButton;
 	private JLabel labels[];
 	private APlayer[] players;
 	
@@ -123,7 +123,7 @@ public class GameFrame extends JFrame
 		this.getContentPane().removeAll();
 		board = right = null;
 		labels = null;
-		moveButton = wallButton = removeButton = rewindButton = null;
+		moveButton = wallButton = removeButton = null;
 		this.setJMenuBar(null);
 		init(game);
 		validate();
@@ -148,11 +148,10 @@ public class GameFrame extends JFrame
 		// The buttons for the human players
 		Box buttons = new Box(BoxLayout.Y_AXIS);
         Box moveWallButtons = new Box(BoxLayout.X_AXIS);
-        Box removeRewindButtons = new Box(BoxLayout.X_AXIS);
+        Box removeSkipButtons = new Box(BoxLayout.X_AXIS);
 		moveButton = new ActionButton();
 		wallButton = new ActionButton();
 		removeButton = new ActionButton();
-		rewindButton = new ActionButton();
 
 		moveButton.setMargin(new Insets(0, 0, 0, 0));
 		moveButton.setBorder(null);
@@ -168,21 +167,15 @@ public class GameFrame extends JFrame
         removeButton.setText("Remove wall");
         //removeButton.setIcon(new ImageIcon(Game.getImage("removeButton")));
 
-        rewindButton.setMargin(new Insets(0, 0, 0, 0));
-        rewindButton.setBorder(null);
-        rewindButton.setText("Rewind");
-        rewindButton.addActionListener(new RewindListener(game));
-        
         moveWallButtons.add(moveButton);
         moveWallButtons.add(Box.createRigidArea(new Dimension(10, 0)));
         moveWallButtons.add(wallButton);
-        removeRewindButtons.add(removeButton);
-        removeRewindButtons.add(Box.createRigidArea(new Dimension(10, 0)));
-        removeRewindButtons.add(rewindButton);
+        removeSkipButtons.add(removeButton);
+        removeSkipButtons.add(Box.createRigidArea(new Dimension(10, 0)));
         
         buttons.add(moveWallButtons);
         buttons.add(Box.createRigidArea(new Dimension(0, 10)));
-        buttons.add(removeRewindButtons);
+        buttons.add(removeSkipButtons);
 
 		right.add(buttons, BorderLayout.NORTH);
 		
@@ -212,7 +205,7 @@ public class GameFrame extends JFrame
         
         right.add(labelsBox, BorderLayout.CENTER);
         
-        setJMenuBar(new MenuBar(game));
+        setJMenuBar(new MenuBar(game, this));
         
         this.add(board);
         this.add(Box.createRigidArea(new Dimension(10, 0)));

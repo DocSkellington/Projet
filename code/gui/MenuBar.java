@@ -4,6 +4,8 @@ import game.Game;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -13,14 +15,20 @@ public class MenuBar extends JMenuBar
 {
 	private JMenu fileMenu;
 	private JMenu helpMenu;
+	private JMenu gameMenu;
+	private JFrame frame;
 	
-	public MenuBar(final Game game)
+	public MenuBar(final Game game, final JFrame frame)
 	{
+		this.frame = frame;
 		fileMenu = new JMenu("File");
+		gameMenu = new JMenu("Game");
 		helpMenu = new JMenu("Help");
 		add(fileMenu);
+		add(gameMenu);
 		add(helpMenu);
 		fileMenuAdd(game);
+		gameMenuAdd(game);
 		helpMenuAdd();
 	}
 	
@@ -48,7 +56,7 @@ public class MenuBar extends JMenuBar
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					System.out.println("Loaded game");
+					new LoadPrompt(frame, "LoadPrompt", true, game);
 				}
 			});
 		saveGame.addActionListener(new ActionListener()
@@ -56,7 +64,7 @@ public class MenuBar extends JMenuBar
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
-					System.out.println("Saved game (trust me)");
+					new SavePrompt(frame, "SavePrompt", true, game);
 				}
 			});
 		exitGame.addActionListener(new ActionListener()
@@ -67,6 +75,21 @@ public class MenuBar extends JMenuBar
 					game.exit();
 				}
 			});
+	}
+	
+	private void gameMenuAdd(final Game game)
+	{
+		JMenuItem rewind = new JMenuItem("Rewind");
+		gameMenu.add(rewind);
+		
+		rewind.addActionListener(new ActionListener()
+				{
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						game.rewind();
+					}
+				});
 	}
 	
 	private void helpMenuAdd()
@@ -93,6 +116,4 @@ public class MenuBar extends JMenuBar
 				}
 			});
 	}
-	
-	
 }

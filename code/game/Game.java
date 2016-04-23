@@ -112,7 +112,7 @@ public final class Game
 		// Canceling the current thread
 		if (gameTask != null)
 			gameTask.cancel(true);
-
+	
 		// To be sure that the thread is finished
 		try
 		{
@@ -122,7 +122,7 @@ public final class Game
 		{
 			e.printStackTrace();
 		}
-
+	
 		// We want to cancel every move done since the last time the current player played
 		// If the current player has not already played
 		if (roundList.size() < players.length)
@@ -329,28 +329,71 @@ public final class Game
         colorHolder.load(3, Color.GREEN);
     }
     
-    private void save(String filepath) throws IOException
+    public void save(String filepath) throws IOException
     {
-    	// TODO : utiliser flux d'objet
     	Path file = Paths.get(filepath);
     	List<String> lines = new ArrayList<String>();
     	
+    	// Save the players
+    	lines.add(players.length + "");
+    	
+    	for (APlayer player : players)
+    		lines.add(player.toString());
+    	
+    	// Save the rounds
     	for (Round round : roundList)
     		lines.add(round.toString());
     	
     	Files.write(file, lines, Charset.forName("UTF-8"));
     }
     
-    private void load(String filepath) throws IOException, ParseException
+    public void load(String filepath) throws IOException, ParseException
     {
     	Path file = Paths.get(filepath);
     	List<String> list = Files.readAllLines(file, Charset.forName("UTF-8"));
     	ArrayList<Round> rounds = new ArrayList<Round> ();
-    	for (String string : list)
+    	
+    	int i = 0;
+    	// Load the players
+    	int numPlayers = Integer.parseInt(list.get(i++));
+    	APlayer[] newPlayers = new APlayer[numPlayers];
+    	
+		for (; i <= numPlayers ; i++)
+		{
+			newPlayers[i-1] = APlayer.parse(i-1, list.get(i));
+		}
+    	
+    	for (; i < list.size() ; i++)
     	{
-    		rounds.add(Round.parse(string));
+    		rounds.add(Round.parse(list.get(i)));
     	}
+    	
+    	// If we are here, we have successfully parsed the file. We can now stop the play thread
+    	
+		// Cancelling the current thread
+		if (gameTask != null)
+			gameTask.cancel(true);
+
+		// To be sure that the thread is finished
+		try
+		{
+			Thread.sleep(600);
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+
     	roundList = rounds;
+		gameTask = gameExecutor.submit(new Runnable()
+		{
+			public void run()
+			{
+				init(players);
+				executeRounds();
+				play();
+			}
+		});
     }
     
     /** Gets the image inside textureHolder binded to the key
