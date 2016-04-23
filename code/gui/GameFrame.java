@@ -127,6 +127,11 @@ public class GameFrame extends JFrame
 		return board;
 	}
 	
+	/** Reinitialises the frame
+	 * 
+	 * @param players The players
+	 * @param game The game
+	 */
 	public void reset(APlayer[] players, Game game)
 	{
 		this.players = players;

@@ -17,7 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
+/** Asks the user to choose how many players and which ones
+ * 
  * @author Gaetan Staquet
  * @author Thibaut De Cooman
  *

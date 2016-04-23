@@ -19,6 +19,7 @@ public final class ShillerStrategy implements IStrategy
 	{
 		if(numRounds < 3)
 		{
+			// The bot always moves (except if the bot is blocked)
 			Round round = move(board, numPlayer, possibleMoves);
 			if (round.getType() == Type.NONE)
 				return wall(board, wallCounter, board.findPath((1+numPlayer)%board.getPlayerNumber(), true));
@@ -26,6 +27,7 @@ public final class ShillerStrategy implements IStrategy
 		}
 		else if(numRounds == 3)
 		{
+			// Shiller strategy
 			if(numPlayer == 0 || numPlayer == 2)
 			{
 				Round round = shiller(board, numPlayer);
@@ -45,6 +47,8 @@ public final class ShillerStrategy implements IStrategy
 		}
 		else
 		{
+			// Moves if the path of this player is shorter than the paths for the other players
+			// Blocks the shortest path otherwise
 			Path bestPath = new Path();
 			Path ownPath = board.findPath(numPlayer, true);
 			if(ownPath == null)

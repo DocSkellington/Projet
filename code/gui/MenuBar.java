@@ -10,7 +10,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-
+/** The menu bar
+ * 
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
+ *
+ */
 public class MenuBar extends JMenuBar
 {
 	private JMenu fileMenu;
@@ -18,6 +23,11 @@ public class MenuBar extends JMenuBar
 	private JMenu gameMenu;
 	private JFrame frame;
 	
+	/** The constructor
+	 * 
+	 * @param game The game
+	 * @param frame The main frame
+	 */
 	public MenuBar(final Game game, final JFrame frame)
 	{
 		this.frame = frame;
@@ -32,6 +42,7 @@ public class MenuBar extends JMenuBar
 		helpMenuAdd();
 	}
 	
+	// Add the items in fileMenu
 	private void fileMenuAdd(final Game game)
 	{
 		JMenuItem newGame = new JMenuItem("New Game");
@@ -77,6 +88,7 @@ public class MenuBar extends JMenuBar
 			});
 	}
 	
+	// Add the items in gameMenu
 	private void gameMenuAdd(final Game game)
 	{
 		JMenuItem rewind = new JMenuItem("Rewind");
@@ -92,6 +104,7 @@ public class MenuBar extends JMenuBar
 				});
 	}
 	
+	// Add the item in helpMenu
 	private void helpMenuAdd()
 	{
 		JMenuItem manual = new JMenuItem("Manual");

@@ -16,12 +16,14 @@ import java.util.HashSet;
 public abstract class APlayer
 {
 	protected int num, wallCounter, waitingTurns;
+	protected String name;
 	
 	/** The default constructor */
 	public APlayer()
 	{
 		wallCounter = 10;
 		waitingTurns = 0;
+		name = 0 + "";
 	}
 	
 	/** The constructor that must be used
@@ -34,6 +36,13 @@ public abstract class APlayer
 		this.num = num;
 		this.wallCounter = wallCounter;
 		waitingTurns = 0;
+		name = "Player" + num;
+	}
+	
+	/** Gets the name of this player */
+	public String getName()
+	{
+		return name;
 	}
 	
 	/** This function handles the turn of a player.
@@ -41,7 +50,7 @@ public abstract class APlayer
 	 * @param board The board
 	 * @return The played round
 	 */
-	public synchronized Round play(Board board)
+	public Round play(Board board)
 	{
 		if (waitingTurns == 0)
 		{
@@ -219,7 +228,11 @@ public abstract class APlayer
 		return coord.toArray(new Coordinates[0]);
 	}
 	
-	// Effectively plays
+	/** Effectively plays
+	 * 
+	 * @param board The board
+	 * @return The round done
+	 */
 	protected abstract Round doPlay(Board board);
 	
 	/** Parse a string and create a new player with the given number (and 10 walls)

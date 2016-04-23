@@ -15,6 +15,7 @@ import game.Game;
  */
 public final class ActionButton extends JButton
 {
+	/** Constructor */
 	public ActionButton()
 	{
 		this.setMargin(new Insets(0, 0, 0, 0));
