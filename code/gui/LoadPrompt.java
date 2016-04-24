@@ -51,7 +51,7 @@ public final class LoadPrompt extends JDialog implements ActionListener
 		{
 			try
 			{
-				game.load(fileChooser.getCurrentDirectory().toString() + File.pathSeparator + fileChooser.getSelectedFile().getName());
+				game.load(fileChooser.getCurrentDirectory().toString() + File.separator + fileChooser.getSelectedFile().getName());
 			}
 			catch(IOException exc)
 			{
