@@ -50,7 +50,7 @@ public final class SavePrompt extends JDialog implements ActionListener
 		{
 			try
 			{
-				game.save(fileChooser.getCurrentDirectory().toString() + File.pathSeparator + fileChooser.getSelectedFile().getName());
+				game.save(fileChooser.getCurrentDirectory().toString() + File.separator + fileChooser.getSelectedFile().getName());
 			}
 			catch(IOException exc)
 			{
