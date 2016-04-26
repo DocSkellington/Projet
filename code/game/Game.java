@@ -20,7 +20,7 @@ import board.Board;
 import board.Coordinates;
 import gui.ColorHolder;
 import gui.GameFrame;
-import gui.PlayerPrompt;
+import gui.NewGamePrompt;
 import gui.TextureHolder;
 import players.*;
 
@@ -89,7 +89,7 @@ public final class Game
 					}
 					
 					ArrayList<Integer> playersList = new ArrayList<Integer>();
-					PlayerPrompt prompt = new PlayerPrompt(frame, "Players choice", true, Game.this, playersList);
+					NewGamePrompt prompt = new NewGamePrompt(frame, "Players choice", true, Game.this, playersList);
 					prompt.setVisible(true);
 					init(playersList.toArray(new Integer[0]));
 			        curPlayer = 0;
@@ -281,7 +281,7 @@ public final class Game
     	// We recreate the frame
         frame.reset(players, this);
         
-        board = new Board(players, 9);
+        board = new Board(players, 9, 5);
         
         // This is used to hash the coordinates:
         Coordinates.size = board.getYSize();

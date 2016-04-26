@@ -156,6 +156,7 @@ public class GameFrame extends JFrame
 		board = new JPanel();
 		board.setLayout(new GridBagLayout());
 		board.setMaximumSize(new Dimension(790, 790));
+		board.setPreferredSize(new Dimension(790, 790));
 
 		// The panel for everything on the right of the board
 		right = new JPanel(new BorderLayout());

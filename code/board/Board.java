@@ -31,11 +31,12 @@ public class Board
     
     /** The constructor
      * @param players The array of players 
-     * @param size The size of the board
+     * @param xSize The size of the board (in number of player cases)
+     * @param ySize The size of the board (in number of player cases)
      */
-    public Board(APlayer[] players, int size)
+    public Board(APlayer[] players, int xSize, int ySize)
     {
-        cells = new ACell[2*size-1][2*size-1];
+        cells = new ACell[2*ySize-1][2*xSize-1];
         this.players = players; 
         placedWalls = new ArrayList<Coordinates>();
         int numPlayers = players.length;
@@ -82,7 +83,7 @@ public class Board
     public String toString()
     {
     	String res = " ";
-        for(int i = 0 ; i < cells.length ; i++)
+        for(int i = 0 ; i < cells[0].length ; i++)
         {
             res += "_";
         }
@@ -91,7 +92,7 @@ public class Board
         for (int x = 0 ; x < cells.length ; x++)
         {
             res += "|";
-            for (int y = 0 ; y < cells.length ; y++)
+            for (int y = 0 ; y < cells[0].length ; y++)
             {
             	res += cells[x][y].toString();
             }
@@ -99,7 +100,7 @@ public class Board
         }
         
         res += " ";
-        for(int i = 0 ; i < cells.length ; i++)
+        for(int i = 0 ; i < cells[0].length ; i++)
         {
         	res += "-";
         }
@@ -125,32 +126,33 @@ public class Board
 		c.gridy = 0;
 		c.fill = GridBagConstraints.BOTH;
 		
-		for (int i = 0 ; i < cells[0].length ; i++)
+		Coordinates numCases = new Coordinates((int)Math.round(cells[0].length/2.), (int)Math.round(cells.length/2.));
+		
+		for (int i = 0 ; i < cells.length ; i++)
 		{
-			for (int j = 0 ; j < cells.length ; j++)
+			for (int j = 0 ; j < cells[0].length ; j++)
 			{
-				// TODO : Size variable
 				c.gridx = j;
 				c.gridy = i;
 				if (i % 2 == 0 && j % 2 == 0)
 				{
-					c.ipadx = 70;
-					c.ipady = 66;
+					c.ipadx = 630 / numCases.getX();
+					c.ipady = 594 / numCases.getY();
 				}
 				else if (i % 2 == 1 && j % 2 == 0)
 				{
-					c.ipadx = 70;
-					c.ipady = 17;
+					c.ipadx = 630 / numCases.getX();
+					c.ipady = 153 / numCases.getY();
 				}
 				else if (i % 2 == 0 && j % 2 == 1)
 				{
-					c.ipadx = 17;
-					c.ipady = 66;
+					c.ipadx = 153 / numCases.getX();
+					c.ipady = 594 / numCases.getY();
 				}
 				else
 				{
-					c.ipadx = 17;
-					c.ipady = 17;
+					c.ipadx = 153 / numCases.getX();
+					c.ipady = 153 / numCases.getY();
 				}
 				
 				for (APlayer player : players)
@@ -547,13 +549,29 @@ public class Board
     public Coordinates startingPos(int playerNum)
     {
 		if (playerNum == 0)
-			return new Coordinates(cells.length/2, cells.length-1);
+		{
+			if ((cells[0].length / 2) % 2 == 0)
+				return new Coordinates(cells[0].length/2, cells.length-1);
+			return new Coordinates(cells[0].length / 2 - 1, cells.length-1);
+		}
 		else if (playerNum == 1)
-			return new Coordinates(cells.length/2,0);
+		{
+			if ((cells[0].length / 2) % 2 == 0)
+				return new Coordinates(cells[0].length/2, 0);
+			return new Coordinates(cells[0].length / 2 - 1, 0);
+		}
 		else if (playerNum == 2)
-			return new Coordinates(0, cells.length/2);
+		{
+			if ((cells.length / 2) % 2 == 0)
+				return new Coordinates(0, cells.length/2);
+			return new Coordinates(0, cells.length - 1);
+		}
 		else
-			return new Coordinates(cells.length-1, cells.length/2);
+		{
+			if ((cells.length / 2) % 2 == 0)
+				return new Coordinates(cells[0].length - 1, cells.length/2);
+			return new Coordinates(cells[0].length - 1, cells.length - 1);
+		}
     }
 
     /** Returns the goal coordinates for a given player
@@ -565,22 +583,42 @@ public class Board
     {
     	if (playerNum == 0)
         {
-    		Coordinates[] goal = {new Coordinates(0,0), new Coordinates(2,0),new Coordinates(4,0),new Coordinates(6,0),new Coordinates(8,0),new Coordinates(10,0),new Coordinates(12,0),new Coordinates(14,0),new Coordinates(16,0)};
+    		int numCases = (int)Math.round(cells[0].length / 2.);
+    		Coordinates[] goal = new Coordinates[numCases];
+    		for (int i = 0 ; i < numCases ; i++)
+    		{
+    			goal[i] = new Coordinates(2*i, 0);
+    		}
     		return goal;
         }
     	else if (playerNum == 1)
     	{
-    		Coordinates[] goal = {new Coordinates(0,16), new Coordinates(2,16),new Coordinates(4,16),new Coordinates(6,16),new Coordinates(8,16),new Coordinates(10,16),new Coordinates(12,16),new Coordinates(14,16),new Coordinates(16,16)};
+    		int numCases = (int)Math.round(cells[0].length / 2.);
+    		Coordinates[] goal = new Coordinates[numCases];
+    		for (int i = 0 ; i < numCases ; i++)
+    		{
+    			goal[i] = new Coordinates(2*i, cells.length-1);
+    		}
     		return goal;
     	}
     	else if (playerNum == 2)
     	{
-    		Coordinates[] goal = {new Coordinates(16,0), new Coordinates(16,2),new Coordinates(16,4),new Coordinates(16,6),new Coordinates(16,8),new Coordinates(16,10),new Coordinates(16,12),new Coordinates(16,14),new Coordinates(16,16)};
+    		int numCases = (int)Math.round(cells.length / 2.);
+    		Coordinates[] goal = new Coordinates[numCases];
+    		for (int i = 0 ; i < numCases ; i++)
+    		{
+    			goal[i] = new Coordinates(cells[0].length - 1, 2 * i);
+    		}
     		return goal;
     	}
     	else
     	{
-    		Coordinates[] goal = {new Coordinates(0,0), new Coordinates(0,2),new Coordinates(0,4),new Coordinates(0,6),new Coordinates(0,8),new Coordinates(0,10),new Coordinates(0,12),new Coordinates(0,14),new Coordinates(0,16)};
+    		int numCases = (int)Math.round(cells.length / 2.);
+    		Coordinates[] goal = new Coordinates[numCases];
+    		for (int i = 0 ; i < numCases ; i++)
+    		{
+    			goal[i] = new Coordinates(0, 2 * i);
+    		}
     		return goal;
     	}
     }
@@ -828,7 +866,7 @@ public class Board
     {
     	Coordinates playerPos = playersPositions[num];
     	// If the target case is out of the board
-    	if (coord.getY() >= cells.length || coord.getX() >= cells.length || coord.getX() < 0 || coord.getY() < 0)
+    	if (coord.getY() >= cells.length || coord.getX() >= cells[0].length || coord.getX() < 0 || coord.getY() < 0)
     	{
     		throw new RuntimeException("Out of the board");
     	}

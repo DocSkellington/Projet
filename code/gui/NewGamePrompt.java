@@ -23,7 +23,7 @@ import javax.swing.JPanel;
  * @author Thibaut De Cooman
  *
  */
-public final class PlayerPrompt extends JDialog implements ActionListener
+public final class NewGamePrompt extends JDialog implements ActionListener
 {
 	protected int numOfPlayers = 2;
 	
@@ -38,7 +38,7 @@ public final class PlayerPrompt extends JDialog implements ActionListener
 	 * @param game The game
 	 * @param playersListInt The array to fill with the data given by the user
 	 */
-	public PlayerPrompt(JFrame owner, String title, boolean modal, final Game game, final ArrayList<Integer> playersListInt)
+	public NewGamePrompt(JFrame owner, String title, boolean modal, final Game game, final ArrayList<Integer> playersListInt)
 	{
 		super(owner, title, modal);
 		combo = new ArrayList<JComboBox<String>>();
@@ -62,7 +62,7 @@ public final class PlayerPrompt extends JDialog implements ActionListener
 						playersListInt.add(combo.get(i).getSelectedIndex());
 					}
 
-					PlayerPrompt.this.dispatchEvent(new WindowEvent(PlayerPrompt.this, WindowEvent.WINDOW_CLOSING));
+					NewGamePrompt.this.dispatchEvent(new WindowEvent(NewGamePrompt.this, WindowEvent.WINDOW_CLOSING));
 				}
 			});
 		
@@ -70,7 +70,7 @@ public final class PlayerPrompt extends JDialog implements ActionListener
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					PlayerPrompt.this.dispatchEvent(new WindowEvent(PlayerPrompt.this, WindowEvent.WINDOW_CLOSING));
+					NewGamePrompt.this.dispatchEvent(new WindowEvent(NewGamePrompt.this, WindowEvent.WINDOW_CLOSING));
 					game.exit();
 				}
 			});

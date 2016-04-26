@@ -36,7 +36,7 @@ public abstract class APlayer
 		this.num = num;
 		this.wallCounter = wallCounter;
 		waitingTurns = 0;
-		name = "Player" + num;
+		name = "Player " + (num+1);
 	}
 	
 	/** Gets the name of this player */
