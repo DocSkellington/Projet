@@ -33,13 +33,13 @@ public final class Stat
 	 */
 	public int[] run()
 	{
-		APlayer[] playerList = new APlayer[strategy.length];
+		APlayer[] playerList = new APlayer[strategies.length];
 		int[] winnerList = new int[playerList.length];
 		for (int i = 0 ; i < winnerList.length ; i++)
-	        {
-	        	winnerList[i] = 0;
-	        }
-	        int start = 0, cur = 0;
+		{
+			winnerList[i] = 0;
+		}
+		int start = 0, cur = 0;
 		while (cur++ < gameNum)
 		{
 			System.out.println("Starting game n°" + cur + "/" + gameNum);
@@ -56,18 +56,18 @@ public final class Stat
 			}
 			
 			start = (start+1) % playerList.length;
-	
-	            int current = 0, winner = -1; // -1 means no winner
-	            
-	            while (winner == -1)
-	            {
-	                playerList[current].play(board);
-	                board.update();
-	                current = (current + 1) % playerList.length;
-	                winner = board.hasWon();
-	            }
-	            if ((winner+start-1)%playerList.length == -1)
-	                winnerList[winnerList.length-1]++;
+		
+		    int current = 0, winner = -1; // -1 means no winner
+		    
+		    while (winner == -1)
+		    {
+		        playerList[current].play(board);
+		        board.update();
+		        current = (current + 1) % playerList.length;
+		        winner = board.hasWon();
+		    }
+		    if ((winner+start-1)%playerList.length == -1)
+		        winnerList[winnerList.length-1]++;
 		    else
 		        winnerList[(winner+start-1)%winnerList.length]++;
 		}
