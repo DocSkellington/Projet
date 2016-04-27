@@ -14,7 +14,6 @@ import java.util.*;
 public final class Stat 
 {
 	private int gameNum;
-	private APlayer[] playerList;
 	private IStrategy[] strategies;
 	
 	/** The constructor
@@ -25,7 +24,6 @@ public final class Stat
 	public Stat(int gameNum, IStrategy[] strategy)
 	{
 		this.gameNum = gameNum;
-		playerList = new APlayer[strategy.length];
 		strategies = strategy;
 	}
 	
@@ -35,12 +33,13 @@ public final class Stat
 	 */
 	public int[] run()
 	{
-        int[] winnerList = new int[playerList.length];
-        for (int i = 0 ; i < winnerList.length ; i++)
-        {
-        	winnerList[i] = 0;
-        }
-        int start = 0, cur = 0;
+		APlayer[] playerList = new APlayer[strategy.length];
+		int[] winnerList = new int[playerList.length];
+		for (int i = 0 ; i < winnerList.length ; i++)
+	        {
+	        	winnerList[i] = 0;
+	        }
+	        int start = 0, cur = 0;
 		while (cur++ < gameNum)
 		{
 			System.out.println("Starting game n°" + cur + "/" + gameNum);
@@ -57,18 +56,18 @@ public final class Stat
 			}
 			
 			start = (start+1) % playerList.length;
-
-            int current = 0, winner = -1; // -1 means no winner
-            
-            while (winner == -1)
-            {
-                playerList[current].play(board);
-                board.update();
-                current = (current + 1) % playerList.length;
-                winner = board.hasWon();
-            }
-            if ((winner+start-1)%playerList.length == -1)
-                winnerList[winnerList.length-1]++;
+	
+	            int current = 0, winner = -1; // -1 means no winner
+	            
+	            while (winner == -1)
+	            {
+	                playerList[current].play(board);
+	                board.update();
+	                current = (current + 1) % playerList.length;
+	                winner = board.hasWon();
+	            }
+	            if ((winner+start-1)%playerList.length == -1)
+	                winnerList[winnerList.length-1]++;
 		    else
 		        winnerList[(winner+start-1)%winnerList.length]++;
 		}
