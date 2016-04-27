@@ -145,7 +145,7 @@ public class GameFrame extends JFrame
 		repaint();
 	}
 	
-	// Initialise everything
+	// Initialises everything
 	private void init(Game game)
 	{
 		int numPlayers = players.length;
@@ -176,6 +176,13 @@ public class GameFrame extends JFrame
 
         removeButton.setText("Remove wall");
         //removeButton.setIcon(new ImageIcon(Game.getImage("removeButton")));
+        
+        // If there is at least one IA, we don't want to enable the "destroy wall"
+        for (APlayer player : players)
+        {
+        	if (!(player instanceof Human))
+        		removeButton.setEnabled(false);
+        }
         
         skipButton.setText("Skip");
 

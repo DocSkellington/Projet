@@ -19,7 +19,7 @@ public final class StraightStrategy implements IStrategy
 	{
 		if (possibleMoves.length != 0)
 		{
-			Round round = move(board, possibleMoves, numPlayer);
+			Round round = move(board, possibleMoves, numPlayer, numRounds);
 			if (round.getType() == Type.NONE)
 				return wall(board, numPlayer, wallCounter);
 			else
@@ -34,9 +34,13 @@ public final class StraightStrategy implements IStrategy
 		return "straight";
 	}
 	
-	private Round move (Board board, Coordinates[] possibleMoves, int numPlayer)
+	private Round move (Board board, Coordinates[] possibleMoves, int numPlayer, int numRounds)
 	{
-		Path bestPath = board.findPath(numPlayer, true);
+		Path bestPath = null;
+		if (numRounds == 0)
+			bestPath = board.findPath(numPlayer, false);
+		else
+			bestPath = board.findPath(numPlayer, true);
 		
 		if (bestPath == null)
 		{

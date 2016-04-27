@@ -44,7 +44,7 @@ public final class Stat
 		while (cur++ < gameNum)
 		{
 			System.out.println("Starting game n°" + cur + "/" + gameNum);
-			Board board = new Board(playerList, 9, 9);
+			Board board = new Board(playerList, 25, 25);
 			int wallCounter = 10;
 			if (playerList.length == 3)
 				wallCounter = 7;

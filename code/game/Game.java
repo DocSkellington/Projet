@@ -281,7 +281,7 @@ public final class Game
     	// We recreate the frame
         frame.reset(players, this);
         
-        board = new Board(players, 9, 5);
+        board = new Board(players, 9, 9);
         
         // This is used to hash the coordinates:
         Coordinates.size = board.getYSize();
