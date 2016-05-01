@@ -365,7 +365,7 @@ public final class Game
     	
 		for (; i <= numPlayers+1 ; i++)
 		{
-			newPlayers[i-1] = APlayer.parse(i-1, list.get(i));
+			newPlayers[i-2] = APlayer.parse(i-2, list.get(i));
 		}
     	
 		// Load the rounds

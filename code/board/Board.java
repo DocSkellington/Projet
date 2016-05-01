@@ -126,7 +126,7 @@ public class Board
 		c.gridy = 0;
 		c.fill = GridBagConstraints.BOTH;
 		
-		Coordinates numCases = new Coordinates((int)Math.round(cells[0].length/2.), (int)Math.round(cells.length/2.));
+		Coordinates numCases = getSize();
 		
 		for (int i = 0 ; i < cells.length ; i++)
 		{
@@ -447,12 +447,10 @@ public class Board
         return map;
     }
     
-    /** Gets the size of the board as Coordinates
-     * 
-     */
+    /** Gets the number of Cases of the board as Coordinates */
     public Coordinates getSize()
     {
-    	return new Coordinates(getXSize(), getYSize());
+    	return new Coordinates((int)Math.round(cells[0].length/2.), (int)Math.round(cells.length/2.));
     }
     
     /** Get the x size of the board
