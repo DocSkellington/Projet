@@ -89,9 +89,10 @@ public final class Game
 					}
 					
 					ArrayList<Integer> playersList = new ArrayList<Integer>();
-					NewGamePrompt prompt = new NewGamePrompt(frame, "Players choice", true, Game.this, playersList);
+					Coordinates sizeBoard = new Coordinates(0, 0);
+					NewGamePrompt prompt = new NewGamePrompt(frame, "Players choice", true, Game.this, playersList, sizeBoard);
 					prompt.setVisible(true);
-					init(playersList.toArray(new Integer[0]));
+					init(playersList.toArray(new Integer[0]), sizeBoard);
 			        curPlayer = 0;
 					play();
 				}
@@ -143,7 +144,7 @@ public final class Game
 			{
 				public void run()
 				{
-					init(players);
+					init(players, board.getSize());
 					executeRounds();
 					play();
 				}
@@ -230,7 +231,8 @@ public final class Game
     	JOptionPane.showMessageDialog(frame, message, "Victory", JOptionPane.PLAIN_MESSAGE);
     }
     
-    private void init(Integer[] playersInt)
+    // Creates the player from the playersInt and call init(APlayer[], Coordinates)
+    private void init(Integer[] playersInt, Coordinates sizeBoard)
     {
     	APlayer[] playersList = new APlayer[playersInt.length];
     	
@@ -252,15 +254,11 @@ public final class Game
     			break;
     		}
     	}
-    	init(playersList);
+    	init(playersList, sizeBoard);
     }
     
-    /** Initialises the players list
-     * 
-     * @param playersNumber The number of players
-     * @param humNumber The number of human players
-     */
-    private void init(APlayer[] playersList)
+    /* Initialises the game */
+    private void init(APlayer[] playersList, Coordinates sizeBoard)
     {
     	int playersNumber = playersList.length;
     	
@@ -281,7 +279,7 @@ public final class Game
     	// We recreate the frame
         frame.reset(players, this);
         
-        board = new Board(players, 9, 9);
+        board = new Board(players, sizeBoard.getX(), sizeBoard.getY());
         
         // This is used to hash the coordinates:
         Coordinates.size = board.getYSize();
@@ -334,6 +332,9 @@ public final class Game
     	Path file = Paths.get(filepath);
     	List<String> lines = new ArrayList<String>();
     	
+    	// Save the size of the board
+    	lines.add(board.getSize().toString());
+    	
     	// Save the players
     	lines.add(players.length + "");
     	
@@ -354,15 +355,20 @@ public final class Game
     	ArrayList<Round> rounds = new ArrayList<Round> ();
     	
     	int i = 0;
+    	// Load the size
+    	String size = list.get(i++);
+    	final Coordinates sizeBoard = Coordinates.parse(size);
+    	
     	// Load the players
     	int numPlayers = Integer.parseInt(list.get(i++));
     	final APlayer[] newPlayers = new APlayer[numPlayers];
     	
-		for (; i <= numPlayers ; i++)
+		for (; i <= numPlayers+1 ; i++)
 		{
 			newPlayers[i-1] = APlayer.parse(i-1, list.get(i));
 		}
     	
+		// Load the rounds
     	for (; i < list.size() ; i++)
     	{
     		rounds.add(Round.parse(list.get(i)));
@@ -389,7 +395,7 @@ public final class Game
 		{
 			public void run()
 			{
-				init(newPlayers);
+				init(newPlayers, sizeBoard);
 				executeRounds();
 				play();
 			}

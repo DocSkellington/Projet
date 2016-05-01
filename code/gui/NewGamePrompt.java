@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import board.Coordinates;
+
 /** Asks the user to choose how many players and which ones
  * 
  * @author Gaetan Staquet
@@ -29,6 +31,7 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 	
 	protected JPanel panel, players;
 	protected ArrayList<JComboBox<String>> combo;
+	protected JComboBox<String> widthList, heightList;
 	
 	/** The constructor
 	 * 
@@ -38,7 +41,7 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 	 * @param game The game
 	 * @param playersListInt The array to fill with the data given by the user
 	 */
-	public NewGamePrompt(JFrame owner, String title, boolean modal, final Game game, final ArrayList<Integer> playersListInt)
+	public NewGamePrompt(JFrame owner, String title, boolean modal, final Game game, final ArrayList<Integer> playersListInt, final Coordinates sizeBoard)
 	{
 		super(owner, title, modal);
 		combo = new ArrayList<JComboBox<String>>();
@@ -62,6 +65,9 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 						playersListInt.add(combo.get(i).getSelectedIndex());
 					}
 
+					sizeBoard.setX(widthList.getSelectedIndex()+5);
+					sizeBoard.setY(heightList.getSelectedIndex()+5);
+					
 					NewGamePrompt.this.dispatchEvent(new WindowEvent(NewGamePrompt.this, WindowEvent.WINDOW_CLOSING));
 				}
 			});
@@ -82,7 +88,43 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 		playersList.addActionListener(this);
 		playersList.setSelectedIndex(0);
 		
+		String[] widthString = new String[21];
+		for (int i = 5 ; i <= 25 ; i++)
+		{
+			widthString[i-5] = Integer.toString(i);
+		}
+		widthList = new JComboBox<String>(widthString);
+		/*widthList.addActionListener(new ActionListener()
+			{
+				public void actionPerformed (ActionEvent e)
+				{
+					int width = widthList.getSelectedIndex() + 5;
+				}
+			});*/
+		widthList.setSelectedIndex(4);
+		
+		String[] heightString = new String[21];
+		for (int i = 5 ; i <= 25 ; i++)
+		{
+			heightString[i-5] = Integer.toString(i);
+		}
+		heightList = new JComboBox<String>(heightString);
+		/*heightList.addActionListener(new ActionListener()
+			{
+				public void actionPerformed (ActionEvent e)
+				{
+					int height = heightList.getSelectedIndex() + 5;
+				}
+			});*/
+		heightList.setSelectedIndex(4);
+		
+		JLabel x = new JLabel();
+		x.setText("x");
+		
 		panel.add(playersList);
+		panel.add(widthList);
+		panel.add(x);
+		panel.add(heightList);
 		
 		this.add(panel);
 		this.add(players);

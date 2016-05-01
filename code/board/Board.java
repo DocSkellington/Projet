@@ -447,6 +447,14 @@ public class Board
         return map;
     }
     
+    /** Gets the size of the board as Coordinates
+     * 
+     */
+    public Coordinates getSize()
+    {
+    	return new Coordinates(getXSize(), getYSize());
+    }
+    
     /** Get the x size of the board
      * @return The x size of the board
      */

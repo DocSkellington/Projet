@@ -39,6 +39,24 @@ public final class Coordinates implements Cloneable, Comparable<Coordinates>
     	return y;
     }
     
+    /** Sets the x coordinate
+     * 
+     * @param x The new x value
+     */
+    public void setX(int x)
+    {
+    	this.x = x;
+    }
+
+    /** Sets the y coordinate
+     * 
+     * @param y The new y value
+     */
+    public void setY(int y)
+    {
+    	this.y = y;
+    }
+    
     /** Moves by dx and dy
      * 
      * @param dx The difference between the x coordinate of the starting position and the target position
