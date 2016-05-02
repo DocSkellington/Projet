@@ -42,6 +42,8 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 	 * @param modal Whether the focus cannot be lost
 	 * @param game The game
 	 * @param playersListInt The array to fill with the data given by the user
+	 * @param sizeBoard The coordinates to store the selected size of the board
+	 * @param names The ArrayList to store the names of the players
 	 */
 	public NewGamePrompt(JFrame owner, String title, boolean modal, final Game game, final ArrayList<Integer> playersListInt,
 			final Coordinates sizeBoard, final ArrayList<String> names)

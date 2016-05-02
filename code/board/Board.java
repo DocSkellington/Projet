@@ -61,6 +61,7 @@ public class Board
         update();
     }
     
+    /** Removes every wall and moves the pawns to the starting position */
     public void reset()
     {
     	// Reset the walls
@@ -117,9 +118,8 @@ public class Board
     /** Fills the panel with every cell/button. Also sets the listeners
      * 
      * @param panel The panel to fill
-     * @param players The array of players
      */
-    public void fill(JPanel panel, APlayer[] players)
+    public void fill(JPanel panel)
     {
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -447,7 +447,10 @@ public class Board
         return map;
     }
     
-    /** Gets the number of Cases of the board as Coordinates */
+    /** Gets the number of Cases of the board as Coordinates
+     * 
+     * @return The number of cases in a Coordinates
+     */
     public Coordinates getSize()
     {
     	return new Coordinates((int)Math.round(cells[0].length/2.), (int)Math.round(cells.length/2.));

@@ -40,6 +40,7 @@ public class GameFrame extends JFrame
 	/** Constructor
 	 * 
 	 * @param players The array of players
+	 * @param game The game
 	 */
 	public GameFrame(APlayer[] players, Game game)
 	{
@@ -78,6 +79,7 @@ public class GameFrame extends JFrame
 	/** Changes the colour of the action buttons
 	 * 
 	 * @param curPlayer The number of the current Player
+	 * @param board The board
 	 */
 	public void updateActionButton(int curPlayer, Board board)
 	{

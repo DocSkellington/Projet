@@ -41,7 +41,10 @@ public abstract class APlayer
 		this.name = name;
 	}
 	
-	/** Gets the name of this player */
+	/** Gets the name of this player
+	 * 
+	 * @return The name of this player
+	 */
 	public String getName()
 	{
 		return name;
@@ -65,7 +68,10 @@ public abstract class APlayer
 		}
 	}
 	
-	/** Skip/Stops this turn */
+	/** Skip/Stops this turn
+	 * 
+	 * @return A Round of type NONE
+	 */
 	public Round skip()
 	{
 		return new Round(Type.NONE, new Coordinates(-1, -1));

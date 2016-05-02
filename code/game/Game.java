@@ -292,7 +292,7 @@ public final class Game
         }
         
         // Fills the board panel
-		board.fill(frame.getBoard(), players);
+		board.fill(frame.getBoard());
 		
 		// Update the frame
 		frame.repaint();

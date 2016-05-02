@@ -25,7 +25,7 @@ public class WallButtonListener implements ActionListener
 	
 	/** The constructor
 	 * 
-	 * @param move The move button
+	 * @param frame The main frame
 	 * @param human The human bound to this listener
 	 * @param board The board
 	 */
