@@ -69,4 +69,7 @@ public abstract class ACell extends JButton implements Cloneable
     
     @Override
     public abstract ACell clone();
+    
+    @Override
+    public abstract String toString();
 }
