@@ -5,6 +5,7 @@ import players.Round.Type;
 
 import java.text.ParseException;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 /** Abstract class to handle a player.
  * This can't be used because play() must have a specific behaviour depending on the type of the player (Human/AI).
@@ -143,7 +144,7 @@ public abstract class APlayer
 	 */
 	public Coordinates[] possibleMoves(Board board, boolean withPlayer, Coordinates pos)
 	{
-		HashSet<Coordinates> coord = new HashSet<Coordinates>();
+		TreeSet<Coordinates> coord = new TreeSet<Coordinates>();
 		
 		for (int i = -2 ; i <= 2 ; i += 2)
 		{

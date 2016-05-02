@@ -281,9 +281,6 @@ public final class Game
         
         board = new Board(players, sizeBoard.getX(), sizeBoard.getY());
         
-        // This is used to hash the coordinates:
-        Coordinates.size = board.getYSize();
-
         // Add the listeners
         for (int i = 0 ; i < players.length ; i++)
         {

@@ -11,7 +11,6 @@ import java.text.ParseException;
 public final class Coordinates implements Cloneable, Comparable<Coordinates>
 {
     private int x, y;
-    public static int size;
     
     /** Constructor
      * @param x The x position
@@ -102,13 +101,6 @@ public final class Coordinates implements Cloneable, Comparable<Coordinates>
     	if (other.y > y)
     		return -1;
     	return 0;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-    	int hash = size * x + y;
-    	return hash;
     }
     
     @Override
