@@ -31,13 +31,14 @@ public abstract class APlayer
 	 * 
 	 * @param num The number of the Player
 	 * @param wallCounter The number of walls this player can set
+	 * @param name The name of this player
 	 */
-	public APlayer(int num, int wallCounter)
+	public APlayer(int num, int wallCounter, String name)
 	{
 		this.num = num;
 		this.wallCounter = wallCounter;
 		waitingTurns = 0;
-		name = "Player " + (num+1);
+		this.name = name;
 	}
 	
 	/** Gets the name of this player */
@@ -245,16 +246,17 @@ public abstract class APlayer
 	 */
 	public static APlayer parse(int num, String string) throws ParseException
 	{
-		switch(string)
+		String[] words = string.split("\t");
+		switch(words[1])
 		{
 		case "human":
-			return new Human(num, 10);
+			return new Human(num, 10, words[0]);
 		case "shiller":
-			return new StrategyAI(num, 10, new ShillerStrategy());
+			return new StrategyAI(num, 10, words[0], new ShillerStrategy());
 		case "random":
-			return new StrategyAI(num, 10, new RandomStrategy());
+			return new StrategyAI(num, 10, words[0], new RandomStrategy());
 		case "straight":
-			return new StrategyAI(num, 10, new StraightStrategy());
+			return new StrategyAI(num, 10, words[0], new StraightStrategy());
 		default:
 			throw new ParseException("Invalid player", 0);
 		}

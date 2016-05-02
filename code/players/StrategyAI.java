@@ -20,10 +20,11 @@ public final class StrategyAI extends APlayer
 	 * 
 	 * @param num The number of this player
 	 * @param wallCounter The number of available walls
+	 * @param name The name of this player
 	 */
-	public StrategyAI(int num, int wallCounter)
+	public StrategyAI(int num, int wallCounter, String name)
 	{
-		super(num, wallCounter);
+		super(num, wallCounter, name);
 		numRounds = 0;
 		strat = new ShillerStrategy();
 	}
@@ -32,11 +33,12 @@ public final class StrategyAI extends APlayer
 	 * 
 	 * @param num The number of this player
 	 * @param wallCounter The number of available walls
+	 * @param name The name of this player
 	 * @param strat A Strategy to use
 	 */
-	public StrategyAI(int num, int wallCounter, IStrategy strat)
+	public StrategyAI(int num, int wallCounter, String name, IStrategy strat)
 	{
-		super(num, wallCounter);
+		super(num, wallCounter, name);
 		numRounds = 0;
 		this.strat = strat;
 	}
@@ -51,7 +53,7 @@ public final class StrategyAI extends APlayer
 	@Override
 	public String toString()
 	{
-		return strat.toString();
+		return this.name + "\t" + strat.toString();
 	}
 	
 	@Override

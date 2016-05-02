@@ -52,7 +52,7 @@ public final class Stat
 			
 			for (int i = 0 ; i < playerList.length ; i++) 
 			{
-				playerList[i] = new StrategyAI(i, wallCounter, strategies[(i+start)%strategies.length]);
+				playerList[i] = new StrategyAI(i, wallCounter, "Player " + (i+1), strategies[(i+start)%strategies.length]);
 			}
 			
 			start = (start+1) % playerList.length;

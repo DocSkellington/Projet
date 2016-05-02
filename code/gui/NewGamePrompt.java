@@ -16,6 +16,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import board.Coordinates;
 
@@ -31,6 +32,7 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 	
 	protected JPanel panel, players;
 	protected ArrayList<JComboBox<String>> combo;
+	protected ArrayList<JTextField> fields;
 	protected JComboBox<String> widthList, heightList;
 	
 	/** The constructor
@@ -41,10 +43,12 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 	 * @param game The game
 	 * @param playersListInt The array to fill with the data given by the user
 	 */
-	public NewGamePrompt(JFrame owner, String title, boolean modal, final Game game, final ArrayList<Integer> playersListInt, final Coordinates sizeBoard)
+	public NewGamePrompt(JFrame owner, String title, boolean modal, final Game game, final ArrayList<Integer> playersListInt,
+			final Coordinates sizeBoard, final ArrayList<String> names)
 	{
 		super(owner, title, modal);
 		combo = new ArrayList<JComboBox<String>>();
+		fields = new ArrayList<JTextField>();
 		this.setSize(600, 200);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
@@ -53,6 +57,7 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 		JPanel buttons = new JPanel();
 		JButton play = new JButton("Play");
 		JButton cancel = new JButton("Cancel");
+		
 		buttons.add(play);
 		play.addActionListener(new ActionListener()
 			{
@@ -67,6 +72,11 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 
 					sizeBoard.setX(widthList.getSelectedIndex()+5);
 					sizeBoard.setY(heightList.getSelectedIndex()+5);
+					
+					names.clear();
+					
+					for (JTextField field : fields)
+						names.add(field.getText());
 					
 					NewGamePrompt.this.dispatchEvent(new WindowEvent(NewGamePrompt.this, WindowEvent.WINDOW_CLOSING));
 				}
@@ -94,13 +104,6 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 			widthString[i-5] = Integer.toString(i);
 		}
 		widthList = new JComboBox<String>(widthString);
-		/*widthList.addActionListener(new ActionListener()
-			{
-				public void actionPerformed (ActionEvent e)
-				{
-					int width = widthList.getSelectedIndex() + 5;
-				}
-			});*/
 		widthList.setSelectedIndex(4);
 		
 		String[] heightString = new String[21];
@@ -109,13 +112,6 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 			heightString[i-5] = Integer.toString(i);
 		}
 		heightList = new JComboBox<String>(heightString);
-		/*heightList.addActionListener(new ActionListener()
-			{
-				public void actionPerformed (ActionEvent e)
-				{
-					int height = heightList.getSelectedIndex() + 5;
-				}
-			});*/
 		heightList.setSelectedIndex(4);
 		
 		JLabel x = new JLabel();
@@ -143,15 +139,17 @@ public final class NewGamePrompt extends JDialog implements ActionListener
 	{
 		players.removeAll();
 		combo.clear();
+		fields.clear();
 		String[] playersType = {"Human", "Random", "Shiller", "Straight"};
 		Box playersBox = new Box(BoxLayout.X_AXIS);
 		for (int i = 0 ; i < numOfPlayers ; i++)
 		{
 			Box playerBox = new Box(BoxLayout.Y_AXIS);
 			
-			JLabel text = new JLabel("Player " + (i+1) + ":");
-			text.setAlignmentX(CENTER_ALIGNMENT);
-			playerBox.add(text);
+			JTextField textField = new JTextField("Player " + (i+1));
+			textField.setAlignmentX(CENTER_ALIGNMENT);
+			playerBox.add(textField);
+			fields.add(textField);
 			JComboBox<String> comboBox = new JComboBox<String>(playersType);
 			playerBox.add(comboBox);
 			combo.add(comboBox);

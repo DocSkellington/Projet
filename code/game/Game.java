@@ -89,10 +89,11 @@ public final class Game
 					}
 					
 					ArrayList<Integer> playersList = new ArrayList<Integer>();
+					ArrayList<String> names = new ArrayList<String>();
 					Coordinates sizeBoard = new Coordinates(0, 0);
-					NewGamePrompt prompt = new NewGamePrompt(frame, "Players choice", true, Game.this, playersList, sizeBoard);
+					NewGamePrompt prompt = new NewGamePrompt(frame, "Players choice", true, Game.this, playersList, sizeBoard, names);
 					prompt.setVisible(true);
-					init(playersList.toArray(new Integer[0]), sizeBoard);
+					init(playersList.toArray(new Integer[0]), sizeBoard, names);
 			        curPlayer = 0;
 					play();
 				}
@@ -232,7 +233,7 @@ public final class Game
     }
     
     // Creates the player from the playersInt and call init(APlayer[], Coordinates)
-    private void init(Integer[] playersInt, Coordinates sizeBoard)
+    private void init(Integer[] playersInt, Coordinates sizeBoard, ArrayList<String> names)
     {
     	APlayer[] playersList = new APlayer[playersInt.length];
     	
@@ -241,16 +242,16 @@ public final class Game
     		switch(playersInt[i])
     		{
     		case 0:
-    			playersList[i] = new Human(i, 10);
+    			playersList[i] = new Human(i, 10, names.get(i));
 				break;
     		case 1:
-    			playersList[i] = new StrategyAI(i, 10, new RandomStrategy());
+    			playersList[i] = new StrategyAI(i, 10, names.get(i), new RandomStrategy());
     			break;
     		case 2:
-    			playersList[i] = new StrategyAI(i, 10, new ShillerStrategy());
+    			playersList[i] = new StrategyAI(i, 10, names.get(i), new ShillerStrategy());
     			break;
     		case 3:
-    			playersList[i] = new StrategyAI(i, 10, new StraightStrategy());
+    			playersList[i] = new StrategyAI(i, 10, names.get(i), new StraightStrategy());
     			break;
     		}
     	}
