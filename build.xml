@@ -2,9 +2,20 @@
 	<property name="code" location="code"/>
 	<property name="build" location="build"/>
 	<property name="lib" location="lib"/>
+	<property name="doc" location="doc"/>
 	
 	<target name="clean">
 		<delete dir="${build}"/>
+	</target>
+	
+	<target name="javadoc">
+		<delete dir="${doc}"/>
+		<javadoc sourcepath="${code}" destdir="${doc}" version="true" author="true">
+			<classpath>
+				<pathelement path="${lib}/junit-4.12.jar"/>
+				<pathelement path="${lib}/hamcrest-core-1.3.jar"/>
+			</classpath>
+		</javadoc>
 	</target>
 	
 	<target name="build">
