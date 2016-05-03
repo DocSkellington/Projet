@@ -65,7 +65,7 @@ public class GameFrame extends JFrame
 	 */
 	public void updateLabels(int curPlayer)
 	{
-    	labels[0].setText("Current Player: " + (curPlayer+1));
+    	labels[0].setText("Current Player: " + player[i].getName();
     	labels[0].setForeground(Game.getColor(curPlayer));
         for (int i = 2 ; i < labels.length ; i++)
         {
