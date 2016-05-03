@@ -22,6 +22,7 @@ import game.Game;
  */
 public final class LoadPrompt extends JDialog implements ActionListener
 {
+	private static final long serialVersionUID = -4532691009257134368L;
 	private Game game;
 	
 	/** Constructor
@@ -51,7 +52,7 @@ public final class LoadPrompt extends JDialog implements ActionListener
 		{
 			try
 			{
-				game.load(fileChooser.getCurrentDirectory().toString() + "\\" + fileChooser.getSelectedFile().getName());
+				game.load(fileChooser.getCurrentDirectory().toString() + File.separator + fileChooser.getSelectedFile().getName());
 			}
 			catch(IOException exc)
 			{

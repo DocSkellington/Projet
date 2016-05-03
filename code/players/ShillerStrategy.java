@@ -20,7 +20,7 @@ public final class ShillerStrategy implements IStrategy
 		if(numRounds < 3)
 		{
 			// The bot always moves (except if the bot is blocked)
-			Round round = move(board, numPlayer, possibleMoves);
+			Round round = move(board, numPlayer, possibleMoves, numRounds);
 			if (round.getType() == Type.NONE)
 				return wall(board, wallCounter, board.findPath((1+numPlayer)%board.getPlayerNumber(), true));
 			return round;
@@ -41,7 +41,7 @@ public final class ShillerStrategy implements IStrategy
 					round = decide(round, numPlayer, board, wallCounter, possibleMoves);
 					return round;
 				}
-				Round round = move(board, numPlayer, possibleMoves);
+				Round round = move(board, numPlayer, possibleMoves, numRounds);
 				return decide(round, numPlayer, board, wallCounter, possibleMoves);
 			}
 		}
@@ -60,7 +60,7 @@ public final class ShillerStrategy implements IStrategy
 				{
 					Path tempPath = board.findPath(i, true);
 					if(tempPath == null)
-						tempPath = board.findPath(numPlayer, false);
+						tempPath = board.findPath(i, false);
 					if (tempPath.getLength() < bestPath.getLength() || bestPath.getLength() == 0)
 					{
 						bestPath = tempPath;
@@ -68,19 +68,19 @@ public final class ShillerStrategy implements IStrategy
 				}
 			}
 			
-			if (ownPath.getLength() > bestPath.getLength())
+			if (ownPath.getLength() >= bestPath.getLength())
 			{
 				Round round = wall(board, wallCounter, bestPath);
 				if (round.getType() == Type.NONE)
 				{
-					round = move(board, numPlayer, possibleMoves);
+					round = move(board, numPlayer, possibleMoves, numRounds);
 					round = decide(round, numPlayer, board, wallCounter, possibleMoves);
 				}
 				return round;
 			}
 			else
 			{
-				Round round = move(board, numPlayer, possibleMoves);
+				Round round = move(board, numPlayer, possibleMoves, numRounds);
 				return decide(round, numPlayer, board, wallCounter, possibleMoves);
 			}
 		}
@@ -92,9 +92,13 @@ public final class ShillerStrategy implements IStrategy
 		return "shiller";
 	}
 	
-	private Round move(Board board, int numPlayer, Coordinates[] possibleMoves)
+	private Round move(Board board, int numPlayer, Coordinates[] possibleMoves, int numRounds)
 	{
-		Path bestPath = board.findPath(numPlayer, true);
+		Path bestPath = null;
+		if (numRounds == 0)
+			bestPath =  board.findPath(numPlayer, false);
+		else
+			bestPath = board.findPath(numPlayer, true);
 		Coordinates coord = null;
 		// If there isn't any available path right now, we take the first possible move
 		if (bestPath == null)
@@ -113,27 +117,17 @@ public final class ShillerStrategy implements IStrategy
 		Coordinates coord = board.startingPos(numPlayer);
 		Random rand = new Random();
 		// Player 1
-		if (coord.getY() == 16)
+		if (numPlayer == 0 || numPlayer == 1)
 		{
 			if(rand.nextBoolean())
 			{
-				coord = new Coordinates(coord.getX()+1, 14);
+				coord = new Coordinates(coord.getX()+1, coord.getY());
 			}
 			else
-				coord = new Coordinates(coord.getX()-1, 14);
-		}
-		// Player 2
-		else if (coord.getY() == 0)
-		{
-			if(rand.nextBoolean())
-			{
-				coord = new Coordinates(coord.getX()+1, 0);
-			}
-			else
-				coord = new Coordinates(coord.getX()-1, 0);
+				coord = new Coordinates(coord.getX()-1, coord.getY());
 		}
 		// Player 3
-		else if (coord.getX() == 0)
+		else if (numPlayer == 2 || numPlayer == 3)
 		{
 			if(rand.nextBoolean())
 			{
@@ -141,16 +135,6 @@ public final class ShillerStrategy implements IStrategy
 			}
 			else
 				coord = new Coordinates(coord.getX(), coord.getY() - 1);
-		}
-		// Player 4
-		else if (coord.getX() == 16)
-		{
-			if(rand.nextBoolean())
-			{
-				coord = new Coordinates(14, coord.getY() - 1);
-			}
-			else
-				coord = new Coordinates(14, coord.getY() - 1);
 		}
 		
 		if (board.filled(coord) == 1)
@@ -171,7 +155,6 @@ public final class ShillerStrategy implements IStrategy
 			coord = board.startingPos(3);
 		else if (numPlayer == 3)
 			coord = board.startingPos(2);
-		// TODO : 6 players
 		if (coord.getY() == 0)
 		{
 			if (board.filled(new Coordinates(coord.getX() - 1, coord.getY())) == 1)
@@ -180,7 +163,7 @@ public final class ShillerStrategy implements IStrategy
 				return true;
 			return false;
 		}
-		else if (coord.getY() == 16)
+		else if (coord.getY() == board.getYSize()-1)
 		{
 			if (board.filled(new Coordinates(coord.getX() - 1, coord.getY())) == 1)
 			{

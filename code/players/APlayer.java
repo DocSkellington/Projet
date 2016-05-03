@@ -4,7 +4,7 @@ import board.*;
 import players.Round.Type;
 
 import java.text.ParseException;
-import java.util.HashSet;
+import java.util.TreeSet;
 
 /** Abstract class to handle a player.
  * This can't be used because play() must have a specific behaviour depending on the type of the player (Human/AI).
@@ -30,16 +30,20 @@ public abstract class APlayer
 	 * 
 	 * @param num The number of the Player
 	 * @param wallCounter The number of walls this player can set
+	 * @param name The name of this player
 	 */
-	public APlayer(int num, int wallCounter)
+	public APlayer(int num, int wallCounter, String name)
 	{
 		this.num = num;
 		this.wallCounter = wallCounter;
 		waitingTurns = 0;
-		name = "Player" + num;
+		this.name = name;
 	}
 	
-	/** Gets the name of this player */
+	/** Gets the name of this player
+	 * 
+	 * @return The name of this player
+	 */
 	public String getName()
 	{
 		return name;
@@ -63,7 +67,10 @@ public abstract class APlayer
 		}
 	}
 	
-	/** Skip/Stops this turn */
+	/** Skip/Stops this turn
+	 * 
+	 * @return A Round of type NONE
+	 */
 	public Round skip()
 	{
 		return new Round(Type.NONE, new Coordinates(-1, -1));
@@ -143,7 +150,7 @@ public abstract class APlayer
 	 */
 	public Coordinates[] possibleMoves(Board board, boolean withPlayer, Coordinates pos)
 	{
-		HashSet<Coordinates> coord = new HashSet<Coordinates>();
+		TreeSet<Coordinates> coord = new TreeSet<Coordinates>();
 		
 		for (int i = -2 ; i <= 2 ; i += 2)
 		{
@@ -244,16 +251,17 @@ public abstract class APlayer
 	 */
 	public static APlayer parse(int num, String string) throws ParseException
 	{
-		switch(string)
+		String[] words = string.split("\t");
+		switch(words[1])
 		{
 		case "human":
-			return new Human(num, 10);
+			return new Human(num, 10, words[0]);
 		case "shiller":
-			return new StrategyAI(num, 10, new ShillerStrategy());
+			return new StrategyAI(num, 10, words[0], new ShillerStrategy());
 		case "random":
-			return new StrategyAI(num, 10, new RandomStrategy());
+			return new StrategyAI(num, 10, words[0], new RandomStrategy());
 		case "straight":
-			return new StrategyAI(num, 10, new StraightStrategy());
+			return new StrategyAI(num, 10, words[0], new StraightStrategy());
 		default:
 			throw new ParseException("Invalid player", 0);
 		}

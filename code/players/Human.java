@@ -19,10 +19,11 @@ public final class Human extends APlayer
 	 * 
 	 * @param num The player's number
 	 * @param wallCounter The counter of available walls
+	 * @param name The name of this player
 	 */
-	public Human(int num, int wallCounter)
+	public Human(int num, int wallCounter, String name)
 	{
-		super(num, wallCounter);
+		super(num, wallCounter, name);
 	}
 	
 	/** Whether the human is active
@@ -121,7 +122,7 @@ public final class Human extends APlayer
 	@Override
 	public String toString()
 	{
-		return "human";
+		return this.name + "\thuman";
 	}
 	
 	@Override

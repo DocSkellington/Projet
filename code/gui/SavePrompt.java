@@ -21,6 +21,7 @@ import game.Game;
  */
 public final class SavePrompt extends JDialog implements ActionListener
 {
+	private static final long serialVersionUID = 76625250313790501L;
 	private Game game;
 	
 	/** The constructor
@@ -41,7 +42,7 @@ public final class SavePrompt extends JDialog implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		File file = new File("../Save/");
+		File file = new File("../save/");
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Save files", "sav");
 		JFileChooser fileChooser = new JFileChooser(file);
 		fileChooser.addChoosableFileFilter(filter);
@@ -50,7 +51,7 @@ public final class SavePrompt extends JDialog implements ActionListener
 		{
 			try
 			{
-				game.save(fileChooser.getCurrentDirectory().toString() + "\\" + fileChooser.getSelectedFile().getName());
+				game.save(fileChooser.getCurrentDirectory().toString() + File.separator + fileChooser.getSelectedFile().getName());
 			}
 			catch(IOException exc)
 			{

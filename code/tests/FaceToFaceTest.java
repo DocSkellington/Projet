@@ -2,7 +2,6 @@ package tests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import org.junit.*;
 import board.*;
 import players.*;
@@ -16,9 +15,9 @@ public class FaceToFaceTest extends TestMain
 	public void init()
 	{		
 		players = new APlayer[2];
-		players[0] = new StrategyAI(0, 10, new ShillerStrategy());
-		players[1] = new StrategyAI(1, 10, new ShillerStrategy());
-		board = new Board(players, 9);
+		players[0] = new StrategyAI(0, 10, "0", new ShillerStrategy());
+		players[1] = new StrategyAI(1, 10, "1", new ShillerStrategy());
+		board = new Board(players, 9, 9);
 	}
 	
 	@After

@@ -2,7 +2,7 @@ package pathFinder;
 
 import java.util.ArrayList;
 
-/** Manages the paths
+/** Manages a path
  * 
  * @author Gaetan Staquet
  * @author Thibaut De Cooman

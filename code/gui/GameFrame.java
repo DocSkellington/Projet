@@ -1,13 +1,11 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Rectangle;
 
@@ -32,6 +30,7 @@ import players.Human;
  */
 public class GameFrame extends JFrame
 {
+	private static final long serialVersionUID = -2259905605281213627L;
 	private JPanel board, right;
 	private ActionButton moveButton, wallButton, removeButton, skipButton;
 	private JLabel labels[];
@@ -40,6 +39,7 @@ public class GameFrame extends JFrame
 	/** Constructor
 	 * 
 	 * @param players The array of players
+	 * @param game The game
 	 */
 	public GameFrame(APlayer[] players, Game game)
 	{
@@ -50,7 +50,7 @@ public class GameFrame extends JFrame
 		GraphicsEnvironment a = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] b = a.getScreenDevices();
 		Rectangle c = b[0].getDefaultConfiguration().getBounds();
-		this.setSize(1050, 800);
+		this.setSize(1100, 800);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation((c.width-this.getSize().width)/2, (c.height-this.getSize().height)/2);
 		this.setResizable(false);
@@ -64,20 +64,21 @@ public class GameFrame extends JFrame
 	 */
 	public void updateLabels(int curPlayer)
 	{
-    	labels[0].setText("Current Player: " + (curPlayer+1));
+    	labels[0].setText("Current Player: " + players[curPlayer].getName());
     	labels[0].setForeground(Game.getColor(curPlayer));
         for (int i = 2 ; i < labels.length ; i++)
         {
         	if (players[i-2].getWallCounter() == 1)
-        		labels[i].setText("J" + (i-1) + ": 1 wall");
+        		labels[i].setText(players[i-2].getName() + ": 1 wall");
         	else
-        		labels[i].setText("J" + (i-1) + ": " + players[i-2].getWallCounter() + " walls");
+        		labels[i].setText(players[i-2].getName() + ": " + players[i-2].getWallCounter() + " walls");
         }
 	}
 	
 	/** Changes the colour of the action buttons
 	 * 
 	 * @param curPlayer The number of the current Player
+	 * @param board The board
 	 */
 	public void updateActionButton(int curPlayer, Board board)
 	{
@@ -145,7 +146,7 @@ public class GameFrame extends JFrame
 		repaint();
 	}
 	
-	// Initialise everything
+	// Initialises everything
 	private void init(Game game)
 	{
 		int numPlayers = players.length;
@@ -156,6 +157,7 @@ public class GameFrame extends JFrame
 		board = new JPanel();
 		board.setLayout(new GridBagLayout());
 		board.setMaximumSize(new Dimension(790, 790));
+		board.setPreferredSize(new Dimension(790, 790));
 
 		// The panel for everything on the right of the board
 		right = new JPanel(new BorderLayout());
@@ -175,6 +177,13 @@ public class GameFrame extends JFrame
 
         removeButton.setText("Remove wall");
         //removeButton.setIcon(new ImageIcon(Game.getImage("removeButton")));
+        
+        // If there is at least one IA, we don't want to enable the "destroy wall"
+        for (APlayer player : players)
+        {
+        	if (!(player instanceof Human))
+        		removeButton.setEnabled(false);
+        }
         
         skipButton.setText("Skip");
 
@@ -212,8 +221,6 @@ public class GameFrame extends JFrame
         	labels[i+2].setAlignmentX(Label.CENTER_ALIGNMENT);
         	labelsBox.add(labels[i+2]);
         }
-        
-        updateLabels(0);
         
         right.add(labelsBox, BorderLayout.CENTER);
         

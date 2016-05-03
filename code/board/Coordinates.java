@@ -11,7 +11,6 @@ import java.text.ParseException;
 public final class Coordinates implements Cloneable, Comparable<Coordinates>
 {
     private int x, y;
-    public static int size;
     
     /** Constructor
      * @param x The x position
@@ -37,6 +36,24 @@ public final class Coordinates implements Cloneable, Comparable<Coordinates>
     public int getY()
     {
     	return y;
+    }
+    
+    /** Sets the x coordinate
+     * 
+     * @param x The new x value
+     */
+    public void setX(int x)
+    {
+    	this.x = x;
+    }
+
+    /** Sets the y coordinate
+     * 
+     * @param y The new y value
+     */
+    public void setY(int y)
+    {
+    	this.y = y;
     }
     
     /** Moves by dx and dy
@@ -84,13 +101,6 @@ public final class Coordinates implements Cloneable, Comparable<Coordinates>
     	if (other.y > y)
     		return -1;
     	return 0;
-    }
-    
-    @Override
-    public int hashCode()
-    {
-    	int hash = size * x + y;
-    	return hash;
     }
     
     @Override

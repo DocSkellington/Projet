@@ -1,18 +1,14 @@
 package board;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 
 import game.Game;
-import gui.TextureHolder;
 
 /** Walls are obstacles set on the board by the players
  * 
@@ -22,6 +18,7 @@ import gui.TextureHolder;
  */
 public final class Wall extends ACell
 {
+	private static final long serialVersionUID = -7147884026408168212L;
 	private float alpha;
 	private boolean destroy;
 	
