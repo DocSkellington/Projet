@@ -51,7 +51,7 @@ public class GameFrame extends JFrame
 		GraphicsEnvironment a = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] b = a.getScreenDevices();
 		Rectangle c = b[0].getDefaultConfiguration().getBounds();
-		this.setSize(1050, 800);
+		this.setSize(1100, 800);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation((c.width-this.getSize().width)/2, (c.height-this.getSize().height)/2);
 		this.setResizable(false);
@@ -65,14 +65,14 @@ public class GameFrame extends JFrame
 	 */
 	public void updateLabels(int curPlayer)
 	{
-    	labels[0].setText("Current Player: " + player[i].getName();
+    	labels[0].setText("Current Player: " + players[curPlayer].getName());
     	labels[0].setForeground(Game.getColor(curPlayer));
         for (int i = 2 ; i < labels.length ; i++)
         {
         	if (players[i-2].getWallCounter() == 1)
-        		labels[i].setText("J" + (i-1) + ": 1 wall");
+        		labels[i].setText(players[i-2].getName() + ": 1 wall");
         	else
-        		labels[i].setText("J" + (i-1) + ": " + players[i-2].getWallCounter() + " walls");
+        		labels[i].setText(players[i-2].getName() + ": " + players[i-2].getWallCounter() + " walls");
         }
 	}
 	
@@ -222,8 +222,6 @@ public class GameFrame extends JFrame
         	labels[i+2].setAlignmentX(Label.CENTER_ALIGNMENT);
         	labelsBox.add(labels[i+2]);
         }
-        
-        updateLabels(0);
         
         right.add(labelsBox, BorderLayout.CENTER);
         

@@ -75,6 +75,15 @@ public final class Game
 		if (gameTask != null)
 			gameTask.cancel(true);
 		
+		try
+		{
+			Thread.sleep(30);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
 		roundList.clear();
 		
 		// Starting a new thread (init + play)
