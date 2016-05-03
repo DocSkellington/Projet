@@ -4,7 +4,6 @@ import players.*;
 import players.Human;
 
 import java.awt.GridBagConstraints;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -800,6 +799,11 @@ public class Board
     	}
     }
     
+    /** Uncolors the adjacent walls while hovering
+     * 
+     * @param coord The coordinates at which we must uncolour the wall
+     * @param coloured Whether the wall must be coloured or not
+     */
     public void colorAdjacentWallsDestroy(Coordinates coord, boolean coloured)
     {
 		// If it's outside the board

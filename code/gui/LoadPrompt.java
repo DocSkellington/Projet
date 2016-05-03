@@ -22,6 +22,7 @@ import game.Game;
  */
 public final class LoadPrompt extends JDialog implements ActionListener
 {
+	private static final long serialVersionUID = -4532691009257134368L;
 	private Game game;
 	
 	/** Constructor

@@ -5,8 +5,6 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 
-import gui.TextureHolder;
-
 /** Cells compose the board
  * 
  * 
@@ -16,7 +14,8 @@ import gui.TextureHolder;
  */
 public abstract class ACell extends JButton implements Cloneable
 {
-    protected int filled;
+	private static final long serialVersionUID = -221994209744953356L;
+	protected int filled;
 	protected BufferedImage img;
     
     /** Default constructor */

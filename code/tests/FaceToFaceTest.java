@@ -2,7 +2,6 @@ package tests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import org.junit.*;
 import board.*;
 import players.*;

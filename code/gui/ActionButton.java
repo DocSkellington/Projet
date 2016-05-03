@@ -15,6 +15,8 @@ import game.Game;
  */
 public final class ActionButton extends JButton
 {
+	private static final long serialVersionUID = -4177825063097743815L;
+
 	/** Constructor */
 	public ActionButton()
 	{

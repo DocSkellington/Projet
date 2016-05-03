@@ -28,6 +28,8 @@ import board.Coordinates;
  */
 public final class NewGamePrompt extends JDialog implements ActionListener
 {
+	private static final long serialVersionUID = -8152654583159740955L;
+
 	protected int numOfPlayers = 2;
 	
 	protected JPanel panel, players;

@@ -4,7 +4,6 @@ import board.*;
 import players.Round.Type;
 
 import java.text.ParseException;
-import java.util.HashSet;
 import java.util.TreeSet;
 
 /** Abstract class to handle a player.

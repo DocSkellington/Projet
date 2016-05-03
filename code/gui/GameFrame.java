@@ -1,13 +1,11 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Rectangle;
 
@@ -32,6 +30,7 @@ import players.Human;
  */
 public class GameFrame extends JFrame
 {
+	private static final long serialVersionUID = -2259905605281213627L;
 	private JPanel board, right;
 	private ActionButton moveButton, wallButton, removeButton, skipButton;
 	private JLabel labels[];

@@ -34,7 +34,7 @@ public final class StraightStrategy implements IStrategy
 		return "straight";
 	}
 	
-	private Round move (Board board, Coordinates[] possibleMoves, int numPlayer, int numRounds)
+	private Round move(Board board, Coordinates[] possibleMoves, int numPlayer, int numRounds)
 	{
 		Path bestPath = null;
 		if (numRounds == 0)

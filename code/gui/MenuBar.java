@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
  */
 public class MenuBar extends JMenuBar
 {
+	private static final long serialVersionUID = 3255840399684252825L;
 	private JMenu fileMenu;
 	private JMenu helpMenu;
 	private JMenu gameMenu;

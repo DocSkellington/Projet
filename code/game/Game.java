@@ -1,7 +1,6 @@
 package game;
 
 import java.util.concurrent.*;
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.text.ParseException;
 import java.awt.Color;
