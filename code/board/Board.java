@@ -60,25 +60,6 @@ public class Board
         update();
     }
     
-    /** Removes every wall and moves the pawns to the starting position */
-    public void reset()
-    {
-    	// Reset the walls
-    	for(Coordinates wall : placedWalls)
-    	{
-    		destroyWall(wall);
-    	}
-    	placedWalls = new ArrayList<Coordinates>();
-    	
-    	// Reset the players positions
-        playersPositions = new Coordinates[playersPositions.length];
-        for (int i = 0 ; i < playersPositions.length ; i++)
-        {
-        	playersPositions[i] = startingPos(i);
-        }
-        update();
-    }
-    
     @Override
     public String toString()
     {

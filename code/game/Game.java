@@ -203,20 +203,7 @@ public final class Game
 	
 	// Execute the roundList
 	private void executeRounds()
-	{
-		// Reset the players
-		int wall = 10;
-		if (players.length == 3)
-			wall = 7;
-		else if (players.length == 4)
-			wall = 5;
-		
-		for (APlayer player : players)
-			player.reset(wall);
-		
-		// Reset the board
-		board.reset();
-		
+	{		
 		// Plays the rounds until the end
 		int cur = 0;
 		for (Round round : roundList)
@@ -230,7 +217,7 @@ public final class Game
 		while(!board.repaint());
 	}
 	
-    /** See: FF7 victory fanfare
+    /* See: FF7 victory fanfare
      * 
      * @param winner Number of the winning player
      */
