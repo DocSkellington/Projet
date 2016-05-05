@@ -1,6 +1,6 @@
 package players;
 
-import board.Board;
+import board.ABoard;
 import board.Coordinates;
 import players.Round.Type;
 import pathFinder.Path;
@@ -15,7 +15,7 @@ import pathFinder.Path;
 public final class StraightStrategy implements IStrategy
 {
 	@Override
-	public Round strategy(Board board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
+	public Round strategy(ABoard board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
 	{
 		if (possibleMoves.length != 0)
 		{
@@ -34,7 +34,7 @@ public final class StraightStrategy implements IStrategy
 		return "straight";
 	}
 	
-	private Round move(Board board, Coordinates[] possibleMoves, int numPlayer, int numRounds)
+	private Round move(ABoard board, Coordinates[] possibleMoves, int numPlayer, int numRounds)
 	{
 		Path bestPath = null;
 		if (numRounds == 0)
@@ -51,7 +51,7 @@ public final class StraightStrategy implements IStrategy
 		
 	}
 	
-	private Round wall(Board board, int numPlayer, int wallCounter)
+	private Round wall(ABoard board, int numPlayer, int wallCounter)
 	{
 		if (wallCounter <= 0)
 		{

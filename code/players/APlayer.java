@@ -148,7 +148,7 @@ public abstract class APlayer
 	 * @param pos The position we look at
 	 * @return The (relative) coordinates of the accessible cases
 	 */
-	public Coordinates[] possibleMoves(Board board, boolean withPlayer, Coordinates pos)
+	public Coordinates[] possibleMoves(ABoard board, boolean withPlayer, Coordinates pos)
 	{
 		TreeSet<Coordinates> coord = new TreeSet<Coordinates>();
 		

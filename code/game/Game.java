@@ -261,11 +261,11 @@ public final class Game
     	players = playersList;
     	
     	// The number of available walls per player
-    	int walls = 10;
+    	int walls = (sizeBoard.getX() * sizeBoard.getY()) / 8;
     	if (playersNumber == 4)
-    		walls = 5;
+    		walls = (sizeBoard.getX() * sizeBoard.getY()) / 16;
     	else if (playersNumber == 3)
-    		walls = 7;
+    		walls = (sizeBoard.getX() * sizeBoard.getY()) / 12;
     	
     	for (int i = 0 ; i < playersNumber ; i++)
     	{

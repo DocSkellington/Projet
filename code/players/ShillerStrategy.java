@@ -15,7 +15,7 @@ import board.*;
 public final class ShillerStrategy implements IStrategy
 {
 	@Override
-	public Round strategy(Board board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
+	public Round strategy(ABoard board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
 	{
 		if(numRounds < 3)
 		{
@@ -92,7 +92,7 @@ public final class ShillerStrategy implements IStrategy
 		return "shiller";
 	}
 	
-	private Round move(Board board, int numPlayer, Coordinates[] possibleMoves, int numRounds)
+	private Round move(ABoard board, int numPlayer, Coordinates[] possibleMoves, int numRounds)
 	{
 		Path bestPath = null;
 		if (numRounds == 0)
@@ -112,7 +112,7 @@ public final class ShillerStrategy implements IStrategy
 		return new Round(Type.MOVE, coord);
 	}
 	
-	private Round shiller(Board board, int numPlayer)
+	private Round shiller(ABoard board, int numPlayer)
 	{
 		Coordinates coord = board.startingPos(numPlayer);
 		Random rand = new Random();
@@ -144,7 +144,7 @@ public final class ShillerStrategy implements IStrategy
 		return new Round(Type.WALL, coord);
 	}
 	
-	private boolean checkShiller(Board board, int numPlayer)
+	private boolean checkShiller(ABoard board, int numPlayer)
 	{
 		Coordinates coord = null;
 		if (numPlayer == 1)
@@ -193,7 +193,7 @@ public final class ShillerStrategy implements IStrategy
 		}
 	}
 
-	private Round wall(Board board, int wallCounter, Path path)
+	private Round wall(ABoard board, int wallCounter, Path path)
 	{
 		if (wallCounter <= 0)
 			return new Round(Type.NONE, new Coordinates(-1, -1));
@@ -227,7 +227,7 @@ public final class ShillerStrategy implements IStrategy
 		return new Round(Type.NONE, new Coordinates(-1, -1));
 	}
 	
-	private Round decide(Round round, int numPlayer, Board board, int wallCounter, Coordinates[] possibleMoves)
+	private Round decide(Round round, int numPlayer, ABoard board, int wallCounter, Coordinates[] possibleMoves)
 	{
 		if (round.getType() == Type.NONE)
 		{

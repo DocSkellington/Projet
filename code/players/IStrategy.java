@@ -19,5 +19,5 @@ public interface IStrategy
 	 * @param numRounds The number of already played rounds
 	 * @return A round
 	 */
-	Round strategy(Board board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds);
+	Round strategy(ABoard board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds);
 }

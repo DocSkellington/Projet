@@ -21,7 +21,7 @@ public final class RandomStrategy implements IStrategy
 	}
 	
 	@Override
-	public Round strategy(Board board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
+	public Round strategy(ABoard board, int numPlayer, int wallCounter, Coordinates[] possibleMoves, int numRounds)
 	{
 		boolean choice = randgen.nextBoolean();
 		if (choice)
@@ -50,7 +50,7 @@ public final class RandomStrategy implements IStrategy
 	}
 	
 	/** The bot moves to a random possible destination*/
-	private Round move(Board board, Coordinates[] possibleMoves)
+	private Round move(ABoard board, Coordinates[] possibleMoves)
 	{
 		if (possibleMoves.length == 0)
 			return new Round(Type.NONE, new Coordinates(-1, -1));
@@ -59,18 +59,18 @@ public final class RandomStrategy implements IStrategy
 	}
 	
 	/** The bot sets a wall if possible, trying fifty times at a random location */
-	private Round setAWall(Board board, int wallCounter)
+	private Round setAWall(ABoard board, int wallCounter)
 	{
 		if (wallCounter <= 0)
 			return new Round(Type.NONE, new Coordinates(-1, -1));
 		
-		int x = randgen.nextInt(board.getXSize());
+		int x = randgen.nextInt(board.getXSize(0));
 		int y = randgen.nextInt(board.getYSize());
 		int tries = 50;
 		
 		while (!board.canSetWall(new Coordinates(x,y)) && tries > 0)
 		{
-			x = randgen.nextInt(board.getXSize());
+			x = randgen.nextInt(board.getXSize(0));
 			y = randgen.nextInt(board.getYSize());
 			tries--;
 		}

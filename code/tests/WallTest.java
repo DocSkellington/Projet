@@ -139,7 +139,7 @@ public class WallTest extends TestMain
 	@Test
 	public void shiftTestBottomEdge()
 	{
-		for (int j = 1 ; j < board.getXSize() ; j += 2)
+		for (int j = 1 ; j < board.getXSize(0) ; j += 2)
 		{
 			Assert.assertTrue(board.setWall(new Coordinates(j, 16)));
 		}

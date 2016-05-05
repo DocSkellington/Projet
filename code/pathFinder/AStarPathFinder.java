@@ -20,7 +20,7 @@ public class AStarPathFinder
     protected SortedList open = new SortedList();
     
     /** A reference to the board (to know where are walls and players)*/
-    protected Board board;
+    protected ABoard board;
     protected Node[][] nodes;
     /** The heuristic formula to be used to determine the best next step*/
     protected IAStarHeuristic heuristic;
@@ -28,7 +28,7 @@ public class AStarPathFinder
     /** A basic constructor with the basic heuristic formula
      * @param board The board to be searched
      */
-    public AStarPathFinder (Board board)
+    public AStarPathFinder (ABoard board)
     {
         this(board, new ClosestHeuristic());
     }
@@ -37,12 +37,13 @@ public class AStarPathFinder
      * @param board The board to be searched
      * @param heuristic A reference to the class who contains the heuristic formula
      */
-    public AStarPathFinder(Board board, IAStarHeuristic heuristic)
+    public AStarPathFinder(ABoard board, IAStarHeuristic heuristic)
     {
         this.heuristic = heuristic;
         this.board = board;
         
-        int xSize = board.getXSize(), ySize = board.getYSize();
+        // TODO: Hexa
+        int xSize = board.getXSize(0), ySize = board.getYSize();
         
         nodes = new Node[xSize][ySize];
         for (int x = 0 ; x < xSize ; x++)
@@ -93,7 +94,7 @@ public class AStarPathFinder
                 int xp = neighbour.getX(), yp = neighbour.getY();
                 
             	// Cost to get to this node = cost so far + movement cost to reach this node.
-                float nextStepCost = current.cost + getMovementCost(player, current.x, current.y, xp, yp);
+                float nextStepCost = current.cost + 1.0f;
                 Node neigh = nodes[xp][yp];
                 
                 // If the new cost for this node is lower than it's already been calculated : we must check if the node can't be reached by an another path (which may be a better path)
@@ -133,19 +134,6 @@ public class AStarPathFinder
         path.prependStep(sx, sy);
         
         return path;
-    }
-    
-    /** Get the cost to move through a given location
-     * @param player The player who tries to move
-     * @param sx The x coordinate of the tile whose cost is being determined
-     * @param sy The y coordinate of the tile whose cost is being determined
-	 * @param tx The x coordinate of the target location
-	 * @param ty The y coordinate of the target location
-	 * @return The cost of movement through the given location
-	 */
-    public float getMovementCost(APlayer player, int sx, int sy, int tx, int ty)
-    {
-        return board.getCost(player, sx, sy, tx, ty);
     }
     
     /** Get the heuristic cost for the given location. This will be used to determinate the order of the locations.
