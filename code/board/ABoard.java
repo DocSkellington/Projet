@@ -149,10 +149,8 @@ public abstract class ABoard
     			x2 = 2;
     		else
     			y2 = 2;
-
-            cells.get(y).get(x).setFilled(0);
-            cells.get((y2+y)/2).get((x2+x)/2).setFilled(0);
-            cells.get(y2).get(x2).setFilled(0);
+		
+		fillWall(0);
             
     		placedWalls.remove(new Coordinates(x, y));
     		return true;
