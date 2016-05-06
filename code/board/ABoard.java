@@ -150,7 +150,7 @@ public abstract class ABoard
     		else
     			y2 = 2;
 		
-		fillWall(0);
+		fillWall(coord, 0);
             
     		placedWalls.remove(new Coordinates(x, y));
     		return true;
