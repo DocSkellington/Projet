@@ -18,34 +18,31 @@ public final class HexagonalBoard extends ABoard
 	{
 		super(players);
 		// 5 de côté
-		/* IDEAS:
-		 * Un rectangle amputé de 4 triangles ? -> Permettrai de tout gérer assez facilement (plus facile qu'avec une vraie gestion des hexa)
-		*/
 		for (int i = 0 ; i <= 32 ; i++)
 		{
 			ArrayList<ACell> row = new ArrayList<ACell>();
 			// Rows starting by a wall (and with cases)
 			if (i % 4 == 2 && (i >= 8 && i <=24))
 			{
-				for (int j = 0 ; j < 9 ; j++)
+				for (int j = 0 ; j < 17 ; j++)
 				{
-					if (j % 2 == 0)
-						row.add(new HexagonalWall());
-					else
+					if (j % 4 == 3)
 						row.add(new HexagonalCase());
+					else
+						row.add(new HexagonalWall());
 				}
 			}
 			// Cases and walls
 			else if (i % 2 == 0)
 			{
-				int columnSize = 9;
+				int columnSize = 17;
 				if (0 <= i && i <= 6)
-					columnSize = i + 1;
+					columnSize = 2*i + 1;	
 				else if (26 <= i && i <= 32)
-					columnSize = 33 - i;
+					columnSize = 2*(33 - i)-1;
 				for (int j = 0 ; j < columnSize ; j++)
 				{
-					if (j % 2 == 0)
+					if (j % 4 == 0)
 						row.add(new HexagonalCase());
 					else
 						row.add(new HexagonalWall());
