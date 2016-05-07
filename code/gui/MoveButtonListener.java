@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
-import board.Board;
+import board.ABoard;
 import players.Human;
 
 /** The listener for the move button (used by human players to activate the cases them can reach)
@@ -21,7 +21,7 @@ public final class MoveButtonListener implements ActionListener
 {
 	private GameFrame frame;
 	private Human human;
-	private Board board;
+	private ABoard board;
 	
 	/** Constructor
 	 * 
@@ -29,7 +29,7 @@ public final class MoveButtonListener implements ActionListener
 	 * @param human A human
 	 * @param board The board
 	 */
-	public MoveButtonListener(GameFrame frame, Human human, Board board)
+	public MoveButtonListener(GameFrame frame, Human human, ABoard board)
 	{
 		this.frame = frame;
 		this.human = human;

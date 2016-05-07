@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-import board.Board;
+import board.ABoard;
 import game.Game;
 import players.APlayer;
 import players.Human;
@@ -80,7 +80,7 @@ public class GameFrame extends JFrame
 	 * @param curPlayer The number of the current Player
 	 * @param board The board
 	 */
-	public void updateActionButton(int curPlayer, Board board)
+	public void updateActionButton(int curPlayer, ABoard board)
 	{
 		moveButton.changeColor(curPlayer);
 		wallButton.changeColor(curPlayer);
@@ -99,7 +99,7 @@ public class GameFrame extends JFrame
 	 * @param human A reference to a human player
 	 * @param board A reference to the board
 	 */
-	public void addActionButtonListener(Human human, Board board)
+	public void addActionButtonListener(Human human, ABoard board)
 	{
 		moveButton.addActionListener(new MoveButtonListener(this, human, board));
 		wallButton.addActionListener(new WallButtonListener(this, human, board));

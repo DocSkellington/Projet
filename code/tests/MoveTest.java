@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import board.Board;
+import board.RectangularBoard;
 import board.Coordinates;
 import players.APlayer;
 import players.ShillerStrategy;
@@ -16,7 +16,7 @@ import players.StrategyAI;
 
 public class MoveTest extends TestMain
 {
-	protected Board board;
+	protected RectangularBoard board;
 	protected APlayer[] players;
 	
 	@Before
@@ -27,7 +27,7 @@ public class MoveTest extends TestMain
 		players[1] = new StrategyAI(1, 10, "0", new ShillerStrategy());
 		players[2] = new StrategyAI(2, 10, "0", new ShillerStrategy());
 		players[3] = new StrategyAI(3, 10, "0", new ShillerStrategy());
-		board = new Board(players, 9, 9);
+		board = new RectangularBoard(players, 9, 9);
 	}
 	
 	@After

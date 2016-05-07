@@ -11,26 +11,23 @@ import javax.swing.JPanel;
 import gui.CaseListener;
 import gui.WallListener;
 
-/** Manages all information about the board.
- * This includes setting walls, finding path, and so on.
+/** Manages all information about the rectangular board.
+ * The rectangular board 9x9 is the basic board for Quoridor
  * @author Gaetan Staquet
  * @author Thibaut De Cooman
  *
  */
-public class Board extends ABoard
+public class RectangularBoard extends ABoard
 {
     /** The constructor
      * @param players The array of players 
      * @param xSize The size of the board (in number of player cases)
      * @param ySize The size of the board (in number of player cases)
      */
-    public Board(APlayer[] players, int xSize, int ySize)
+    public RectangularBoard(APlayer[] players, int xSize, int ySize)
     {
-    	cells = new ArrayList<ArrayList<ACell>>();
-        this.players = players; 
-        placedWalls = new ArrayList<Coordinates>();
-        int numPlayers = players.length;
-        
+    	super(players);
+        int numPlayers = players.length;        
         for (int x = 0 ; x < 2*ySize-1 ; x++)
         {
         	ArrayList<ACell> row = new ArrayList<ACell>();

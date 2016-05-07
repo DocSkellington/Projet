@@ -54,7 +54,7 @@ public abstract class APlayer
 	 * @param board The board
 	 * @return The played round
 	 */
-	public Round play(Board board)
+	public Round play(ABoard board)
 	{
 		if (waitingTurns == 0)
 		{
@@ -81,7 +81,7 @@ public abstract class APlayer
 	 * @param board The board
 	 * @param round The round to do
 	 */
-	public void play(Board board, Round round)
+	public void play(ABoard board, Round round)
 	{
 		switch(round.getType())
 		{
@@ -118,7 +118,7 @@ public abstract class APlayer
 	 * @param withPlayer If we consider other player(s) or not
 	 * @return An HashSet of the possible coordinates
 	 */
-	public Coordinates[] possibleMoves(Board board, boolean withPlayer)
+	public Coordinates[] possibleMoves(ABoard board, boolean withPlayer)
 	{
 		return possibleMoves(board, withPlayer, board.getCoordinates(num));
 	}
@@ -240,7 +240,7 @@ public abstract class APlayer
 	 * @param board The board
 	 * @return The round done
 	 */
-	protected abstract Round doPlay(Board board);
+	protected abstract Round doPlay(ABoard board);
 	
 	/** Parse a string and create a new player with the given number (and 10 walls)
 	 * 

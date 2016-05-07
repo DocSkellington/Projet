@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import board.Board;
+import board.RectangularBoard;
 import board.Coordinates;
 import players.APlayer;
 import players.ShillerStrategy;
@@ -13,7 +13,7 @@ import players.StrategyAI;
 
 public class WallTest extends TestMain
 {
-	protected Board board;
+	protected RectangularBoard board;
 	protected APlayer[] players;
 	
 	@Before
@@ -22,7 +22,7 @@ public class WallTest extends TestMain
 		players = new APlayer[2];
 		players[0] = new StrategyAI(0, 10, "0", new ShillerStrategy());
 		players[1] = new StrategyAI(1, 10, "0", new ShillerStrategy());
-		board = new Board(players, 9, 9);
+		board = new RectangularBoard(players, 9, 9);
 	}
 	
 	@After

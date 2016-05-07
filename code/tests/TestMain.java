@@ -1,12 +1,12 @@
 package tests;
 
-import board.Board;
+import board.RectangularBoard;
 
 public abstract class TestMain
 {
 	public static boolean print = Boolean.parseBoolean(System.getenv("PRINT"));;
 	
-	protected void printBoard(Board board)
+	protected void printBoard(RectangularBoard board)
 	{
 		if (print)
 			System.err.println(board.toString());

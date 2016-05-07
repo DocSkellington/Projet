@@ -16,11 +16,11 @@ import game.Game;
  * @author Gaetan Staquet
  *
  */
-public final class Wall extends ACell
+public class Wall extends ACell
 {
 	private static final long serialVersionUID = -7147884026408168212L;
-	private float alpha;
-	private boolean destroy;
+	protected float alpha;
+	protected boolean destroy;
 	
 	/** Constructor */
     public Wall()

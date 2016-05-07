@@ -15,8 +15,10 @@ import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.List;
 
-import board.Board;
+import board.RectangularBoard;
+import board.ABoard;
 import board.Coordinates;
+import board.HexagonalBoard;
 import gui.ColorHolder;
 import gui.GameFrame;
 import gui.NewGamePrompt;
@@ -35,7 +37,7 @@ public final class Game
 	private Future<?> gameTask;
 	
 	private APlayer[] players;
-	private Board board;
+	private ABoard board;
 	private ArrayList<Round> roundList; 
 	private GameFrame frame;
 	private int curPlayer;
@@ -186,7 +188,7 @@ public final class Game
             frame.invalidate();
             while(!board.repaint());
             frame.revalidate();
-            Board.prev_tick = System.currentTimeMillis();
+            RectangularBoard.prev_tick = System.currentTimeMillis();
             
             frame.setActionButtonBorder(null);
             
@@ -275,7 +277,8 @@ public final class Game
     	// We recreate the frame
         frame.reset(players, this);
         
-        board = new Board(players, sizeBoard.getX(), sizeBoard.getY());
+        //board = new RectangularBoard(players, sizeBoard.getX(), sizeBoard.getY());
+        board = new HexagonalBoard(players);
         
         // Add the listeners
         for (int i = 0 ; i < players.length ; i++)

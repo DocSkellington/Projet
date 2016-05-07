@@ -39,7 +39,7 @@ public final class Human extends APlayer
 	 * 
 	 * @param board A reference to the board
 	 */
-	public void move(Board board)
+	public void move(ABoard board)
 	{
 		board.disableAll();
 		Coordinates[] coord = possibleMoves(board, true);
@@ -50,7 +50,7 @@ public final class Human extends APlayer
 	 * 
 	 * @param board A reference to the board
 	 */
-	public void walls(Board board)
+	public void walls(ABoard board)
 	{
 		if (wallCounter > 0)
 		{
@@ -63,7 +63,7 @@ public final class Human extends APlayer
 	 * 
 	 * @param board The board
 	 */
-	public void removeWalls(Board board)
+	public void removeWalls(ABoard board)
 	{
 		board.disableAll();
 		board.enableWalls(true);
@@ -74,7 +74,7 @@ public final class Human extends APlayer
 	 * @param board A reference to the board
 	 * @param coord The coordinates to reach
 	 */
-	public void doMove(Board board, Coordinates coord)
+	public void doMove(ABoard board, Coordinates coord)
 	{
 		board.move(num, coord);
 		activated = false;
@@ -86,7 +86,7 @@ public final class Human extends APlayer
 	 * @param board The board
 	 * @param coord The upper-left coordinates of the wall to destroy
 	 */
-	public void setWall(Board board, Coordinates coord)
+	public void setWall(ABoard board, Coordinates coord)
 	{
 		if(board.setWall(coord))
 		{
@@ -101,7 +101,7 @@ public final class Human extends APlayer
 	 * @param board The board
 	 * @param coord The upper left coordinates of the wall to destroy
 	 */
-	public void destroyWall(Board board, Coordinates coord)
+	public void destroyWall(ABoard board, Coordinates coord)
 	{
 		// TODO: Make the player wait 1 turn
 		if(board.destroyWall(coord))
@@ -126,7 +126,7 @@ public final class Human extends APlayer
 	}
 	
 	@Override
-	protected Round doPlay(Board board)
+	protected Round doPlay(ABoard board)
 	{
 		activated = true;
 		while (activated)

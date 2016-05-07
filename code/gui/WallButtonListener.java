@@ -8,7 +8,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.JButton;
 
-import board.Board;
+import board.ABoard;
 import players.Human;
 
 /** The listener of the wall action button (used for human players)
@@ -21,7 +21,7 @@ public class WallButtonListener implements ActionListener
 {
 	private GameFrame frame;
 	private Human human;
-	private Board board;
+	private ABoard board;
 	
 	/** The constructor
 	 * 
@@ -29,7 +29,7 @@ public class WallButtonListener implements ActionListener
 	 * @param human The human bound to this listener
 	 * @param board The board
 	 */
-	public WallButtonListener(GameFrame frame, Human human, Board board)
+	public WallButtonListener(GameFrame frame, Human human, ABoard board)
 	{
 		this.frame = frame;
 		this.human = human;

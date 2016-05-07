@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
-import board.Board;
+import board.ABoard;
 import players.Human;
 
 /** The listener for the remove wall button
@@ -21,7 +21,7 @@ public final class RemoveWallButtonListener implements ActionListener
 {
 	private GameFrame frame;
 	private Human human;
-	private Board board;
+	private ABoard board;
 
 	/** Constructor
 	 * 
@@ -29,7 +29,7 @@ public final class RemoveWallButtonListener implements ActionListener
 	 * @param human A human
 	 * @param board The board
 	 */
-	public RemoveWallButtonListener(GameFrame frame, Human human, Board board)
+	public RemoveWallButtonListener(GameFrame frame, Human human, ABoard board)
 	{
 		this.frame = frame;
 		this.human = human;

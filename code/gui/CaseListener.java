@@ -6,7 +6,7 @@ import java.text.ParseException;
 
 import javax.swing.JButton;
 
-import board.Board;
+import board.ABoard;
 import board.Coordinates;
 import players.Human;
 
@@ -19,14 +19,14 @@ import players.Human;
 public final class CaseListener implements ActionListener
 {
 	private Human human;
-	private Board board;
+	private ABoard board;
 	
 	/** The constructor
 	 * 
 	 * @param human The human bound to the listener
 	 * @param board The board
 	 */
-	public CaseListener(Human human, Board board)
+	public CaseListener(Human human, ABoard board)
 	{
 		this.human = human;
 		this.board = board;

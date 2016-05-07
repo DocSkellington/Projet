@@ -10,6 +10,12 @@ import pathFinder.IAStarHeuristic;
 import pathFinder.Path;
 import players.APlayer;
 
+/** Manages all information about the board.
+ * This includes setting walls, finding path, and so on.
+ * @author Gaetan Staquet
+ * @author Thibaut De Cooman
+ *
+ */
 public abstract class ABoard
 {
     protected ArrayList<ArrayList<ACell>> cells;
@@ -19,6 +25,13 @@ public abstract class ABoard
     
     public static final double tick = 333.333;
     public static double prev_tick = 0.00;
+    
+    public ABoard(APlayer[] players)
+    {
+    	cells = new ArrayList<ArrayList<ACell>>();
+        this.players = players; 
+        placedWalls = new ArrayList<Coordinates>();
+    }
     
     @Override
     public abstract String toString();
@@ -81,8 +94,6 @@ public abstract class ABoard
     */
     public boolean canSetWall(Coordinates coord)
     {
-    	int x = coord.getX(), y = coord.getY();
-        
         if (!tryWall(coord))
         	return false;
         
@@ -143,14 +154,7 @@ public abstract class ABoard
     	
     	if (placedWalls.contains(new Coordinates(x, y)))
     	{
-    		int x2 = 0, y2 = 0;
-    		
-    		if (x % 2 == 0)
-    			x2 = 2;
-    		else
-    			y2 = 2;
-		
-		fillWall(coord, 0);
+            fillWall(coord, 0);
             
     		placedWalls.remove(new Coordinates(x, y));
     		return true;
@@ -262,7 +266,9 @@ public abstract class ABoard
      */
     public abstract Coordinates getSize();
     
-    /** Get the number of cells of the row ofthe board
+    /** Get the number of cells of the row of the board
+     * 
+     * @param row The number of the row
      * @return The x size of the board
      */
     public int getXSize(int row)

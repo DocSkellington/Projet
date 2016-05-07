@@ -19,12 +19,12 @@ import game.Game;
  * @author Gaetan Staquet
  *
  */
-public final class Case extends ACell
+public class Case extends ACell
 {
 	private static final long serialVersionUID = 4919930061923764584L;
-	private float alpha;
-	private Color player;
-	private Border border;
+	protected float alpha;
+	protected Color player;
+	protected Border border;
 	
 	/** Constructor */
     public Case()

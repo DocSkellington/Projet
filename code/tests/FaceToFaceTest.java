@@ -8,7 +8,7 @@ import players.*;
 
 public class FaceToFaceTest extends TestMain
 {
-	protected Board board;
+	protected RectangularBoard board;
 	protected APlayer[] players;
 	
 	@Before
@@ -17,7 +17,7 @@ public class FaceToFaceTest extends TestMain
 		players = new APlayer[2];
 		players[0] = new StrategyAI(0, 10, "0", new ShillerStrategy());
 		players[1] = new StrategyAI(1, 10, "1", new ShillerStrategy());
-		board = new Board(players, 9, 9);
+		board = new RectangularBoard(players, 9, 9);
 	}
 	
 	@After

@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 
-import board.Board;
+import board.ABoard;
 import board.Coordinates;
 import board.Wall;
 import players.Human;
@@ -18,14 +18,14 @@ import players.Human;
 public final class WallListener implements ActionListener
 {
 	private Human human;
-	private Board board;
+	private ABoard board;
 	
 	/** The constructor
 	 * 
 	 * @param human The human bound to this player
 	 * @param board The board
 	 */
-	public WallListener(Human human, Board board)
+	public WallListener(Human human, ABoard board)
 	{
 		this.human = human;
 		this.board = board;
