@@ -35,6 +35,7 @@ public class GameFrame extends JFrame
 	private ActionButton moveButton, wallButton, removeButton, skipButton;
 	private JLabel labels[];
 	private APlayer[] players;
+	private MenuBar menu;
 	
 	/** Constructor
 	 * 
@@ -117,6 +118,15 @@ public class GameFrame extends JFrame
         wallButton.setBorder(border);
         removeButton.setBorder(border);
         skipButton.setBorder(border);
+	}
+	
+	/** Enables/Disables the rewind button in the menu
+	 * 
+	 * @param enable Whether the rewind menu must be enabled or not
+	 */
+	public void setEnabledRewind(boolean enable)
+	{
+		menu.setEnabledRewind(enable);
 	}
 	
 	/** Gets a reference to the board panel
@@ -224,7 +234,8 @@ public class GameFrame extends JFrame
         
         right.add(labelsBox, BorderLayout.CENTER);
         
-        setJMenuBar(new MenuBar(game, this));
+        menu = new MenuBar(game, this);
+        setJMenuBar(menu);
         
         this.add(board);
         this.add(Box.createRigidArea(new Dimension(10, 0)));

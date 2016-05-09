@@ -128,7 +128,7 @@ public final class Game
 		// To be sure that the thread is finished
 		try
 		{
-			Thread.sleep(600);
+			Thread.sleep(1000);
 		}
 		catch(InterruptedException e)
 		{
@@ -136,13 +136,6 @@ public final class Game
 		}
 	
 		// We want to cancel every move done since the last time the current player played
-		// If the current player has not already played
-		if (roundList.size() < players.length)
-		{
-			// We simply start a new game
-			newGame(false);
-			return;
-		}
 		
 		// Delete the last rounds
 		int start = roundList.size() - 1 - players.length;
@@ -166,8 +159,10 @@ public final class Game
 	private void play()
 	{		
 		int numPlayers = players.length;
+		int numRounds = 0;
         int winner = -1; // -1 means no winner
-        
+
+		System.out.println(roundList);
         while (winner == -1)
         {
         	// Stop to play if the thread is interrupted
@@ -195,6 +190,9 @@ public final class Game
             // Next player
             curPlayer = (curPlayer + 1) % numPlayers;
             winner = board.hasWon();
+            numRounds++;
+            if (numRounds >= numPlayers)
+            	frame.setEnabledRewind(true);
         }
         
         board.update();
@@ -296,6 +294,7 @@ public final class Game
 		frame.repaint();
 		frame.revalidate();
 		
+		frame.setEnabledRewind(false);
     }
     
     private void texAndColorLoad()

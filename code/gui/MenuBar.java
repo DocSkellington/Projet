@@ -22,6 +22,7 @@ public class MenuBar extends JMenuBar
 	private JMenu fileMenu;
 	private JMenu helpMenu;
 	private JMenu gameMenu;
+	private JMenuItem rewindItem;
 	private JFrame frame;
 	
 	/** The constructor
@@ -41,6 +42,15 @@ public class MenuBar extends JMenuBar
 		fileMenuAdd(game);
 		gameMenuAdd(game);
 		helpMenuAdd();
+	}
+
+	/** Enables/Disables the rewind menu
+	 * 
+	 * @param enable Whether the rewind menu must be enabled or not
+	 */
+	public void setEnabledRewind(boolean enable)
+	{
+		rewindItem.setEnabled(enable);
 	}
 	
 	// Add the items in fileMenu
@@ -92,10 +102,10 @@ public class MenuBar extends JMenuBar
 	// Add the items in gameMenu
 	private void gameMenuAdd(final Game game)
 	{
-		JMenuItem rewind = new JMenuItem("Rewind");
-		gameMenu.add(rewind);
+		rewindItem = new JMenuItem("Rewind");
+		gameMenu.add(rewindItem);
 		
-		rewind.addActionListener(new ActionListener()
+		rewindItem.addActionListener(new ActionListener()
 				{
 					@Override
 					public void actionPerformed(ActionEvent e)

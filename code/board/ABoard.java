@@ -507,7 +507,7 @@ public abstract class ABoard
     	// If the player wants to move more than 4 cases away
     	if (Math.abs(coord.getX()-playerPos.getX()) > 4 || Math.abs(coord.getY()-playerPos.getY()) > 4)
     	{
-    		throw new RuntimeException("Target case is too far from original position");
+    		throw new RuntimeException("Target case is too far from original position " + playerPos + " " + coord);
     	}
     	playerPos.move(coord.getX()-playerPos.getX(), coord.getY()-playerPos.getY());
     	return true;

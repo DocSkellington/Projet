@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import players.APlayer;
+import players.Human;
 
 /** Manages all information about the hexagonal board.
  * 
@@ -17,6 +18,14 @@ public final class HexagonalBoard extends ABoard
 	public HexagonalBoard(APlayer[] players)
 	{
 		super(players);
+		
+		// TODO : REMOVE!
+		this.players = new APlayer[6];
+		for (int i = 0 ; i < 6 ; i++)
+		{
+			this.players[i] = new Human(i, 10, "Henry " + i);
+		}
+		
 		// 5 de côté
 		for (int i = 0 ; i <= 32 ; i++)
 		{
@@ -61,14 +70,21 @@ public final class HexagonalBoard extends ABoard
 			}
 			cells.add(row);
 		}
+
+        playersPositions = new Coordinates[this.players.length];
+        for (int i = 0 ; i < this.players.length ; i++)
+        {
+        	playersPositions[i] = startingPos(i);
+        	/*System.out.println(playersPositions[i]);
+        	Coordinates[] goals = goal(i);
+        	for (int j = 0 ; j < goals.length ; j++)
+        		System.out.println(goals[j]);
+        	System.out.println("\n");*/
+        }
+        
+        update();
 		
-		for (int i = 0 ; i < cells.size() ; i++)
-		{
-			for (int j = 0 ; j < cells.get(i).size() ; j++)
-				cells.get(i).get(j).setFilled(1);
-		}
-		
-		print();
+		//print();
 	}
 
 	@Override
@@ -94,22 +110,83 @@ public final class HexagonalBoard extends ABoard
 	@Override
 	public Coordinates getSize()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new Coordinates(5, 5);
 	}
 
 	@Override
 	public Coordinates startingPos(int playerNum)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (playerNum == 0)
+			return new Coordinates(0, 28);
+		else if (playerNum == 1)
+			return new Coordinates(8, 4);
+		else if (playerNum == 2)
+			return new Coordinates(0, 16);
+		else if (playerNum == 3)
+			return new Coordinates(16, 16);
+		else if (playerNum == 4)
+			return new Coordinates(0, 4);
+		else
+			return new Coordinates(8, 28);
 	}
 
 	@Override
 	public Coordinates[] goal(int playerNum)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (playerNum == 0)
+		{
+			Coordinates[] coords = new Coordinates[5];
+			for (int i = 0 ; i < 5 ; i++)
+			{
+				coords[i] = new Coordinates(this.getXSize(2*i)-1, 2*i);
+			}
+			return coords;
+		}
+		else if (playerNum == 1)
+		{
+			Coordinates[] coords = new Coordinates[5];
+			for (int i = 0 ; i < 5 ; i++)
+			{
+				coords[i] = new Coordinates(0, 24 + 2*i);
+			}
+			return coords;
+		}
+		else if (playerNum == 2)
+		{
+			Coordinates[] coords = new Coordinates[5];
+			for (int i = 0 ; i < 5 ; i++)
+			{
+				coords[i] = new Coordinates(this.getXSize(8 + 4*i)-1, 8 + 4*i);
+			}
+			return coords;
+		}
+		else if (playerNum == 3)
+		{
+			Coordinates[] coords = new Coordinates[5];
+			for (int i = 0 ; i < 5 ; i++)
+			{
+				coords[i] = new Coordinates(0, 8 + 4*i);
+			}
+			return coords;
+		}
+		else if (playerNum == 4)
+		{
+			Coordinates[] coords = new Coordinates[5];
+			for (int i = 0 ; i < 5 ; i++)
+			{
+				coords[i] = new Coordinates(this.getXSize(24 + 2*i)-1, 24 + 2*i);
+			}
+			return coords;
+		}
+		else
+		{
+			Coordinates[] coords = new Coordinates[5];
+			for (int i = 0 ; i < 5 ; i++)
+			{
+				coords[i] = new Coordinates(0, 2*i);
+			}
+			return coords;
+		}
 	}
 
 	@Override
