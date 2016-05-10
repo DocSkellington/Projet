@@ -89,7 +89,7 @@ public class GameFrame extends JFrame
 		skipButton.changeColor(curPlayer);
 		
 		// Check if the skip button must be activated
-		if (players[curPlayer].possibleMoves(board, true).length == 0 && players[curPlayer].getWallCounter() == 0)
+		if (board.possibleMoves(curPlayer, true).length == 0 && players[curPlayer].getWallCounter() == 0)
 			skipButton.setEnabled(true);
 		else
 			skipButton.setEnabled(false);

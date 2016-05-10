@@ -96,9 +96,13 @@ public final class ShillerStrategy implements IStrategy
 	{
 		Path bestPath = null;
 		if (numRounds == 0)
+		{
 			bestPath =  board.findPath(numPlayer, false);
+		}
 		else
+		{
 			bestPath = board.findPath(numPlayer, true);
+		}
 		Coordinates coord = null;
 		// If there isn't any available path right now, we take the first possible move
 		if (bestPath == null)
@@ -108,7 +112,9 @@ public final class ShillerStrategy implements IStrategy
 			coord = possibleMoves[0];
 		}
 		else
+		{
 			coord = new Coordinates(bestPath.getX(1), bestPath.getY(1));
+		}
 		return new Round(Type.MOVE, coord);
 	}
 	
@@ -163,7 +169,7 @@ public final class ShillerStrategy implements IStrategy
 				return true;
 			return false;
 		}
-		else if (coord.getY() == board.getYSize()-1)
+		else if (coord.getY() == board.getYSize(0)-1)
 		{
 			if (board.filled(new Coordinates(coord.getX() - 1, coord.getY())) == 1)
 			{

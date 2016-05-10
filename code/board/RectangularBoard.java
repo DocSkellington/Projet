@@ -5,6 +5,7 @@ import players.Human;
 
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 import javax.swing.JPanel;
 
@@ -151,9 +152,103 @@ public class RectangularBoard extends ABoard
 	}
     
     @Override
+    public Coordinates[] possibleMoves(int playerNum, boolean withPlayer, Coordinates pos)
+    {
+    	TreeSet<Coordinates> coord = new TreeSet<Coordinates>();
+		
+		for (int i = -2 ; i <= 2 ; i += 2)
+		{
+			for (int j = -2 ; j <= 2 ; j += 2)
+			{
+				if (i == 0 && j == 0)
+					continue;
+				if (Math.abs(i) == 2 && Math.abs(j) == 2)
+					continue;
+				// Checking diagonals or jumping
+				// First : x coordinate
+				if(filled(pos.getX()+i, pos.getY()) != 0 && i != 0 && withPlayer)
+				{
+				    // If there isn't a wall on the way
+				    if (filled(pos.getX()+i/2, pos.getY()) == 0)
+					{
+				        int x = pos.getX() + i, y = pos.getY();
+					    // Can we jump over the other player ?
+					    if(!blocked(x, y, x + i, y, withPlayer))
+					    {
+						    // Yes
+						    coord.add(new Coordinates(x+i, y));
+					    }
+					    else
+					    {
+						    // No
+						    // Up
+						    if(!blocked(x, y, x, y-2, withPlayer))
+						    {
+							    coord.add(new Coordinates(x, y-2));
+						    }
+						    // Down
+						    if(!blocked(x, y, x, y+2, withPlayer))
+						    {
+							    coord.add(new Coordinates(x, y+2));
+						    }
+					    }
+				    }
+				}
+				else if (pos.getX() + i != pos.getX())
+				{
+					if(!blocked(pos.getX(), pos.getY(), pos.getX()+i, pos.getY(), withPlayer))
+						coord.add(new Coordinates(pos.getX() + i, pos.getY()));
+				}
+				// y coordinate
+				if(filled(pos.getX(), pos.getY()+j) != 0 && j != 0 && withPlayer)
+				{
+				    // If there isn't any wall on the way
+				    if (filled(pos.getX(), pos.getY()+j/2) == 0)
+					{
+					    int x = pos.getX(), y = pos.getY() + j;
+					    // Can we jump over it ?
+					    if(!blocked(x, y, x, y + j, withPlayer))
+					    {
+						    // Yes
+						    coord.add(new Coordinates(x, y + j));
+					    }
+					    else
+					    {
+						    // No
+						    // Left
+						    if(!blocked(x, y, x - 2, y, withPlayer))
+						    {
+							    coord.add(new Coordinates(x - 2, y));
+						    }
+						    // Right
+						    if(!blocked(x, y, x + 2, y, withPlayer))
+						    {
+							    coord.add(new Coordinates(x + 2, y));
+						    }
+					    }
+				    }
+			    }
+			    else if (pos.getY() + j != pos.getY())
+			    {
+				    if (!blocked(pos.getX(), pos.getY(), pos.getX(), pos.getY() + j, withPlayer))
+					    coord.add(new Coordinates(pos.getX(), pos.getY() + j));
+			    }
+		    }
+		}
+		
+		return coord.toArray(new Coordinates[0]);
+    }
+    
+    @Override
     public Coordinates getSize()
     {
     	return new Coordinates((int)Math.round(cells.get(0).size()/2.), (int)Math.round(cells.size()/2.));
+    }
+    
+    @Override
+    public int getYSize(int column)
+    {
+        return cells.size();
     }
     
     @Override

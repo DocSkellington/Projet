@@ -216,6 +216,26 @@ public abstract class ABoard
     	}
     	return path;
     }
+    
+    /** Gives the possible moves of this player for their current position
+	 * 
+	 * @param board The board
+	 * @param withPlayer If we consider other player(s) or not
+	 * @return An HashSet of the possible coordinates
+	 */
+	public Coordinates[] possibleMoves(int playerNum, boolean withPlayer)
+	{
+		return possibleMoves(playerNum, withPlayer, getCoordinates(playerNum));
+	}
+    
+    /** Gives the possible moves of the number designates by the given number for a precise position
+	 * 
+	 * @param playerNum The number of the player
+	 * @param withPlayer If we check with other players or not
+	 * @param pos The position we look at
+	 * @return The (relative) coordinates of the accessible cases
+	 */
+	public abstract Coordinates[] possibleMoves(int playerNum, boolean withPlayer, Coordinates pos);
 
     /** Return the content of a cell
      * @param x The x coordinate of a cell
@@ -277,12 +297,11 @@ public abstract class ABoard
     }
 
     /** Get the y size of the board
+     * 
+     * @param column The index of the column
      * @return The y size of the board
      */
-    public int getYSize()
-    {
-        return cells.size();
-    }
+    public abstract int getYSize(int column);
 
     /** Get the number of players
      * 
@@ -347,6 +366,7 @@ public abstract class ABoard
     {
     	if (Math.abs(sx - tx) > 2 || Math.abs(sy - ty) > 2)
     	{
+    		System.err.println("Too far");
     		throw new RuntimeException("Too far");
     	}
     	
@@ -421,10 +441,10 @@ public abstract class ABoard
     /** A button dis/enabler
      * 
      * @param enabled Whether we want to enable or disable
-     * @param coord The coordinates of the buttons to dis/enable
      */
-    public void setEnabledButtons(boolean enabled, Coordinates[] coord)
+    public void enablePossibleMoves(int numPlayer, boolean enabled)
     {
+    	Coordinates[] coord = possibleMoves(numPlayer, true);
     	for (int i = 0 ; i < coord.length ; i++)
     	{
     		cells.get(coord[i].getY()).get(coord[i].getX()).setEnabled(enabled);

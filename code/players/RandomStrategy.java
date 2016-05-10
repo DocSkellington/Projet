@@ -65,13 +65,13 @@ public final class RandomStrategy implements IStrategy
 			return new Round(Type.NONE, new Coordinates(-1, -1));
 		
 		int x = randgen.nextInt(board.getXSize(0));
-		int y = randgen.nextInt(board.getYSize());
+		int y = randgen.nextInt(board.getYSize(0));
 		int tries = 50;
 		
 		while (!board.canSetWall(new Coordinates(x,y)) && tries > 0)
 		{
 			x = randgen.nextInt(board.getXSize(0));
-			y = randgen.nextInt(board.getYSize());
+			y = randgen.nextInt(board.getYSize(0));
 			tries--;
 		}
 		if (tries > 0)

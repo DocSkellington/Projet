@@ -118,10 +118,10 @@ public abstract class APlayer
 	 * @param withPlayer If we consider other player(s) or not
 	 * @return An HashSet of the possible coordinates
 	 */
-	public Coordinates[] possibleMoves(ABoard board, boolean withPlayer)
+	/*public Coordinates[] possibleMoves(ABoard board, boolean withPlayer)
 	{
 		return possibleMoves(board, withPlayer, board.getCoordinates(num));
-	}
+	}*/
 	
 	/** Gets the number of available walls
 	 * 
@@ -148,7 +148,7 @@ public abstract class APlayer
 	 * @param pos The position we look at
 	 * @return The (relative) coordinates of the accessible cases
 	 */
-	public Coordinates[] possibleMoves(ABoard board, boolean withPlayer, Coordinates pos)
+	/*public Coordinates[] possibleMoves(ABoard board, boolean withPlayer, Coordinates pos)
 	{
 		TreeSet<Coordinates> coord = new TreeSet<Coordinates>();
 		
@@ -233,7 +233,7 @@ public abstract class APlayer
 		}
 		
 		return coord.toArray(new Coordinates[0]);
-	}
+	}*/
 	
 	/** Effectively plays
 	 * 

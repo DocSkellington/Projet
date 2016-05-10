@@ -43,7 +43,7 @@ public class AStarPathFinder
         this.board = board;
         
         // TODO: Hexa
-        int xSize = board.getXSize(0), ySize = board.getYSize();
+        int xSize = board.getXSize(0), ySize = board.getYSize(0);
         
         nodes = new Node[xSize][ySize];
         for (int x = 0 ; x < xSize ; x++)
@@ -86,7 +86,7 @@ public class AStarPathFinder
             open.remove(current);
             closed.add(current);
             
-            Coordinates[] neighbours = player.possibleMoves(board, withPlayer, coord);
+            Coordinates[] neighbours = board.possibleMoves(player.getNum(), withPlayer, coord);
             
             for (Coordinates neighbour : neighbours)
             {

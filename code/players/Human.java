@@ -42,8 +42,7 @@ public final class Human extends APlayer
 	public void move(ABoard board)
 	{
 		board.disableAll();
-		Coordinates[] coord = possibleMoves(board, true);
-		board.setEnabledButtons(true, coord);
+		board.enablePossibleMoves(num, true);
 	}
 	
 	/** Activate the possible walls

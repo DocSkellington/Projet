@@ -39,8 +39,7 @@ public class FaceToFaceTest extends TestMain
 		doPrint("The board is : \n");
 		printBoard(board);
 		// Player 1
-		Coordinates[] coordinates = players[0].possibleMoves(board, true);
-		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(coordinates));
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(0, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 4)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 8)));
@@ -57,7 +56,7 @@ public class FaceToFaceTest extends TestMain
 		}
 		
 		// Player 2
-		coord = new ArrayList<Coordinates>(Arrays.asList(players[1].possibleMoves(board, true)));
+		coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(1, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 4)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 6)));
@@ -89,7 +88,7 @@ public class FaceToFaceTest extends TestMain
 		printBoard(board);
 
 		// Player 1
-		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(players[0].possibleMoves(board, true)));
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(0, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 8)));
@@ -106,7 +105,7 @@ public class FaceToFaceTest extends TestMain
 		}
 		
 		// Player 2
-		coord = new ArrayList<Coordinates>(Arrays.asList(players[1].possibleMoves(board, true)));
+		coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(1, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 8)));
@@ -139,7 +138,7 @@ public class FaceToFaceTest extends TestMain
 		printBoard(board);
 
 		// Player 1
-		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(players[0].possibleMoves(board, true)));
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(0, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 8)));
@@ -156,7 +155,7 @@ public class FaceToFaceTest extends TestMain
 		}
 		
 		// Player 2
-		coord = new ArrayList<Coordinates>(Arrays.asList(players[1].possibleMoves(board, true)));
+		coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(1, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 8)));
@@ -190,7 +189,7 @@ public class FaceToFaceTest extends TestMain
 		printBoard(board);
 
 		// Player 1
-		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(players[0].possibleMoves(board, true)));
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(0, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 6)));
@@ -207,7 +206,7 @@ public class FaceToFaceTest extends TestMain
 		}
 		
 		// Player 2
-		coord = new ArrayList<Coordinates>(Arrays.asList(players[1].possibleMoves(board, true)));
+		coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(1, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 6)));
@@ -241,7 +240,7 @@ public class FaceToFaceTest extends TestMain
 		printBoard(board);
 
 		// Player 1
-		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(players[0].possibleMoves(board, true)));
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(0, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 8)));
 		for (int i = 0 ; i < 16 ; i++)
@@ -256,7 +255,7 @@ public class FaceToFaceTest extends TestMain
 		}
 		
 		// Player 2
-		coord = new ArrayList<Coordinates>(Arrays.asList(players[1].possibleMoves(board, true)));
+		coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(1, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 6)));
 		Assert.assertTrue(coord.contains(new Coordinates(6, 8)));
 		for (int i = 0 ; i < 16 ; i++)
@@ -289,7 +288,7 @@ public class FaceToFaceTest extends TestMain
 		printBoard(board);
 
 		// Player 1
-		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(players[0].possibleMoves(board, true)));
+		ArrayList<Coordinates> coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(0, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 10)));
 		for (int i = 0 ; i < 16 ; i++)
@@ -304,7 +303,7 @@ public class FaceToFaceTest extends TestMain
 		}
 		
 		// Player 2
-		coord = new ArrayList<Coordinates>(Arrays.asList(players[1].possibleMoves(board, true)));
+		coord = new ArrayList<Coordinates>(Arrays.asList(board.possibleMoves(1, true)));
 		Assert.assertTrue(coord.contains(new Coordinates(8, 10)));
 		Assert.assertTrue(coord.contains(new Coordinates(10, 10)));
 		for (int i = 0 ; i < 16 ; i++)
