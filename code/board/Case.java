@@ -72,21 +72,6 @@ public class Case extends ACell
     }
     
     @Override
-    public void processMouseEvent(MouseEvent e)
-    {
-    	super.processMouseEvent(e);
-    	if(e.getID() == MouseEvent.MOUSE_ENTERED)
-    	{
-    		alpha = 0.55f;
-    	}
-    	else if (e.getID() == MouseEvent.MOUSE_EXITED)
-    	{
-    		alpha = 0.3f;
-    	}
-    	repaint();
-    }
-    
-    @Override
     public void repaint()
     {
     	super.repaint();
@@ -94,7 +79,7 @@ public class Case extends ACell
     }
     
     @Override
-    public void paintComponent(Graphics g)
+    protected void paintComponent(Graphics g)
     {
     	super.paintComponent(g);
     	Graphics2D g2D = (Graphics2D) g;
@@ -118,5 +103,20 @@ public class Case extends ACell
             g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         	g2D.fillOval(1, 1, this.getWidth()-2, this.getHeight()-2);
     	}
+    }
+    
+    @Override
+    protected void processMouseEvent(MouseEvent e)
+    {
+    	super.processMouseEvent(e);
+    	if(e.getID() == MouseEvent.MOUSE_ENTERED)
+    	{
+    		alpha = 0.55f;
+    	}
+    	else if (e.getID() == MouseEvent.MOUSE_EXITED)
+    	{
+    		alpha = 0.3f;
+    	}
+    	repaint();
     }
 }

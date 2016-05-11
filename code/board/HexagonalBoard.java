@@ -1,10 +1,18 @@
 package board;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import gui.CaseListener;
+import gui.WallListener;
 import players.APlayer;
 import players.Human;
 
@@ -16,8 +24,6 @@ import players.Human;
  */
 public final class HexagonalBoard extends ABoard
 {
-	private final int maxX = 17, maxY = 32;
-	
 	public HexagonalBoard(APlayer[] players)
 	{
 		super(players);
@@ -30,15 +36,15 @@ public final class HexagonalBoard extends ABoard
 		}
 		
 		// 5 de côté
-		for (int i = 0 ; i <= maxY ; i++)
+		for (int i = 0 ; i <= 32 ; i++)
 		{
 			ArrayList<ACell> row = new ArrayList<ACell>();
 			// Rows starting by a wall (and with cases)
 			if (i % 4 == 2 && (i >= 8 && i <=24))
 			{
-				for (int j = 0 ; j < maxX ; j++)
+				for (int j = 0 ; j < 17 ; j++)
 				{
-					if (j % 4 == 3)
+					if (j % 4 == 2)
 						row.add(new HexagonalCase());
 					else
 						row.add(new HexagonalWall());
@@ -47,10 +53,10 @@ public final class HexagonalBoard extends ABoard
 			// Cases and walls
 			else if (i % 2 == 0)
 			{
-				int columnSize = maxY;
+				int columnSize = 17;
 				if (0 <= i && i <= 6)
 					columnSize = 2*i + 1;	
-				else if (26 <= i && i <= maxX)
+				else if (26 <= i && i <= 32)
 					columnSize = 2*(33 - i)-1;
 				for (int j = 0 ; j < columnSize ; j++)
 				{
@@ -66,35 +72,27 @@ public final class HexagonalBoard extends ABoard
 				int columnSize = 8;
 				if (1 <= i && i < 9)
 					columnSize = i + 1;
-				else if (25 <= i && i <= 31)
-					columnSize = maxX - i + 1;
+				/*else if (25 <= i && i <= 31)
+					columnSize = i - 30;*/
+				else if (27 == i)
+					columnSize = 6;
+				else if (29 == i)
+					columnSize = 4;
+				else if (i == 31)
+					columnSize = 2;
 				for (int j = 0 ; j < columnSize ; j++)
 					row.add(new HexagonalWall());
 			}
 			cells.add(row);
 		}
 		
-		Coordinates[] neighbours = getNeighbours(new Coordinates(0, 24));
-    	for (int i = 0 ; i < neighbours.length ; i++)
-    	{
-    		System.err.println(neighbours[i]);
-    	}
-    	
         playersPositions = new Coordinates[this.players.length];
         for (int i = 0 ; i < this.players.length ; i++)
         {
         	playersPositions[i] = startingPos(i);
-        	Coordinates[] coord = possibleMoves(i, true);
-        	/*System.out.println(playersPositions[i]);
-        	Coordinates[] goals = goal(i);
-        	for (int j = 0 ; j < goals.length ; j++)
-        		System.out.println(goals[j]);
-        	System.out.println("\n");*/
         }
         
         update();
-		
-		//print();
 	}
 
 	@Override
@@ -113,8 +111,82 @@ public final class HexagonalBoard extends ABoard
 	@Override
 	public void fill(JPanel panel)
 	{
-		// TODO Auto-generated method stub
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridx = c.gridy = 0;
+		c.fill = GridBagConstraints.BOTH;
 
+		Coordinates numCases = getSize();
+		c.ipadx = c.ipady = 100;
+		panel.add(cells.get(0).get(0), c);
+		cells.get(0).get(0).setEnabled(true);
+		cells.get(0).get(0).addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						System.out.println("Clicked");
+					}
+				});
+		
+		/*for (int i = 0 ; i < cells.size() ; i++)
+		{
+			for (int j = 0 ; j < cells.get(0).size() ; j++)
+			{
+				c.gridx = j;
+				c.gridy = i;
+				if (i % 2 == 0 && j % 2 == 0)
+				{
+					c.ipadx = 630 / numCases.getX();
+					c.ipady = 594 / numCases.getY();
+				}
+				else if (i % 2 == 1 && j % 2 == 0)
+				{
+					c.ipadx = 630 / numCases.getX();
+					c.ipady = 153 / numCases.getY();
+				}
+				else if (i % 2 == 0 && j % 2 == 1)
+				{
+					c.ipadx = 153 / numCases.getX();
+					c.ipady = 594 / numCases.getY();
+				}
+				else
+				{
+					c.ipadx = 153 / numCases.getX();
+					c.ipady = 153 / numCases.getY();
+				}
+				
+				for (APlayer player : players)
+				{
+					if (player instanceof Human)
+					{
+						final Human human = (Human) player;
+						
+						// We set the coordinates of the cell to be able to get them when the button is pressed
+						cells.get(i).get(j).setActionCommand("(" + j + ", " + i + ")");
+						
+						// Case
+						if (i % 2 == 0 && j % 2 == 0)
+						{
+							cells.get(i).get(j).addActionListener(new CaseListener(human, this));
+						}
+						// Walls
+						else
+						{
+							if (i % 2 != 1 || j % 2 != 1)
+							{
+								cells.get(i).get(j).addActionListener(new WallListener(human, this));
+							}
+						}
+					}
+				}
+				// We deactivate the cell
+				cells.get(i).get(j).setEnabled(false);
+				panel.add(cells.get(i).get(j), c);
+			}
+		}*/
+		
+		panel.repaint();
+		panel.revalidate();
 	}
 
     @Override
@@ -124,81 +196,34 @@ public final class HexagonalBoard extends ABoard
     	int x = pos.getX(), y = pos.getY();
     	
     	Coordinates[] neighbours = getNeighbours(pos);
-    	
     	for (int i = 0 ; i < neighbours.length ; i++)
     	{
-			int dx = x - neighbours[i].getX();
-			int dy = y - neighbours[i].getY();
+			int dx = neighbours[i].getX() - x;
+			int dy = neighbours[i].getY() - y;
 			// There is no wall between the two cases
-			if (filled(x + dx/2, y + dy/2) == 0)
+			if (filled(getWall(pos, neighbours[i])) == 0)
 			{
 				// If the case is not empty (and if we consider the other players)
-				if (filled(x + dx, y + dy) != 0 && withPlayer)
+				if (filled(neighbours[i]) != 0 && withPlayer)
 				{
 					// If the case beyond the neighbour is not empty or if there is a wall between them
 					if (blocked(x+dx, y+dy, x+2*dx, y+2*dy, true))
 					{
-						// TODO
+						Coordinates[] neigh = getNeighbours(neighbours[i]);
+						for (int j = 0 ; j < neigh.length ; j++)
+						{
+							if (!blocked(neighbours[i], neighbours[j], true))
+								coord.add(neigh[j]);
+						}
 					}
-				}
-			}
-    		/*if (!blocked(pos, neighbours[i], withPlayer))
-    			coord.add(neighbours[i]);
-    		else
-    		{
-    			
-    		}*/
-    	}
-    	
-    	/*for (int i = -2 ; i <= 2 ; i += 2)
-		{
-			for (int j = -2 ; j <= 2 ; j += 2)
-			{
-				if (i == 0 && j == 0)
-					continue;
-
-				System.err.println(i + " " + j);
-				if (!blocked(x, y, x+i, y+j, withPlayer))
-				{
-					System.err.println(new Coordinates(x+i, y+j));
-					coord.add(new Coordinates(x+i, y+j));
 				}
 				else
 				{
-					System.err.println("Hello");
-					if (filled(x+i, y+j) != 0 && withPlayer)
-					{
-						System.err.println("Hello2" + " " + new Coordinates(x+i, y+j));
-						// If the case is empty and reachable
-						if (!blocked(x+i, y+j, x+2*i, y+j, true))
-						{
-							System.err.println("Not blocked");
-							coord.add(new Coordinates(x+2*i, y+j));
-						}
-						// In this case, we must check if we can move diagonally
-						else
-						{
-							System.err.println("Blocked" + " " + new Coordinates(x+i, y+j));
-							if (!blocked(x+i, y+j, x+i, y-2+j, true))
-							{
-								System.err.println("Blocked2");
-								coord.add(new Coordinates(x+i, y-2+j));
-							}
-							System.err.println("Finish");
-							if (!blocked(x+i, y+j, x+i, y+2+j, true))
-							{
-								System.err.println("Blocked3");
-								coord.add(new Coordinates(x+i, y+2+j));
-							}
-						}
-					}
-					System.err.println("Bye");
+					coord.add(neighbours[i]);
 				}
-				
-		    }
-		}*/
+			}
+    	}
     	
-    	//System.err.println(coord);
     	return coord.toArray(new Coordinates[0]);
     }
     
@@ -208,7 +233,7 @@ public final class HexagonalBoard extends ABoard
 		return new Coordinates(5, 5);
 	}
 
-	@Override
+	/*@Override
 	public int getYSize(int column)
 	{
 		switch(column)
@@ -242,7 +267,7 @@ public final class HexagonalBoard extends ABoard
 		default:
 				return 0;
 		}
-	}
+	}*/
 	
 	@Override
 	public Coordinates startingPos(int playerNum)
@@ -361,6 +386,81 @@ public final class HexagonalBoard extends ABoard
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	protected Coordinates getWall(Coordinates start, Coordinates target)
+	{
+		if (start.getX() == target.getX() && start.getY() == target.getY())
+			throw new RuntimeException("Invalid coordinates: start and target are the same");
+		
+		int dy = target.getY() - start.getY();
+		
+		if (start.getY() == 0)
+		{
+			if (target.getY() == 2)
+				return new Coordinates(target.getX()/4, 1);
+			else if (target.getY() == 4)
+				return new Coordinates(2, 2);
+		}
+		else if (start.getY() == 2)
+		{
+			if (target.getY() == 0)
+				return new Coordinates(start.getX()/4, 1);
+			else if (target.getY() == 4)
+				return new Coordinates(start.getX()/4 + target.getX()/4, 3);
+			else if (target.getY() == 6)
+				return new Coordinates(start.getX() + 2, 6);
+		}
+		else if (start.getY() == 4)
+		{
+			if (target.getY() == 0)
+				return new Coordinates(2, 4);
+			else if (target.getY() == 2)
+				return new Coordinates(start.getX()/4 + target.getX()/4, 3);
+			else if (target.getY() == 6)
+				return new Coordinates(start.getX()/4 + target.getX()/4, 5);
+			else if (target.getY() == 8)
+				return new Coordinates(start.getX()+2, 6);
+		}
+		else if (start.getY() >= 6 && start.getY() < 28)
+		{
+			if (target.getY() == start.getY()-4)
+			{
+				return new Coordinates(start.getX(), start.getY()+dy/2);
+			}
+			else if (target.getY() == start.getY()-2 || target.getY() == start.getY()+2)
+				return new Coordinates(start.getX()/4 + target.getX()/4, start.getY()+dy/2);
+			else if (target.getY() == start.getY()+4)
+				return new Coordinates(target.getX(), start.getY()+dy/2);
+		}
+		else if (start.getY() == 28)
+		{
+			if (target.getY() == 32)
+				return new Coordinates(2, 28);
+			else if (target.getY() == 30 || target.getY() == 26)
+				return new Coordinates(start.getX()/4 + target.getX()/4, start.getY()+dy/2);
+			else if (target.getY() == 24)
+				return new Coordinates(start.getX()+2, 26);
+		}
+		else if (start.getY() == 30)
+		{
+			if (target.getY() == 32)
+				return new Coordinates(start.getX()/4, 31);
+			else if (target.getY() == 28)
+				return new Coordinates(start.getX()/2 + target.getX()/4, 29);
+			else if (target.getY() == 26)
+				return new Coordinates(start.getX() + 2, 28);
+		}
+		else if (start.getY() == 32)
+		{
+			if (target.getY() == 30)
+				return new Coordinates(target.getX()/4, 31);
+			else if (target.getY() == 28)
+				return new Coordinates(2, 30);
+		}
+		
+		return null;
+	}
 
 	// Gets the coordinates of the direct cases neighbours of a case
 	private Coordinates[] getNeighbours(Coordinates coord)
@@ -421,7 +521,7 @@ public final class HexagonalBoard extends ABoard
 					neighbours.add(new Coordinates(x+4, y-2));
 			}
 		}
-		if (y + 2 < maxY)
+		if (y + 2 < 32)
 		{
 			if (y < 8)
 			{
@@ -445,9 +545,8 @@ public final class HexagonalBoard extends ABoard
 					neighbours.add(new Coordinates(x, y+2));
 			}
 		}
-		if (y + 4 < maxY)
+		if (y + 4 < 32)
 		{
-			System.err.println("Hello");
 			if (y == 28)
 			{
 				if (x == 4)
@@ -468,10 +567,6 @@ public final class HexagonalBoard extends ABoard
 					neighbours.add(new Coordinates(x-4, y+4));
 			}
 		}
-		
-		
-		System.err.println(neighbours);
-		
 		
 		return neighbours.toArray(new Coordinates[0]);
 	}

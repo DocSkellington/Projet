@@ -67,36 +67,6 @@ public class Wall extends ACell
     }
     
     @Override
-    public void processMouseEvent(MouseEvent e)
-    {
-    	if (this.isEnabled())
-    	{
-    		super.processMouseEvent(e);
-	    	ActionEvent a = null;
-	    	if (e.getID() == MouseEvent.MOUSE_ENTERED)
-	    	{
-	    		// If the mouse has entered the wall cell, we throw an event to light on a wall
-	    		String command = this.getActionCommand();
-	    		a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "l " + command);
-	    	}
-	    	else if (e.getID() == MouseEvent.MOUSE_EXITED)
-	    	{
-	    		// If the mouse has exited the wall cell, we throw an event to switch off the wall
-	    		String command = this.getActionCommand();
-	    		a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "u " + command);
-	    	}
-	    	
-	    	if (a != null)
-	    	{
-	    		for (ActionListener al : getActionListeners())
-	    		{
-	    			al.actionPerformed(a);
-	    		}
-	    	}
-    	}
-    }
-    
-    @Override
     public Wall clone()
     {
     	return new Wall(filled);
@@ -138,7 +108,7 @@ public class Wall extends ACell
     }
     
     @Override
-    public void paintComponent(Graphics g)
+    protected void paintComponent(Graphics g)
     {
     	super.paintComponent(g);
     	
@@ -147,5 +117,35 @@ public class Wall extends ACell
 		g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
     	g2D.drawImage(img, 0, 0, null);
     	
+    }
+
+    @Override
+    protected void processMouseEvent(MouseEvent e)
+    {
+    	if (this.isEnabled())
+    	{
+    		super.processMouseEvent(e);
+	    	ActionEvent a = null;
+	    	if (e.getID() == MouseEvent.MOUSE_ENTERED)
+	    	{
+	    		// If the mouse has entered the wall cell, we throw an event to light on a wall
+	    		String command = this.getActionCommand();
+	    		a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "l " + command);
+	    	}
+	    	else if (e.getID() == MouseEvent.MOUSE_EXITED)
+	    	{
+	    		// If the mouse has exited the wall cell, we throw an event to switch off the wall
+	    		String command = this.getActionCommand();
+	    		a = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "u " + command);
+	    	}
+	    	
+	    	if (a != null)
+	    	{
+	    		for (ActionListener al : getActionListeners())
+	    		{
+	    			al.actionPerformed(a);
+	    		}
+	    	}
+    	}
     }
 }

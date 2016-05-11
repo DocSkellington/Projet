@@ -244,10 +244,13 @@ public abstract class ABoard
      */
     public int filled(int x, int y)
     {
-    	if(x >= 0 && x < cells.get(0).size() && y >= 0 && y < cells.size())
-        {
-        	return cells.get(y).get(x).filled();
-        }
+    	if (x >= 0 && y >= 0)
+    	{
+    		if(y < getYSize() && x < getXSize(y))
+	        {
+	        	return cells.get(y).get(x).filled();
+	        }
+    	}
         return -1;
     }
     
@@ -301,7 +304,10 @@ public abstract class ABoard
      * @param column The index of the column
      * @return The y size of the board
      */
-    public abstract int getYSize(int column);
+    public int getYSize()
+    {
+    	return cells.size();
+    }
 
     /** Get the number of players
      * 
@@ -371,7 +377,8 @@ public abstract class ABoard
     	}
     	
     	// If there isn't any wall and if the target case is empty (only considered if withPlayer == true), we can move
-    	if (filled((sx+tx)/2, (sy+ty)/2) != 0 || (filled(tx, ty) != 0 && withPlayer))
+    	//if (filled((sx+tx)/2, (sy+ty)/2) != 0 || (filled(tx, ty) != 0 && withPlayer))
+    	if (filled(getWall(new Coordinates(sx, sy), new Coordinates(tx, ty))) != 0 || (filled(tx, ty) != 0 && withPlayer))
 		{
     		return true;
 		}
@@ -557,4 +564,7 @@ public abstract class ABoard
     protected abstract Coordinates shift(Coordinates coord);
     // Shift coordinates to right/up
     protected abstract Coordinates removeShift(Coordinates coord);
+    
+    // Returns the coordinates of the wall between the two cases
+    protected abstract Coordinates getWall(Coordinates start, Coordinates target);
 }

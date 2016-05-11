@@ -246,12 +246,6 @@ public class RectangularBoard extends ABoard
     }
     
     @Override
-    public int getYSize(int column)
-    {
-        return cells.size();
-    }
-    
-    @Override
     public Coordinates startingPos(int playerNum)
     {
 		if (playerNum == 0)
@@ -584,6 +578,12 @@ public class RectangularBoard extends ABoard
 			}
 		}
     	return newCoord;
+    }
+    
+    @Override
+    protected Coordinates getWall(Coordinates start, Coordinates target)
+    {
+    	return new Coordinates((start.getX() + target.getX())/2, (start.getY() + target.getY())/2);
     }
     
     /** Returns the maximum number of players for this board

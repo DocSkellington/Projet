@@ -61,14 +61,14 @@ public abstract class ACell extends JButton implements Cloneable
     }
     
     @Override
-    public void paintComponent(Graphics g)
-    {
-    	super.paintComponent(g);
-    }
-    
-    @Override
     public abstract ACell clone();
     
     @Override
     public abstract String toString();
+    
+    @Override
+    protected void paintComponent(Graphics g)
+    {
+    	super.paintComponent(g);
+    }
 }

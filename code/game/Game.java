@@ -162,7 +162,6 @@ public final class Game
 		int numRounds = 0;
         int winner = -1; // -1 means no winner
 
-		System.out.println(roundList);
         while (winner == -1)
         {
         	// Stop to play if the thread is interrupted

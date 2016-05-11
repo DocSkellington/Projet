@@ -169,7 +169,7 @@ public final class ShillerStrategy implements IStrategy
 				return true;
 			return false;
 		}
-		else if (coord.getY() == board.getYSize(0)-1)
+		else if (coord.getY() == board.getYSize()-1)
 		{
 			if (board.filled(new Coordinates(coord.getX() - 1, coord.getY())) == 1)
 			{

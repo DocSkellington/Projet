@@ -130,7 +130,7 @@ public class WallTest extends TestMain
 	@Test
 	public void shiftTestRightEdge()
 	{
-		for (int i = 1 ; i < board.getYSize(0) ; i += 2)
+		for (int i = 1 ; i < board.getYSize() ; i += 2)
 		{
 			Assert.assertTrue(board.setWall(new Coordinates(16, i)));
 		}
