@@ -264,13 +264,13 @@ public class RectangularBoard extends ABoard
 		{
 			if ((cells.size() / 2) % 2 == 0)
 				return new Coordinates(0, cells.size()/2);
-			return new Coordinates(0, cells.size() - 1);
+			return new Coordinates(0, cells.size() / 2 - 1);
 		}
 		else
 		{
 			if ((cells.size() / 2) % 2 == 0)
 				return new Coordinates(cells.get(0).size() - 1, cells.size()/2);
-			return new Coordinates(cells.get(0).size() - 1, cells.size() - 1);
+			return new Coordinates(cells.get(0).size() - 1, cells.size() / 2 - 1);
 		}
     }
 
