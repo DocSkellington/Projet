@@ -161,13 +161,13 @@ public final class Game
 		int numPlayers = players.length;
 		int numRounds = 0;
         int winner = -1; // -1 means no winner
-
+        
         while (winner == -1)
         {
         	// Stop to play if the thread is interrupted
         	if (Thread.currentThread().isInterrupted())
         		return;
-        	
+
         	// We update the buttons and the label
         	frame.updateActionButton(curPlayer, board);
             frame.updateLabels(curPlayer);
@@ -176,7 +176,6 @@ public final class Game
             
             // Update logical part of the board
             board.update();
-            
             // As long as we can't refresh the graphical interface, we wait.
             SwingUtilities.updateComponentTreeUI(frame);
             frame.invalidate();
@@ -319,6 +318,8 @@ public final class Game
         colorHolder.load(1, Color.CYAN);
         colorHolder.load(2, Color.YELLOW);
         colorHolder.load(3, Color.GREEN);
+        colorHolder.load(4, Color.MAGENTA);
+        colorHolder.load(5, Color.BLUE);
     }
     
     public void save(String filepath) throws IOException

@@ -370,9 +370,8 @@ public abstract class ABoard
      */
     public boolean blocked(int sx, int sy, int tx, int ty, boolean withPlayer)
     {
-    	if (Math.abs(sx - tx) > 2 || Math.abs(sy - ty) > 2)
+    	if (Math.abs(sx - tx) > 4 || Math.abs(sy - ty) > 4)
     	{
-    		System.err.println("Too far");
     		throw new RuntimeException("Too far");
     	}
     	
@@ -454,6 +453,7 @@ public abstract class ABoard
     	Coordinates[] coord = possibleMoves(numPlayer, true);
     	for (int i = 0 ; i < coord.length ; i++)
     	{
+    		System.err.println("Activating: " + coord[i]);
     		cells.get(coord[i].getY()).get(coord[i].getX()).setEnabled(enabled);
     	}
     }
@@ -463,7 +463,7 @@ public abstract class ABoard
     {
     	for (int i = 0 ; i < cells.size() ; i++)
     	{
-    		for (int j = 0 ; j < cells.get(0).size() ; j++)
+    		for (int j = 0 ; j < cells.get(i).size() ; j++)
     		{
     			cells.get(i).get(j).setEnabled(false);
     		}
@@ -524,18 +524,18 @@ public abstract class ABoard
     {
     	Coordinates playerPos = playersPositions[num];
     	// If the target case is out of the board
-    	if (coord.getY() >= cells.size() || coord.getX() >= cells.get(0).size() || coord.getX() < 0 || coord.getY() < 0)
-    	{
+    	if (coord.getY() < 0 || coord.getX() < 0 || coord.getY() >= cells.size())
     		throw new RuntimeException("Out of the board");
+    	if (coord.getX() >= cells.get(coord.getY()).size())
+    		throw new RuntimeException("Out of the board");
+    	// If the player wants to move more than 10 cases away
+    	if (Math.abs(coord.getX()-playerPos.getX()) > 10 || Math.abs(coord.getY()-playerPos.getY()) > 10)
+    	{
+    		throw new RuntimeException("Target case is too far from original position " + playerPos + " " + coord);
     	}
     	// If the target case is filled
     	if (cells.get(coord.getY()).get(coord.getX()).filled() > 0)
     		return false;
-    	// If the player wants to move more than 4 cases away
-    	if (Math.abs(coord.getX()-playerPos.getX()) > 4 || Math.abs(coord.getY()-playerPos.getY()) > 4)
-    	{
-    		throw new RuntimeException("Target case is too far from original position " + playerPos + " " + coord);
-    	}
     	playerPos.move(coord.getX()-playerPos.getX(), coord.getY()-playerPos.getY());
     	return true;
     }

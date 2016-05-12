@@ -1,12 +1,15 @@
 package board;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
@@ -66,7 +69,6 @@ public final class HexagonalCase extends Case
 	@Override
 	protected void processMouseEvent(MouseEvent e)
 	{
-		System.out.println(getBounds());
 		if (contains(e.getPoint()))
 		{
 			super.processMouseEvent(e);
@@ -76,33 +78,41 @@ public final class HexagonalCase extends Case
 	@Override
 	protected void paintComponent(Graphics g)
 	{
-		//super.paintComponent(g);
-		
-		// Draw a transparent square
-		g.setColor(new Color(0.f, 0.f, 0.f, 0.f));
-		g.fillRect(0, 0, getWidth(), getHeight());
-		
-		if (isSelected())
-			g.setColor(Color.GREEN);
-		else
-			g.setColor(Color.BLACK);
+		Graphics2D g2D = (Graphics2D)g;
+		g.setColor(new Color(69, 31, 22));
 		
 		g.fillPolygon(hexagon);
-		//g.drawPolygon(hexagon);
+		
+    	if (this.isEnabled())
+    	{
+    		// We draw a green square if the case is enabled
+        	g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+    		g2D.setColor(Color.GREEN);
+    		g2D.fillRect(0, 0, this.getWidth(), this.getHeight());
+    	}
+
+    	g2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+    	
+    	if (player != null)
+    	{
+    		// We draw the player
+    		g2D.setColor(player);
+            g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        	g2D.fillOval(1, 1, this.getWidth()-2, this.getHeight()-2);
+    	}
 	}
 	
 	private void calculateCoords()
 	{
 		Polygon hex = new Polygon();
 		int w = getWidth() - 1, h = getHeight() - 1;
-		int ratio = (int) (h * .25);
 
-		hex.addPoint(w / 2, 0);
-		hex.addPoint(w, ratio);
-		hex.addPoint(w, h - ratio);
-		hex.addPoint(w / 2, h);
-		hex.addPoint(0, h - ratio);
-		hex.addPoint(0, ratio);
+		hex.addPoint(2*w/10, h);
+		hex.addPoint(0, h/2);
+		hex.addPoint(2*w/10, 0);
+		hex.addPoint(8*w/10, 0);
+		hex.addPoint(w, h/2);
+		hex.addPoint(8*w/10, h);
 		
 		hexagon = hex;
 	}

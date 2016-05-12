@@ -31,13 +31,6 @@ public final class HexagonalBoard extends ABoard
 	{
 		super(players);
 		
-		// TODO : REMOVE!
-		this.players = new APlayer[6];
-		for (int i = 0 ; i < 6 ; i++)
-		{
-			this.players[i] = new Human(i, 10, "Henry " + i);
-		}
-		
 		// 5 de côté
 		for (int i = 0 ; i <= 32 ; i++)
 		{
@@ -75,8 +68,6 @@ public final class HexagonalBoard extends ABoard
 				int columnSize = 8;
 				if (1 <= i && i < 9)
 					columnSize = i + 1;
-				/*else if (25 <= i && i <= 31)
-					columnSize = i - 30;*/
 				else if (27 == i)
 					columnSize = 6;
 				else if (29 == i)
@@ -124,165 +115,86 @@ public final class HexagonalBoard extends ABoard
 		c.insets = new Insets(0, 0, 0, 0);
 		c.fill = GridBagConstraints.CENTER;
 
-		Coordinates numCases = getSize();
-		
-		c.ipadx = c.ipady = 100;
-		c.gridx = 1;
-		//cells.get(0).get(0).setPreferredSize(new Dimension(100, 100));
-		//cells.get(0).get(0).setSize(new Dimension(100, 100));
-		panel.add(cells.get(0).get(0), c);
-		cells.get(0).get(0).setEnabled(true);
-		cells.get(0).get(0).addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						System.out.println("Clicked");
-					}
-				});
-		
-		c.gridy = 1;
-		c.ipady = 50;
-		HexagonalWall wall = (HexagonalWall)(cells.get(2).get(2));
-		wall.setAngle(0);
-		panel.add(cells.get(2).get(2), c);
-		cells.get(2).get(2).setEnabled(true);
-		cells.get(2).get(2).addActionListener(new ActionListener()
-				{
-			public void actionPerformed(ActionEvent e)
-			{
-				System.out.println("Another click on the wall");
-			}
-				});
-
-		c.ipadx = c.ipady = 100;
-		c.gridy = 2;
-		panel.add(cells.get(4).get(4), c);
-		cells.get(4).get(4).setEnabled(true);
-		cells.get(4).get(4).addActionListener(new ActionListener()
+		for (int i = 0 ; i <= 32 ; i++)
 		{
-			public void actionPerformed(ActionEvent e)
+			c.gridy = i;
+			if (i % 2 == 0)
 			{
-				System.out.println("Clicked");
-			}
-		});
-		
-
-		/*c.gridx = 1;
-		c.gridy = 2;
-		c.ipadx = 50;
-		c.ipady = 25;
-		panel.add(cells.get(2).get(2), c);
-		cells.get(2).get(2).setEnabled(true);
-		cells.get(2).get(2).addActionListener(new ActionListener()
+				for (int j = 0 ; j < getXSize(i) ; j++)
 				{
-					public void actionPerformed(ActionEvent e)
+					if (0 <= i && i < 8)
+						c.gridx = 8 - i + j;
+					else if (i <= 24)
+						c.gridx = j;
+					else
+						c.gridx = 8 - (32 - i) + j;
+					
+					if (i < 8 || i > 24 || (8 <= i && i <= 24 && i % 4 == 0))
 					{
-						System.out.println("Clicked on the wall");
-					}
-				});
-		c.gridx = 0;
-		c.gridy = 1;
-		c.ipadx = 50;
-		c.ipady = 25;
-		HexagonalWall wall = (HexagonalWall)(cells.get(1).get(0));
-		wall.setAngle(45);
-		panel.add(cells.get(1).get(0), c);
-		cells.get(1).get(0).setEnabled(true);
-		cells.get(1).get(0).addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						System.out.println("Clicked on a wall");
-					}
-				});
-
-		c.gridx = 2;
-		c.gridy = 1;
-		c.ipadx = 50;
-		c.ipady = 25;
-		wall = (HexagonalWall)(cells.get(1).get(1));
-		wall.setAngle(-45);
-		panel.add(cells.get(1).get(1), c);
-		cells.get(1).get(1).setEnabled(true);
-		cells.get(1).get(1).addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						System.out.println("Clicked on a wall");
-					}
-				});*/
-		
-		/*c.gridx = 0;
-		c.gridy = 0;
-		c.ipadx = 200;
-		c.ipady = 50;
-		HexagonalWall wall = (HexagonalWall)(cells.get(1).get(0));
-		wall.setAngle(45);
-		panel.add(cells.get(1).get(0), c);
-		cells.get(1).get(0).setEnabled(true);
-		cells.get(1).get(0).addActionListener(new ActionListener()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						System.out.println("You clicked");
-					}
-				});*/
-		/*for (int i = 0 ; i < cells.size() ; i++)
-		{
-			for (int j = 0 ; j < cells.get(0).size() ; j++)
-			{
-				c.gridx = j;
-				c.gridy = i;
-				if (i % 2 == 0 && j % 2 == 0)
-				{
-					c.ipadx = 630 / numCases.getX();
-					c.ipady = 594 / numCases.getY();
-				}
-				else if (i % 2 == 1 && j % 2 == 0)
-				{
-					c.ipadx = 630 / numCases.getX();
-					c.ipady = 153 / numCases.getY();
-				}
-				else if (i % 2 == 0 && j % 2 == 1)
-				{
-					c.ipadx = 153 / numCases.getX();
-					c.ipady = 594 / numCases.getY();
-				}
-				else
-				{
-					c.ipadx = 153 / numCases.getX();
-					c.ipady = 153 / numCases.getY();
-				}
-				
-				for (APlayer player : players)
-				{
-					if (player instanceof Human)
-					{
-						final Human human = (Human) player;
-						
-						// We set the coordinates of the cell to be able to get them when the button is pressed
-						cells.get(i).get(j).setActionCommand("(" + j + ", " + i + ")");
-						
-						// Case
-						if (i % 2 == 0 && j % 2 == 0)
+						if (j % 4 == 0)
 						{
-							cells.get(i).get(j).addActionListener(new CaseListener(human, this));
+							c.ipadx = 40;
+							c.ipady = 33;
 						}
-						// Walls
 						else
 						{
-							if (i % 2 != 1 || j % 2 != 1)
+							c.ipadx = 16;
+							c.ipady = 10;
+							if (j % 4 == 2)
 							{
-								cells.get(i).get(j).addActionListener(new WallListener(human, this));
+								c.ipadx = 40;
 							}
 						}
 					}
+					else
+					{
+						if (j % 4 == 2)
+						{
+							c.ipadx = 40;
+							c.ipady = 33;
+						}
+						else
+						{
+							c.ipadx = 16;
+							c.ipady = 10;
+							if (j % 4 == 0)
+							{
+								c.ipadx = 40;
+							}
+						}
+					}
+					panel.add(cells.get(i).get(j), c);
+					cells.get(i).get(j).setEnabled(false);
+					addActionListener(i, j);
 				}
-				// We deactivate the cell
-				cells.get(i).get(j).setEnabled(false);
-				panel.add(cells.get(i).get(j), c);
 			}
-		}*/
+			else
+			{
+				for (int j = 0 ; j < getXSize(i) ; j++)
+				{
+					if (0 <= i && i < 8)
+						c.gridx = 8 - i + 2*j;
+					else if (i <= 24)
+						c.gridx = 1 + 2*j;
+					else
+						c.gridx = 8 - (32 - i) + 2*j;
+
+					c.ipadx = 40;
+					c.ipady = 10;
+					if ((j % 2 == 0 && i % 4 == 3) || (j % 2 == 1 && i % 4 == 1))
+					{
+						((HexagonalWall) cells.get(i).get(j)).setAngle(20);
+					}
+					else
+					{
+						((HexagonalWall) cells.get(i).get(j)).setAngle(-20);
+					}
+					panel.add(cells.get(i).get(j), c);
+					cells.get(i).get(j).setEnabled(false);
+					addActionListener(i, j);
+				}
+			}
+		}
 		
 		panel.repaint();
 		panel.revalidate();
@@ -291,36 +203,53 @@ public final class HexagonalBoard extends ABoard
     @Override
     public Coordinates[] possibleMoves(int playerNum, boolean withPlayer, Coordinates pos)
     {
+    	
     	TreeSet<Coordinates> coord = new TreeSet<Coordinates>();
     	int x = pos.getX(), y = pos.getY();
     	
     	Coordinates[] neighbours = getNeighbours(pos);
-    	for (int i = 0 ; i < neighbours.length ; i++)
+    	try
     	{
-			int dx = neighbours[i].getX() - x;
-			int dy = neighbours[i].getY() - y;
-			// There is no wall between the two cases
-			if (filled(getWall(pos, neighbours[i])) == 0)
-			{
-				// If the case is not empty (and if we consider the other players)
-				if (filled(neighbours[i]) != 0 && withPlayer)
+	    	for (int i = 0 ; i < neighbours.length ; i++)
+	    	{
+				int dx = neighbours[i].getX() - x;
+				int dy = neighbours[i].getY() - y;
+				// There is no wall between the two cases
+				System.err.println(pos + " " + neighbours[i]);
+				if (filled(getWall(pos, neighbours[i])) == 0)
 				{
-					// If the case beyond the neighbour is not empty or if there is a wall between them
-					if (blocked(x+dx, y+dy, x+2*dx, y+2*dy, true))
+					System.err.println("no wall");
+					// If the case is not empty (and if we consider the other players)
+					if (filled(neighbours[i]) != 0 && withPlayer)
 					{
-						Coordinates[] neigh = getNeighbours(neighbours[i]);
-						for (int j = 0 ; j < neigh.length ; j++)
+						System.err.println("not empty");
+						// If the case beyond the neighbour is not empty or if there is a wall between them
+						if (blocked(x+dx, y+dy, x+2*dx, y+2*dy, true))
 						{
-							if (!blocked(neighbours[i], neighbours[j], true))
-								coord.add(neigh[j]);
+							Coordinates[] neigh = getNeighbours(neighbours[i]);
+							for (int j = 0 ; j < neigh.length ; j++)
+							{
+								if (!blocked(neighbours[i], neighbours[j], true))
+									coord.add(neigh[j]);
+							}
+						}
+						else
+						{
+							coord.add(new Coordinates(x + 2*dx, y + 2*dy));
 						}
 					}
+					else
+					{
+						System.err.println("empty");
+						coord.add(neighbours[i]);
+					}
 				}
-				else
-				{
-					coord.add(neighbours[i]);
-				}
-			}
+	    	}
+    	}
+    	catch(Exception e)
+    	{
+    		System.err.println(e);
+    		e.printStackTrace();
     	}
     	
     	return coord.toArray(new Coordinates[0]);
@@ -332,42 +261,6 @@ public final class HexagonalBoard extends ABoard
 		return new Coordinates(5, 5);
 	}
 
-	/*@Override
-	public int getYSize(int column)
-	{
-		switch(column)
-		{
-		case 0:
-		case 16:
-			return 9;
-		case 1:
-		case 15:
-			return 10;
-		case 2:
-		case 14:
-			return 11;
-		case 3:
-		case 13:
-			return 12;
-		case 4:
-		case 12:
-			return 13;
-		case 5:
-		case 11:
-			return 14;
-		case 6:
-		case 10:
-			return 15;
-		case 7:
-		case 9:
-			return 16;
-		case 8:
-			return 17;
-		default:
-				return 0;
-		}
-	}*/
-	
 	@Override
 	public Coordinates startingPos(int playerNum)
 	{
@@ -524,9 +417,7 @@ public final class HexagonalBoard extends ABoard
 		else if (start.getY() >= 6 && start.getY() < 28)
 		{
 			if (target.getY() == start.getY()-4)
-			{
 				return new Coordinates(start.getX(), start.getY()+dy/2);
-			}
 			else if (target.getY() == start.getY()-2 || target.getY() == start.getY()+2)
 				return new Coordinates(start.getX()/4 + target.getX()/4, start.getY()+dy/2);
 			else if (target.getY() == start.getY()+4)
@@ -555,7 +446,7 @@ public final class HexagonalBoard extends ABoard
 			if (target.getY() == 30)
 				return new Coordinates(target.getX()/4, 31);
 			else if (target.getY() == 28)
-				return new Coordinates(2, 30);
+				return new Coordinates(2, 20);
 		}
 		
 		return null;
@@ -620,7 +511,7 @@ public final class HexagonalBoard extends ABoard
 					neighbours.add(new Coordinates(x+4, y-2));
 			}
 		}
-		if (y + 2 < 32)
+		if (y + 2 <= 32)
 		{
 			if (y < 8)
 			{
@@ -644,7 +535,7 @@ public final class HexagonalBoard extends ABoard
 					neighbours.add(new Coordinates(x, y+2));
 			}
 		}
-		if (y + 4 < 32)
+		if (y + 4 <= 32)
 		{
 			if (y == 28)
 			{
@@ -662,11 +553,63 @@ public final class HexagonalBoard extends ABoard
 			}
 			else
 			{
-				if (x-4 >= 0)
+				if (x-4 >= 0 && x < getXSize(y)-1)
 					neighbours.add(new Coordinates(x-4, y+4));
 			}
 		}
 		
 		return neighbours.toArray(new Coordinates[0]);
+	}
+	
+	// Add the case designated by (i, j) as listeners (for human)
+	private void addActionListener(int i, int j)
+	{
+		for (APlayer player : players)
+		{
+			if (player instanceof Human)
+			{
+				final Human human = (Human) player;
+				
+				// We set the coordinates of the cell to be able to get them when the button is pressed
+				cells.get(i).get(j).setActionCommand("(" + j + ", " + i + ")");
+				
+				if (i <= 8 || 24 <= i)
+				{
+					if (i % 2 == 0)
+					{
+						if (j % 4 == 0)
+							cells.get(i).get(j).addActionListener(new CaseListener(human, this));
+						else if (j % 4 == 2)
+							cells.get(i).get(j).addActionListener(new WallListener(human, this));
+					}
+					// Just walls
+					else
+					{
+						cells.get(i).get(j).addActionListener(new WallListener(human, this));
+					}
+				}
+				else if (8 < i && i < 24)
+				{
+					if (i % 4 == 0)
+					{
+						if (j % 4 == 0)
+							cells.get(i).get(j).addActionListener(new CaseListener(human, this));
+						else if (j % 4 == 2)
+							cells.get(i).get(j).addActionListener(new WallListener(human, this));
+					}
+					else if (i % 4 == 2)
+					{
+						if (j % 4 == 2)
+							cells.get(i).get(j).addActionListener(new CaseListener(human, this));
+						else if (j % 4 == 0)
+							cells.get(i).get(j).addActionListener(new WallListener(human, this));
+					}
+					else
+					{
+						cells.get(i).get(j).addActionListener(new WallListener(human, this));
+					}
+				}
+			}
+		}
 	}
 }

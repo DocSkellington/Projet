@@ -87,7 +87,7 @@ public class GameFrame extends JFrame
 		wallButton.changeColor(curPlayer);
 		removeButton.changeColor(curPlayer);
 		skipButton.changeColor(curPlayer);
-		
+
 		// Check if the skip button must be activated
 		if (board.possibleMoves(curPlayer, true).length == 0 && players[curPlayer].getWallCounter() == 0)
 			skipButton.setEnabled(true);
