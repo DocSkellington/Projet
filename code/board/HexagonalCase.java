@@ -66,20 +66,13 @@ public final class HexagonalCase extends Case
 	@Override
 	protected void processMouseEvent(MouseEvent e)
 	{
+		System.out.println(getBounds());
 		if (contains(e.getPoint()))
 		{
 			super.processMouseEvent(e);
 		}
 	}
 	
-	@Override
-	public String toString()
-	{
-		String res = "";
-		res += hexagon.getBounds().toString();
-		return res;
-	}
-
 	@Override
 	protected void paintComponent(Graphics g)
 	{
@@ -95,20 +88,7 @@ public final class HexagonalCase extends Case
 			g.setColor(Color.BLACK);
 		
 		g.fillPolygon(hexagon);
-		g.drawPolygon(hexagon);
-		
-		/*FontMetrics fm = getFontMetrics(getFont());
-	    Rectangle viewR = getBounds();
-	    Rectangle iconR = new Rectangle();
-	    Rectangle textR = new Rectangle();
-
-
-	    SwingUtilities.layoutCompoundLabel(this, fm, getText(), null,
-	            SwingUtilities.CENTER, SwingUtilities.CENTER, SwingUtilities.BOTTOM, SwingUtilities.CENTER,
-	            viewR, iconR, textR, 0);
-
-	    Point loc = getLocation();
-	    g.drawString(getText(), textR.x-loc.x, textR.y-loc.y+fm.getAscent());*/
+		//g.drawPolygon(hexagon);
 	}
 	
 	private void calculateCoords()

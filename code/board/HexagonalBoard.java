@@ -1,13 +1,16 @@
 package board;
 
+import java.awt.AWTEvent;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -112,12 +115,21 @@ public final class HexagonalBoard extends ABoard
 	public void fill(JPanel panel)
 	{
 		
+		//panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+		//panel.add(new JButton("Test"));
+		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = c.gridy = 0;
-		c.fill = GridBagConstraints.BOTH;
+		c.insets = new Insets(0, 0, 0, 0);
+		c.fill = GridBagConstraints.CENTER;
 
 		Coordinates numCases = getSize();
+		
 		c.ipadx = c.ipady = 100;
+		c.gridx = 1;
+		//cells.get(0).get(0).setPreferredSize(new Dimension(100, 100));
+		//cells.get(0).get(0).setSize(new Dimension(100, 100));
 		panel.add(cells.get(0).get(0), c);
 		cells.get(0).get(0).setEnabled(true);
 		cells.get(0).get(0).addActionListener(new ActionListener()
@@ -128,6 +140,93 @@ public final class HexagonalBoard extends ABoard
 					}
 				});
 		
+		c.gridy = 1;
+		c.ipady = 50;
+		HexagonalWall wall = (HexagonalWall)(cells.get(2).get(2));
+		wall.setAngle(0);
+		panel.add(cells.get(2).get(2), c);
+		cells.get(2).get(2).setEnabled(true);
+		cells.get(2).get(2).addActionListener(new ActionListener()
+				{
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("Another click on the wall");
+			}
+				});
+
+		c.ipadx = c.ipady = 100;
+		c.gridy = 2;
+		panel.add(cells.get(4).get(4), c);
+		cells.get(4).get(4).setEnabled(true);
+		cells.get(4).get(4).addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				System.out.println("Clicked");
+			}
+		});
+		
+
+		/*c.gridx = 1;
+		c.gridy = 2;
+		c.ipadx = 50;
+		c.ipady = 25;
+		panel.add(cells.get(2).get(2), c);
+		cells.get(2).get(2).setEnabled(true);
+		cells.get(2).get(2).addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						System.out.println("Clicked on the wall");
+					}
+				});
+		c.gridx = 0;
+		c.gridy = 1;
+		c.ipadx = 50;
+		c.ipady = 25;
+		HexagonalWall wall = (HexagonalWall)(cells.get(1).get(0));
+		wall.setAngle(45);
+		panel.add(cells.get(1).get(0), c);
+		cells.get(1).get(0).setEnabled(true);
+		cells.get(1).get(0).addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						System.out.println("Clicked on a wall");
+					}
+				});
+
+		c.gridx = 2;
+		c.gridy = 1;
+		c.ipadx = 50;
+		c.ipady = 25;
+		wall = (HexagonalWall)(cells.get(1).get(1));
+		wall.setAngle(-45);
+		panel.add(cells.get(1).get(1), c);
+		cells.get(1).get(1).setEnabled(true);
+		cells.get(1).get(1).addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						System.out.println("Clicked on a wall");
+					}
+				});*/
+		
+		/*c.gridx = 0;
+		c.gridy = 0;
+		c.ipadx = 200;
+		c.ipady = 50;
+		HexagonalWall wall = (HexagonalWall)(cells.get(1).get(0));
+		wall.setAngle(45);
+		panel.add(cells.get(1).get(0), c);
+		cells.get(1).get(0).setEnabled(true);
+		cells.get(1).get(0).addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						System.out.println("You clicked");
+					}
+				});*/
 		/*for (int i = 0 ; i < cells.size() ; i++)
 		{
 			for (int j = 0 ; j < cells.get(0).size() ; j++)
